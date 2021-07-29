@@ -9,12 +9,20 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.exception.EntityType;
+import ml.kalanblowSystemManagement.exception.ExceptionType;
+import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
 import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
@@ -24,6 +32,7 @@ import ml.kalanblowSystemManagement.service.UserService;
 
 @Service
 @Transactional
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
@@ -31,13 +40,16 @@ public class UserServiceImpl implements UserService {
 	private final RoleRepository roleRepository;
 
 	private final ModelMapper modelMapper;
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper) {
+	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper,
+			BCryptPasswordEncoder bCryptPasswordEncoder) {
 		super();
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.modelMapper = modelMapper;
+		this.passwordEncoder = bCryptPasswordEncoder;
 	}
 
 	@Override
@@ -49,20 +61,32 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<UserDto> findUserByEmail(String email) {
 
-		return Optional.ofNullable(modelMapper.map(userRepository.findUserByEmail(email), UserDto.class));
+		if (email != null) {
+
+			return Optional.ofNullable(modelMapper.map(userRepository.findUserByEmail(email), UserDto.class));
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email);
 	}
 
 	@Override
 	public Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName) {
 
-		return Optional.ofNullable(
-				modelMapper.map(userRepository.findUserByfirstNameAndLastName(firstName, lastName), UserDto.class));
+		if (firstName != null && lastName != null) {
+			return Optional.ofNullable(
+					modelMapper.map(userRepository.findUserByfirstNameAndLastName(firstName, lastName), UserDto.class));
+		}
+
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND,
+				firstName + firstName.concat("").concat(lastName));
 	}
 
 	@Override
 	public Optional<UserDto> findUserByRoles(UserRole name) {
 
-		return Optional.ofNullable(modelMapper.map(userRepository.findUserByRoles(name), UserDto.class));
+		if (name != null) {
+			return Optional.ofNullable(modelMapper.map(userRepository.findUserByRoles(name), UserDto.class));
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, name.name());
 	}
 
 	@Override
@@ -81,13 +105,11 @@ public class UserServiceImpl implements UserService {
 			}
 
 			user = new User().setEmail(userDto.getEmail()).setFirstName(userDto.getFirstName())
-					.setLastName(userDto.getLastName()).setPassword(userDto.getPassword())
+					.setLastName(userDto.getLastName()).setPassword(passwordEncoder.encode(userDto.getPassword()))
 					.setRoles(new HashSet<>(Arrays.asList(userRole)));
 			return UserMapper.userToUserDto(userRepository.save(user));
 		}
-		return userDto;
-
-		
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, userDto.getEmail());
 	}
 
 	@Override
@@ -98,40 +120,77 @@ public class UserServiceImpl implements UserService {
 		if (uOptional.isPresent()) {
 
 			User updateUser = uOptional.get().setEmail(userDto.getEmail()).setFirstName(userDto.getFirstName())
-					.setLastName(userDto.getLastName()).setRoles(uOptional.get().getRoles());
+					.setLastName(userDto.getLastName()).setRoles(uOptional.get().getRoles())
+					.setPassword(passwordEncoder.encode(userDto.getPassword()));
 			return UserMapper.userToUserDto(userRepository.save(updateUser));
 		}
-		return userDto;
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, userDto.getEmail());
 
 	}
 
 	@Override
 	public UserDto changeUserPassword(UserDto userDto, String newPassword) {
+		Optional<User> uOptional = Optional.ofNullable(userRepository.findUserByEmail(userDto.getEmail()));
+		if (uOptional.isPresent()) {
 
-		userDto.setPassword(newPassword);
-		userRepository.save(modelMapper.map(userDto, User.class));
+			User user = uOptional.get();
+			user.setPassword(passwordEncoder.encode(newPassword));
+			return UserMapper.userToUserDto(userRepository.save(user));
 
-		return userDto;
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, userDto.getEmail());
+
 	}
 
 	@Override
 	public UserDto deleteUserById(Long id) {
 
-		return Optional.ofNullable(modelMapper.map(userRepository.deleteUserById(id), UserDto.class)).get();
+		if (id != null) {
+			return Optional.ofNullable(modelMapper.map(userRepository.deleteUserById(id), UserDto.class)).get();
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, String.valueOf(id));
 	}
 
 	@Override
 	public UserDto deleteUserByEmail(String email) {
 
-		return Optional.ofNullable(modelMapper.map(userRepository.deleteUserByEmail(email), UserDto.class)).get();
+		if (email != null) {
+			return Optional.ofNullable(modelMapper.map(userRepository.deleteUserByEmail(email), UserDto.class)).get();
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email);
 	}
 
 	@Override
 	public Set<UserDto> getAllUsers() {
 		List<User> users = userRepository.findAll();
-		List<UserDto> userDtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
-				.collect(Collectors.toList());
-		return new HashSet<>(userDtos);
+
+		if (!users.isEmpty()) {
+			List<UserDto> userDtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
+					.collect(Collectors.toList());
+			return new HashSet<>(userDtos);
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, String.valueOf(users.size()));
+
 	}
 
+	@Override
+	public Page<UserDto> listUserByPage(Pageable pageable) {
+
+		List<User> users = userRepository.findAll();
+		if (!users.isEmpty()) {
+			List<UserDto> userDtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
+					.collect(Collectors.toList());
+			final int start = (int) pageable.getOffset();
+			final int end = Math.min((start + pageable.getPageSize()), userDtos.size());
+			final Page<UserDto> uPage = new PageImpl<>(userDtos.subList(start, end), pageable, userDtos.size());
+			return uPage;
+		}
+		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, String.valueOf(users.size()));
+
+	}
+
+	private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
+		return KalanblowSystemManagementException.throwException(entityType, exceptionType, args);
+
+	}
 }

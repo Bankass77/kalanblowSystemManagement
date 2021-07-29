@@ -3,6 +3,9 @@ package ml.kalanblowSystemManagement.service;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.model.UserRole;
 
@@ -27,5 +30,7 @@ public interface UserService {
 	UserDto deleteUserByEmail(String email);
 
 	Set<UserDto> getAllUsers();
+	
+	Page<UserDto> listUserByPage(Pageable pageable);
 
 }
