@@ -57,6 +57,10 @@ public class User implements Serializable {
 	@Column(name = "password")
 	@NotNull
 	private String password;
+	
+
+    @Column(name = "mobile_number")
+    private String mobileNumber;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {

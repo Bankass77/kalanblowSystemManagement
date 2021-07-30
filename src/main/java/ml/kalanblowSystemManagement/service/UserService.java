@@ -30,7 +30,7 @@ public interface UserService {
 	UserDto deleteUserByEmail(String email);
 
 	Set<UserDto> getAllUsers();
-	
+
 	Page<UserDto> listUserByPage(Pageable pageable);
 
 }

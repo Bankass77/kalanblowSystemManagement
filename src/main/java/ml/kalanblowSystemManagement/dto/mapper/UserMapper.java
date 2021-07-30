@@ -16,7 +16,7 @@ public class UserMapper {
 	public static UserDto userToUserDto(User user) {
 		return new UserDto().setEmail(user.getEmail()).setFirstName(user.getFirstName()).setLastName(user.getLastName())
 				.setPassword(user.getPassword()).setRoleDtos(user.getRoles().stream()
-						.map(roleDto -> new ModelMapper().map(roleDto, RoleDto.class)).collect(Collectors.toSet()));
+						.map(roleDto -> new ModelMapper().map(roleDto, RoleDto.class)).collect(Collectors.toSet())).setMobileNumber(user.getMobileNumber());
 
 	}
 

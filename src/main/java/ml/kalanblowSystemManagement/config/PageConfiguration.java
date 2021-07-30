@@ -1,8 +1,22 @@
 package ml.kalanblowSystemManagement.config;
 
+import java.util.Arrays;
+import java.util.Locale;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 public class PageConfiguration implements WebMvcConfigurer {
@@ -20,12 +34,59 @@ public class PageConfiguration implements WebMvcConfigurer {
 		controllerRegistry.addViewController("/error").setViewName("error");
 		controllerRegistry.addViewController("/etablissement").setViewName("etablissement");
 		controllerRegistry.addViewController("/users").setViewName("users");
-		// controllerRegistry.addViewController("/allUsers").setViewName("allUsers");
-		// controllerRegistry.addViewController("/createUserForm").setViewName("createUserForm");
-		controllerRegistry.addViewController("/getUser").setViewName("getUser");
-		controllerRegistry.addViewController("/updateUser").setViewName("updateUser");
-		controllerRegistry.addViewController("/student/registration").setViewName("registration");
-		controllerRegistry.addViewController("/student/edit").setViewName("student-edit");
-		controllerRegistry.addViewController("/student/delete").setViewName("student-delete");
+		 controllerRegistry.addViewController("/editeUser/{id}").setViewName("editUser");
+		controllerRegistry.addViewController("/updateUser/{id}").setViewName("updateUser");
+		controllerRegistry.addViewController("/deleteUser/{id}").setViewName("deleteUser");
+	}
+
+	@Bean
+	public FilterRegistrationBean hiddenHttpMethodFilter() {
+		FilterRegistrationBean filterRegBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());
+		filterRegBean.setUrlPatterns(Arrays.asList("/*"));
+		return filterRegBean;
+	}
+
+	@Bean
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:i18n/messages");
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}
+
+	/*
+	 * @Bean public LocalValidatorFactoryBean getValidator() {
+	 * LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+	 * bean.setValidationMessageSource(messageSource()); return bean; }
+	 */
+
+	@Bean
+	public LocaleResolver localeResolver() {
+		SessionLocaleResolver slr = new SessionLocaleResolver();
+		slr.setDefaultLocale(Locale.getDefault());
+		return slr;
+	}
+
+	@Bean
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+		lci.setParamName("lang");
+		return lci;
+	}
+
+	// to make sure that the Spring Security session registry is notified when the
+	// session is destroyed.
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(localeChangeInterceptor());
+	}
+
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 	}
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/header :: headerFragment(~{::title}, ~{})">
+<head th:replace="fragments/header :: header(~{::title}, ~{})">
     <title th:text="${error}"></title>
 </head>
 <body>

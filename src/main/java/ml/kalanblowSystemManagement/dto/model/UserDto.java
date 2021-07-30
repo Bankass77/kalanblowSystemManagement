@@ -30,9 +30,14 @@ public class UserDto {
 	private String lastName;
 
 	private String password;
-	
+
 	private boolean isAdmin;
+
+	private String mobileNumber;
 	
 	private Set<RoleDto> roleDtos = new HashSet<>();
+	public String getFullName() {
+        return firstName != null ? firstName.concat(" ").concat(lastName) : "";
+    }
 
 }

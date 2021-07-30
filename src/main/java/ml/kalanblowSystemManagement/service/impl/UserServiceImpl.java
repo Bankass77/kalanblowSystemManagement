@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.SneakyThrows;
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.exception.EntityType;
@@ -32,7 +33,6 @@ import ml.kalanblowSystemManagement.service.UserService;
 
 @Service
 @Transactional
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<UserDto> findUserById(Long id) {
 
 		return Optional.ofNullable(findUserById(id).get());
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName) {
 
 		if (firstName != null && lastName != null) {
@@ -81,6 +83,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<UserDto> findUserByRoles(UserRole name) {
 
 		if (name != null) {
@@ -90,6 +93,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public UserDto signup(UserDto userDto) {
 
 		User user = userRepository.findUserByEmail(userDto.getEmail());
@@ -113,6 +117,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public UserDto updateUserProfile(UserDto userDto) {
 
 		Optional<User> uOptional = Optional.ofNullable(userRepository.findUserByEmail(userDto.getEmail()));
@@ -143,6 +148,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public UserDto deleteUserById(Long id) {
 
 		if (id != null) {
@@ -152,6 +158,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@SneakyThrows
 	public UserDto deleteUserByEmail(String email) {
 
 		if (email != null) {
@@ -193,4 +200,5 @@ public class UserServiceImpl implements UserService {
 		return KalanblowSystemManagementException.throwException(entityType, exceptionType, args);
 
 	}
+
 }

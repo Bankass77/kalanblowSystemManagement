@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,15 +22,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
+import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
 
 @Controller
 @Slf4j
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RoleService roleService;
 
 	@GetMapping(value = "/signup")
 	public ModelAndView signup() {
@@ -114,9 +122,24 @@ public class AdminController {
 		userDto = userService.findUserById((long) id);
 
 		ModelAndView modelAndView = new ModelAndView("admin/editUser");
-		modelAndView.addObject("userId", userDto);
+
+		modelAndView.addObject("editUser", userDto);
 
 		return modelAndView;
+
+	}
+
+	@PostMapping("/updateUser/{id}")
+	public ModelAndView updateUser(@PathVariable("id") int id, @ModelAttribute Optional<UserDto> userDto) {
+
+		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
+		userDto = userService.findUserById((long) id);
+
+		if (userDto.isPresent()) {
+			userDto = Optional.ofNullable(userService.updateUserProfile(userDto.get()));
+			modelAndView.addObject("updateUser", userDto);
+		}
+		return new ModelAndView("redirect:/users");
 
 	}
 
@@ -135,5 +158,12 @@ public class AdminController {
 
 		return modelAndView;
 
+	}
+
+	@ModelAttribute("roles")
+	public Set<RoleDto> initializeAuthorities() {
+
+		Set<RoleDto> roleDtos = roleService.getAllRoles();
+		return roleDtos;
 	}
 }

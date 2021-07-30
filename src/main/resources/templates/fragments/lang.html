@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+
+	<div class="flex-container" th:fragment="languague"
+		th:with="currentUrl=(${#httpServletRequest.requestURI})">
+		<span> <a th:href="@{${currentUrl}(lang=en)}"> <img
+				class="flag" th:src="@{/dashboard/assets/images/FlagEn.png}"
+				width="45px" height="45px" th:alt="english">
+		</a>
+		</span> <span> <a th:href="@{${currentUrl}(lang=fr)}"> <img
+				class="flag" th:src="@{/dashboard/assets/images/FlagFr.png}"
+				width="45px" height="45px" th:alt="français">
+		</a>
+		</span>
+	</div>
+
+</body>
+</html>

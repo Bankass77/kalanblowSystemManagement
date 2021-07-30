@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/header :: headerFragment(~{::title}, ~{})">
+<head th:replace="fragments/header :: header(~{::title}, ~{})">
     <title th:text="${status}"></title>
 </head>
 <body>
     <div>
         <h1 th:text="#{forbidden}"></h1>
         <br>
-        <a th:href="@{/cabinet}" th:text="#{to.cab}"></a>
+        <a th:href="@{/kalanblow}" th:text="#{to.kalanblow}"></a>
     </div>
     <span sec:authorize="isAuthenticated()">
         <div th:insert="~{fragments/footer :: footer}"></div>

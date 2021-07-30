@@ -102,7 +102,7 @@ public class UserApiController {
 
 		UserDto updateUser = UserMapper.userToUserDto(user);
 
-		userService.signup(updateUser);
+		userService.updateUserProfile(updateUser);
 		return Response.ok().setPayload(updateUser);
 
 	}

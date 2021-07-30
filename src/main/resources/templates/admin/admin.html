@@ -1,20 +1,45 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="UTF-8">
-    <title>Cabinet admin</title>
-    <link rel="stylesheet" href="css/admin/admin.css">
-    <link rel="stylesheet" href="css/animate/animate.min.css">
-    <script src="js/wow/wow.min.js"></script>
-    <script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Login</title>
+<!-- Favicon icon -->
+<link rel="icon" type="image/png" href="favicon.png">
+<!-- Font Icon -->
+<link rel="stylesheet"
+	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
+<!-- Main css -->
+<link rel="stylesheet" href="/auth/css/style.css">
+<script src="js/wow/wow.min.js"></script>
+<script>
         new WOW().init();
     </script>
 </head>
 <body class="bg-warning">
-    <button class="wow fadeInLeft bigButton"><div th:insert="fragments/footer.html :: footer"></div></button>
-    <button class="wow fadeInRight bigButton"><a th:text="#{users.list}" th:href="@{/allUsers}"></a></button>
-    <button class="wow fadeInLeft bigButton"><a th:text="#{users.create}" th:href="@{/createUser}"></a></button>
-    <button class="wow fadeInRight bigButton"><a th:text="#{users.actions} + ' !!!нужно доделать!!!'" href="#"></a></button>
+	<button class="wow fadeInLeft bigButton">
+		<div th:insert="fragments/footer.html :: footer"></div>
+	</button>
+	<button class="wow fadeInRight bigButton">
+		<a th:text="#{users.list}" th:href="@{/users}"></a>
+	</button>
+	<button class="wow fadeInLeft bigButton">
+		<a th:text="#{users.create}" th:href="@{/signup}"></a>
+	</button>
+	<button class="wow fadeInRight bigButton">
+		<a th:text="#{edite.button.label} + ''"
+			th:href="@{/editUser/{id}(id=${user.id})}"></a>
+	</button>
+	<button class="wow fadeInRight bigButton">
+		<a th:text="#{update.button.label} + ''"
+			th:href="@{/updateUser/{id}(id=${user.id})}"></a>
+	</button>
+	<button class="wow fadeInRight bigButton">
+		<a th:text="#{delete.button.label} + ''"
+			th:href="@{/deleteUser/{id}(id=${user.id})}"></a>
+	</button>
 </body>
 </html>
