@@ -15,6 +15,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +48,7 @@ public class Role implements Serializable {
 	@NotNull
 	private UserRole userRoleName;
 
-	@ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<User> users;
 }

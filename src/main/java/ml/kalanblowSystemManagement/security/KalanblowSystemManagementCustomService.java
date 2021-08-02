@@ -1,6 +1,5 @@
 package ml.kalanblowSystemManagement.security;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,12 +12,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.service.UserService;
 
 @Service
+@Transactional
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 
 	@Autowired
@@ -27,7 +28,7 @@ public class KalanblowSystemManagementCustomService implements UserDetailsServic
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<UserDto> userDto = userService.findUserByEmail(username);
+		Optional<UserDto> userDto = Optional.ofNullable(userService.findUserByEmail(username));
 
 		if (userDto.isPresent()) {
 			Set<GrantedAuthority> authorities = getAuthority(userDto.get().getRoleDtos());

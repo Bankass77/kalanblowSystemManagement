@@ -32,7 +32,6 @@ public class PageConfiguration implements WebMvcConfigurer {
 		controllerRegistry.addViewController("/logout").setViewName("logout");
 		controllerRegistry.addViewController("/profile").setViewName("profile");
 		controllerRegistry.addViewController("/error").setViewName("error");
-		controllerRegistry.addViewController("/etablissement").setViewName("etablissement");
 		controllerRegistry.addViewController("/users").setViewName("users");
 		 controllerRegistry.addViewController("/editeUser/{id}").setViewName("editUser");
 		controllerRegistry.addViewController("/updateUser/{id}").setViewName("updateUser");

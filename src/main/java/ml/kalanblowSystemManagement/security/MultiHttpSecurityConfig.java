@@ -40,8 +40,8 @@ public class MultiHttpSecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.csrf().disable().antMatcher("/api/**").authorizeRequests().antMatchers("/api/v1/user/**")
-					.hasAuthority("ADMIN").anyRequest().authenticated().and().exceptionHandling()
+			http.csrf().disable().antMatcher("/api/**").authorizeRequests().antMatchers("/api/v1/user/**").permitAll()
+					/* .hasAuthority("ADMIN") */.anyRequest().authenticated().and().exceptionHandling()
 					.authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
 					.addFilter(new ApiJWTAuthenticationFilter(authenticationManager()))
 					.addFilter(new ApiJWTAuthorizationFilter(authenticationManager())).sessionManagement()

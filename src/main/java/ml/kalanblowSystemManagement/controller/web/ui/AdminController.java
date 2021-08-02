@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -29,7 +30,7 @@ import ml.kalanblowSystemManagement.service.UserService;
 
 @Controller
 @Slf4j
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
 	@Autowired
@@ -58,10 +59,10 @@ public class AdminController {
 			@Valid @ModelAttribute("adminSignupCommand") AdminSignupCommand adminSignupCommand,
 			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-		Optional<UserDto> userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
+		UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
 		ModelAndView modelAndView = new ModelAndView("signup");
 
-		if (userDto.isPresent()) {
+		if (userDto !=null) {
 
 			bindingResult.reject("There is already a user registered with the email provided");
 			log.debug("There is already a user registered with the email provided");
@@ -77,7 +78,7 @@ public class AdminController {
 			modelAndView.addObject("successMessage", redirectAttributes);
 			log.debug(" A user registered with the email provided");
 		}
-		return modelAndView;
+		return  new ModelAndView("login");
 	}
 
 	/**
@@ -89,12 +90,12 @@ public class AdminController {
 
 		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
 
-		Set<UserDto> userDtos = userService.getAllUsers();
+		//Set<UserDto> userDtos = userService.getAllUsers();
 
 		Page<UserDto> pageInfo = userService.listUserByPage(pageable);
 
-		modelAndView.addObject("users", userDtos);
-		modelAndView.addObject("page", pageInfo);
+		//modelAndView.addObject("users", userDtos);
+		modelAndView.addObject("users", pageInfo);
 		return modelAndView;
 	}
 
@@ -119,7 +120,7 @@ public class AdminController {
 	@GetMapping(value = "/editeUser/{id}")
 	public ModelAndView getUserById(Optional<UserDto> userDto, int id) {
 
-		userDto = userService.findUserById((long) id);
+		userDto = Optional.ofNullable(userService.findUserById((long) id));
 
 		ModelAndView modelAndView = new ModelAndView("admin/editUser");
 
@@ -130,13 +131,13 @@ public class AdminController {
 	}
 
 	@PostMapping("/updateUser/{id}")
-	public ModelAndView updateUser(@PathVariable("id") int id, @ModelAttribute Optional<UserDto> userDto) {
+	public ModelAndView updateUser(@PathVariable("id") int id, @ModelAttribute UserDto userDto) {
 
 		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
 		userDto = userService.findUserById((long) id);
 
-		if (userDto.isPresent()) {
-			userDto = Optional.ofNullable(userService.updateUserProfile(userDto.get()));
+		if (userDto !=null) {
+			userDto = userService.updateUserProfile(userDto);
 			modelAndView.addObject("updateUser", userDto);
 		}
 		return new ModelAndView("redirect:/users");

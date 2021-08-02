@@ -29,9 +29,9 @@ public class AdminDashboardController {
 	public ModelAndView dashboard() {
 		ModelAndView modelAndView = new ModelAndView("dashboard");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
+		UserDto userDto = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("currentUser", userDto);
-		modelAndView.addObject("userName", userDto.get().getLastName() + " " + userDto.get().getFirstName());
+		modelAndView.addObject("userName", userDto.getLastName() + " " + userDto.getFirstName());
 		return modelAndView;
 	}
 
@@ -39,14 +39,14 @@ public class AdminDashboardController {
 	public ModelAndView getUserProfile() {
 		ModelAndView modelAndView = new ModelAndView("profile");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
-		ProfileFormCommand profileFormCommand = new ProfileFormCommand().setFirstName(userDto.get().getFirstName())
-				.setLastName(userDto.get().getLastName()).setMobileNumber(userDto.get().getMobileNumber());
-		PasswordFormCommand passwordFormCommand = new PasswordFormCommand().setEmail(userDto.get().getEmail())
-				.setPassword(userDto.get().getPassword());
+		UserDto userDto = userService.findUserByEmail(auth.getName());
+		ProfileFormCommand profileFormCommand = new ProfileFormCommand().setFirstName(userDto.getFirstName())
+				.setLastName(userDto.getLastName()).setMobileNumber(userDto.getMobileNumber());
+		PasswordFormCommand passwordFormCommand = new PasswordFormCommand().setEmail(userDto.getEmail())
+				.setPassword(userDto.getPassword());
 		modelAndView.addObject("profileForm", profileFormCommand);
 		modelAndView.addObject("passwordForm", passwordFormCommand);
-		modelAndView.addObject("userName", userDto.get().getFullName());
+		modelAndView.addObject("userName", userDto.getFullName());
 		return modelAndView;
 	}
 
@@ -55,16 +55,16 @@ public class AdminDashboardController {
 			BindingResult bindingResult) {
 		ModelAndView modelAndView = new ModelAndView("profile");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
-		PasswordFormCommand passwordFormCommand = new PasswordFormCommand().setEmail(userDto.get().getEmail())
-				.setPassword(userDto.get().getPassword());
+		UserDto userDto = userService.findUserByEmail(auth.getName());
+		PasswordFormCommand passwordFormCommand = new PasswordFormCommand().setEmail(userDto.getEmail())
+				.setPassword(userDto.getPassword());
 		modelAndView.addObject("passwordForm", passwordFormCommand);
-		modelAndView.addObject("userName", userDto.get().getFullName());
+		modelAndView.addObject("userName", userDto.getFullName());
 		if (!bindingResult.hasErrors()) {
-			userDto.get().setFirstName(profileFormCommand.getFirstName()).setLastName(profileFormCommand.getLastName())
+			userDto.setFirstName(profileFormCommand.getFirstName()).setLastName(profileFormCommand.getLastName())
 					.setMobileNumber(profileFormCommand.getMobileNumber());
-			userService.updateUserProfile(userDto.get());
-			modelAndView.addObject("userName", userDto.get().getFullName());
+			userService.updateUserProfile(userDto);
+			modelAndView.addObject("userName", userDto.getFullName());
 		}
 		return modelAndView;
 	}
@@ -73,16 +73,16 @@ public class AdminDashboardController {
 	public ModelAndView changePassword(@Valid @ModelAttribute("passwordForm") PasswordFormCommand passwordFormCommand,
 			BindingResult bindingResult) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
-		if (bindingResult.hasErrors()) {
+		UserDto userDto = userService.findUserByEmail(auth.getName());
+		if (!bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("profile");
-			ProfileFormCommand profileFormCommand = new ProfileFormCommand().setFirstName(userDto.get().getFirstName())
-					.setLastName(userDto.get().getLastName()).setMobileNumber(userDto.get().getMobileNumber());
+			ProfileFormCommand profileFormCommand = new ProfileFormCommand().setFirstName(userDto.getFirstName())
+					.setLastName(userDto.getLastName()).setMobileNumber(userDto.getMobileNumber());
 			modelAndView.addObject("profileForm", profileFormCommand);
-			modelAndView.addObject("userName", userDto.get().getFullName());
+			modelAndView.addObject("userName", userDto.getFullName());
 			return modelAndView;
 		} else {
-			userService.changeUserPassword(userDto.get(), passwordFormCommand.getPassword());
+			userService.changeUserPassword(userDto, passwordFormCommand.getPassword());
 			return new ModelAndView("login");
 		}
 	}

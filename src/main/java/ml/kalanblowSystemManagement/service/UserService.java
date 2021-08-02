@@ -11,9 +11,9 @@ import ml.kalanblowSystemManagement.model.UserRole;
 
 public interface UserService {
 
-	Optional<UserDto> findUserById(Long id);
+	UserDto findUserById(Long id);
 
-	Optional<UserDto> findUserByEmail(String email);
+	UserDto findUserByEmail(String email);
 
 	Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName);
 
@@ -22,6 +22,8 @@ public interface UserService {
 	UserDto signup(UserDto userDto);
 
 	UserDto updateUserProfile(UserDto userDto);
+
+    public void editUser(UserDto userDTO) ;
 
 	UserDto changeUserPassword(UserDto userDto, String newPassword);
 

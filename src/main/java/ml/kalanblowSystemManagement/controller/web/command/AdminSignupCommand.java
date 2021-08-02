@@ -20,7 +20,7 @@ public class AdminSignupCommand {
 	private String password;
 	@NotNull
 	private String email;
-	
+
 	@NotNull
 	private String mobileNumber;
 

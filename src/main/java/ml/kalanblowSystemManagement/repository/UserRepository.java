@@ -1,5 +1,7 @@
 package ml.kalanblowSystemManagement.repository;
 
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +14,9 @@ import ml.kalanblowSystemManagement.model.UserRole;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	User findUserById(Long id);
+	Optional<User> findUserById(Long id);
 
-	User findUserByEmail(String email);
+	Optional<User> findUserByEmail(String email);
 
 	User findUserByfirstNameAndLastName(String firstName, String lastName);
 
@@ -26,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Page<User> findAll(Pageable pageable);
 
+	List<User> findAllByOrderByIdAsc();
+
+	List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
 }

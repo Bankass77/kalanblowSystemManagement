@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.controller.web.request.UserSignupRequest;
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
@@ -28,6 +29,7 @@ import ml.kalanblowSystemManagement.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Slf4j
 @Api(value = "KSM-application", description = "Operations pertaining to user management in the KSM application")
 public class UserApiController {
 
@@ -84,8 +86,9 @@ public class UserApiController {
 	@GetMapping(value = "/{id}")
 	public Response getUserById(@PathVariable("id") int id) {
 
-		Optional<UserDto> userDto = userService.findUserById((long) id);
-		return Response.ok().setPayload(userDto);
+		Optional<UserDto> userDto = Optional.ofNullable(userService.findUserById((long) id));
+		log.debug("User is:{}",userDto.get());
+		return Response.ok().setPayload(userDto.get());
 	}
 
 	/**
@@ -96,7 +99,7 @@ public class UserApiController {
 	@PutMapping(value = "/{id}")
 	public Response updateUserById(@RequestBody Optional<UserDto> userDto, @PathVariable("id") int id) {
 
-		userDto = userService.findUserById((long) id);
+		userDto = Optional.ofNullable(userService.findUserById((long) id));
 		User user = new ModelMapper().map(userDto, User.class);
 		user.setId((long) id);
 

@@ -39,16 +39,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 			} else if ("STUDENT".equals(auth.getAuthority())) {
 
 				redirectStrategy.sendRedirect(request, response, "/dashboard");
-				log.info("admin" + auth.getAuthority() + "is logged in");
+				log.info("student" + auth.getAuthority() + "is logged in");
 				break;
 
 			} else if ("TEACHER".equals(auth.getAuthority())) {
 				redirectStrategy.sendRedirect(request, response, "/dashboard");
-				log.info("admin" + auth.getAuthority() + "is logged in");
+				log.info("teacher" + auth.getAuthority() + "is logged in");
 				break;
 			} else if ("PARENT".equals(auth.getAuthority())) {
 				redirectStrategy.sendRedirect(request, response, "/dashboard");
-				log.info("admin" + auth.getAuthority() + "is logged in");
+				log.info("parent" + auth.getAuthority() + "is logged in");
 				break;
 			} else {
 				log.warn("Role unknow!");

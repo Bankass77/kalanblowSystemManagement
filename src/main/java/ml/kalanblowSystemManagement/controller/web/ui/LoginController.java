@@ -80,11 +80,11 @@ public class LoginController {
 	}
 
 	protected void showUser(Principal principal, HttpSession session) {
-		Optional<UserDto> userDto = Optional.ofNullable((UserDto) session.getAttribute("user"));
+		UserDto userDto =  (UserDto) session.getAttribute("user");
 
-		if (!userDto.isPresent()) {
+		if (userDto !=null) {
 			userDto = userService.findUserByEmail(principal.getName());
-			session.setAttribute("user", userDto.get());
+			session.setAttribute("user", userDto);
 		}
 	}
 
