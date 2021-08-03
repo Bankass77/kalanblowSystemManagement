@@ -1,8 +1,6 @@
 package ml.kalanblowSystemManagement.controller.web.ui;
 
 import java.security.Principal;
-import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
 
 import org.modelmapper.ModelMapper;
@@ -36,7 +34,6 @@ public class LoginController {
 	}
 
 	@SneakyThrows
-
 	@GetMapping("kalanblow")
 	public String tokalanblow(ModelAndView modelAndView, HttpSession session) {
 		UserDto userDto = (UserDto) session.getAttribute("user");
@@ -80,9 +77,9 @@ public class LoginController {
 	}
 
 	protected void showUser(Principal principal, HttpSession session) {
-		UserDto userDto =  (UserDto) session.getAttribute("user");
+		UserDto userDto = (UserDto) session.getAttribute("user");
 
-		if (userDto !=null) {
+		if (userDto != null) {
 			userDto = userService.findUserByEmail(principal.getName());
 			session.setAttribute("user", userDto);
 		}

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
-@Repository
+@Repository(value = "userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findUserById(Long id);
@@ -31,4 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	List<User> findAllByOrderByIdAsc();
 
 	List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
+
+	List<User> findUserByMobileNumber(String mobileNumber);
+
 }

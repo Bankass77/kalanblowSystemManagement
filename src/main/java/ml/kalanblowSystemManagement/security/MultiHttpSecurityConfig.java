@@ -1,10 +1,13 @@
 package ml.kalanblowSystemManagement.security;
 
+import java.time.LocalDate;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -18,6 +21,7 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthenticationFilter;
 import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
+import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
 
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
@@ -89,6 +93,7 @@ public class MultiHttpSecurityConfig {
 					"/actuator/**", "/swagger-ui/index.html", "/swagger-ui/");
 		}
 
+		
 	}
 
 }

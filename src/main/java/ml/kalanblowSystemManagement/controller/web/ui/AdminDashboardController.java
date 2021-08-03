@@ -1,7 +1,5 @@
 package ml.kalanblowSystemManagement.controller.web.ui;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,32 @@ public class AdminDashboardController {
 		return modelAndView;
 	}
 
+	@PostMapping("/profile/email")
+	public ModelAndView saveUserEmail(String email, BindingResult bindingResult) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		UserDto userDto = userService.findUserByEmail(authentication.getName());
+
+		if (!bindingResult.hasErrors()) {
+
+			ModelAndView modelAndView = new ModelAndView("profile");
+			ProfileFormCommand profileFormCommand = new ProfileFormCommand()
+					.setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
+					.setMobileNumber(userDto.getMobileNumber());
+			modelAndView.addObject("profileForm", profileFormCommand);
+			modelAndView.addObject("userName",userDto.getFullName());
+		}else {
+			userService.changeUserEmail(email);
+			
+			return new ModelAndView("login");
+		}
+
+		ModelAndView modelAndView = new ModelAndView("profile");
+		modelAndView.addObject("newEmail", userDto);
+		return new ModelAndView("admin/allUsers");
+	}
+
 	@PostMapping(value = "/password")
 	public ModelAndView changePassword(@Valid @ModelAttribute("passwordForm") PasswordFormCommand passwordFormCommand,
 			BindingResult bindingResult) {
@@ -82,7 +106,7 @@ public class AdminDashboardController {
 			modelAndView.addObject("userName", userDto.getFullName());
 			return modelAndView;
 		} else {
-			userService.changeUserPassword(userDto, passwordFormCommand.getPassword());
+			userService.changeUserPassword(userDto.getPassword(), passwordFormCommand.getPassword());
 			return new ModelAndView("login");
 		}
 	}

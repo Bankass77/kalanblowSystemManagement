@@ -21,8 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
@@ -38,10 +36,9 @@ import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
 import ml.kalanblowSystemManagement.service.UserService;
 
-@Service
+@Service(value = "userService")
 @Transactional
 @Slf4j
-
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
@@ -51,7 +48,6 @@ public class UserServiceImpl implements UserService {
 	private final ModelMapper modelMapper;
 
 	private final BCryptPasswordEncoder passwordEncoder;
-
 
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper,
@@ -76,6 +72,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto findUserByEmail(String email) {
 
+		// Optional<User> user= userRepository.findUserByEmail("admin1@example.com");
 		Optional<User> user = userRepository.findUserByEmail(email);
 
 		if (user.isPresent()) {
@@ -118,55 +115,31 @@ public class UserServiceImpl implements UserService {
 	@SneakyThrows
 	public UserDto signup(UserDto userDto) {
 
-		Optional<User> user = userRepository.findUserByEmail(userDto.getEmail());
-		List<Role> roles = roleRepository.findAll();
-		List<RoleDto> roleDtos = roles.stream().map(role -> modelMapper.map(role, RoleDto.class))
-				.collect(Collectors.toList());
-		Set<RoleDto> roleDtos2 = new HashSet<>(roleDtos);
+		if (emailExist(userDto.getEmail())) {
 
-		Role userRole = new Role();
-		if (user.isPresent()) {
-
-			if (userDto.isAdmin()) {
-
-				userRole = roleRepository.findRoleByUserRoleName(UserRole.ADMIN);
-				roleDtos2.add(new ModelMapper().map(userRole, RoleDto.class));
-			} else {
-				userRole = roleRepository.findRoleByUserRoleName(UserRole.STUDENT);
-				roleDtos2.add(new ModelMapper().map(userRole, RoleDto.class));
-			}
-
-			user = Optional.ofNullable(new User().setEmail(userDto.getEmail()).setFirstName(userDto.getFirstName())
-					.setLastName(userDto.getLastName()).setPassword(passwordEncoder.encode(userDto.getPassword()))
-					.setRoles(new HashSet<>(Arrays.asList(userRole))).setMobileNumber(userDto.getMobileNumber()));
-			log.debug("signup new user:{}", UserMapper.userToUserDto(userRepository.save(user.get())));
-			return UserMapper.userToUserDto(userRepository.save(user.get()));
+			throw exception(EntityType.USER, ExceptionType.DUPLICATE_ENTITY,
+					"An user with that email adress already exists:" + userDto.getEmail());
 		}
-		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, userDto.getEmail());
+		Role userRole = new Role();
+
+		if (userDto.isAdmin()) {
+			userRole = roleRepository.findRoleByUserRoleName(UserRole.ADMIN);
+		} else {
+			userRole = roleRepository.findRoleByUserRoleName(UserRole.STUDENT);
+		}
+		User user = new User().setBirthDate(userDto.getBirthDate()).setEmail(userDto.getEmail())
+				.setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
+				.setMatchingPassword(userDto.getMatchingPassword()).setPassword(userDto.getPassword())
+				.setMobileNumber(userDto.getMobileNumber()).setRoles(new HashSet<>(Arrays.asList(userRole)));
+
+		return UserMapper.userToUserDto(userRepository.save(user));
 	}
 
 	@Override
-	@SneakyThrows
-	public UserDto updateUserProfile(UserDto userDto) {
-
-		Optional<User> uOptional = userRepository.findUserByEmail(userDto.getEmail());
-
-		uOptional.ifPresent(user -> {
-
-			if (!user.getEmail().equals(userDto.getEmail())) {
-				throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, "The user is not found");
-			}
-		});
-
-		return signup(userDto);
-	}
-
-	/**
-	 *
-	 */
-	@Override
-	public UserDto changeUserPassword(UserDto userDto, String newPassword) {
-		Optional<User> uOptional = userRepository.findUserByEmail(userDto.getEmail());
+	public UserDto changeUserPassword(String oldPassword, String newPassword) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String actualEmail = authentication.getName();
+		Optional<User> uOptional = userRepository.findUserByEmail(actualEmail);
 		String unmodifiableMsg = "You cannot change this user's password.";
 		if (uOptional.isPresent()) {
 
@@ -189,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
 		}
 		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND,
-				unmodifiableMsg + " " + "with this " + userDto.getEmail());
+				unmodifiableMsg + " " + "with this " + actualEmail);
 
 	}
 
@@ -248,16 +221,24 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	List<UserDto> findByLastName(String lastName) {
-		return userRepository.findAllByLastNameContainingIgnoreCaseOrderByIdAsc(lastName).stream()
-				.map(UserMapper::userToUserDto).collect(Collectors.toList());
+	/**
+	 * @param lastName
+	 * @return
+	 */
+	@Override
+	public Set<UserDto> findByLastName(String lastName) {
+
+		List<User> users = userRepository.findAllByLastNameContainingIgnoreCaseOrderByIdAsc(lastName);
+		List<UserDto> userDtos = users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
+		return new HashSet<>(userDtos);
 	}
 
 	/**
 	 * @param newEmail
 	 * @return
 	 */
-	UserDto changeUserEmail(String newEmail) {
+	@Override
+	public UserDto changeUserEmail(String newEmail) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String actualEmail = authentication.getName();
 
@@ -300,6 +281,26 @@ public class UserServiceImpl implements UserService {
 					"Invalid user email:" + "" + userDto.getEmail());
 		}
 
+	}
+
+	@Override
+	public Set<UserDto> findUserbyMobileNumber(String mobileNumber) {
+		List<User> users = userRepository.findUserByMobileNumber(mobileNumber);
+		List<UserDto> userDtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
+				.collect(Collectors.toList());
+		return new HashSet<>(userDtos);
+	}
+
+	@Override
+	public boolean emailExist(String email) {
+
+		return userRepository.findUserByEmail(email) != null;
+	}
+
+	@Override
+	public UserDto updateUserProfile(UserDto userDto) {
+
+		return null;
 	}
 
 }

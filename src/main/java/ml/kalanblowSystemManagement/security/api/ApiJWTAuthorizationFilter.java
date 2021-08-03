@@ -3,11 +3,8 @@ package ml.kalanblowSystemManagement.security.api;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,10 +14,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import ml.kalanblowSystemManagement.security.SecurityConstants;
+
 
 public class ApiJWTAuthorizationFilter extends BasicAuthenticationFilter {
 	public ApiJWTAuthorizationFilter(AuthenticationManager authManager) {

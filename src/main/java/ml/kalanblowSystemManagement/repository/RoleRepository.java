@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.UserRole;
 
-@Repository
+@Repository(value = "roleRepository")
 public interface RoleRepository  extends JpaRepository<Role, Long>{
 	
 	Role findRoleById(Long id);

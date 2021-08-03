@@ -78,7 +78,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <button class="btn btn-success">Update Profile</button>
+                                <button class="btn btn-success" th:text="#{submit.user.updateProfile}"  >Update Profile</button>
                             </div>
                         </div>
                     </form>
@@ -90,7 +90,7 @@
         <div class="col-lg-4 col-xlg-3 col-md-5">
             <div class="card">
                 <div class="card-block">
-                    <form action="#" method="POST" class="form-horizontal form-material" th:action="@{/password}" th:object="${passwordForm}">
+                    <form action="#" method="POST" class="form-horizontal form-material" th:action="@{/profile/password}" th:object="${passwordForm}">
                         <div class="form-group">
                             <label class="col-md-12">Email</label>
                             <div class="col-md-12">
@@ -108,7 +108,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <button class="btn btn-success">Change Password</button>
+                                <button class="btn btn-success" th:text="#{submit.user.changePassord}">Change Password</button>
                             </div>
                         </div>
                     </form>
@@ -116,6 +116,35 @@
             </div>
         </div>
         <!-- Column -->
+           <!-- Column -->
+        <div class="col-lg-4 col-xlg-3 col-md-5">
+            <div class="card">
+                <div class="card-block">
+                    <form action="#" method="POST" class="form-horizontal form-material" th:action="@{/profile/email}" th:object="${passwordForm}">
+                        <div class="form-group">
+                            <label class="col-md-12">Email</label>
+                            <div class="col-md-12">
+                                <input type="text" th:field="*{email}"
+                                       class="form-control form-control-line" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-md-12">Email</label>
+                            <div class="col-md-12">
+                                <input type="email" th:field="*{email}"
+                                       class="form-control form-control-line" name="email" id="email">
+                            </div>
+                            <small class="text-danger-padded" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"  style="color: red"></small>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button class="btn btn-success" th:text="#{submit.user.changeEmail}">Change Email</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Row -->
     <!-- ============================================================== -->
@@ -125,6 +154,15 @@
 <!-- ============================================================== -->
 <!-- End Container fluid  -->
 <!-- ============================================================== -->
+<script layout:fragment="script">
+		$('button').bind('click', function(e) {
+			if (e.currentTarget.name === 'save') {
+				$(e.currentTarget.form).removeAttr('novalidate');
+			} else {
+				$(e.currentTarget.form).attr('novalidate', 'novalidate');
+			}
+		});
+	</script>
 </body>
 
 </html>

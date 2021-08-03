@@ -1,5 +1,6 @@
 package ml.kalanblowSystemManagement.controller.web.ui;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -8,9 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,6 +26,7 @@ import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
+import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
 
 @Controller
 @Slf4j
@@ -59,10 +59,10 @@ public class AdminController {
 			@Valid @ModelAttribute("adminSignupCommand") AdminSignupCommand adminSignupCommand,
 			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-		UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
+		//UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
 		ModelAndView modelAndView = new ModelAndView("signup");
 
-		if (userDto !=null) {
+		if (userService.emailExist(adminSignupCommand.getEmail())) {
 
 			bindingResult.reject("There is already a user registered with the email provided");
 			log.debug("There is already a user registered with the email provided");
@@ -78,7 +78,7 @@ public class AdminController {
 			modelAndView.addObject("successMessage", redirectAttributes);
 			log.debug(" A user registered with the email provided");
 		}
-		return  new ModelAndView("login");
+		return new ModelAndView("login");
 	}
 
 	/**
@@ -90,13 +90,21 @@ public class AdminController {
 
 		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
 
-		//Set<UserDto> userDtos = userService.getAllUsers();
+		// Set<UserDto> userDtos = userService.getAllUsers();
 
 		Page<UserDto> pageInfo = userService.listUserByPage(pageable);
 
-		//modelAndView.addObject("users", userDtos);
+		// modelAndView.addObject("users", userDtos);
 		modelAndView.addObject("users", pageInfo);
 		return modelAndView;
+	}
+
+	@GetMapping("/lastName")
+	public Set<UserDto> findAll(@RequestParam(required = false) String lastName) {
+		if (lastName != null)
+			return userService.findByLastName(lastName);
+		else
+			return userService.getAllUsers();
 	}
 
 	/**
@@ -106,7 +114,9 @@ public class AdminController {
 	private UserDto registerUserAdmin(@Valid AdminSignupCommand adminSignupCommand) {
 		UserDto userDto = new UserDto().setEmail(adminSignupCommand.getEmail())
 				.setFirstName(adminSignupCommand.getFirstName()).setLastName(adminSignupCommand.getLastName())
-				.setPassword(adminSignupCommand.getPassword()).setAdmin(true);
+				.setPassword(adminSignupCommand.getPassword()).setAdmin(true)
+				.setMatchingPassword(adminSignupCommand.getMatchingPassword())
+				.setBirthDate(adminSignupCommand.getBirthDate());
 		UserDto userDto2 = userService.signup(userDto);
 		return userDto2;
 
@@ -136,7 +146,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
 		userDto = userService.findUserById((long) id);
 
-		if (userDto !=null) {
+		if (userDto != null) {
 			userDto = userService.updateUserProfile(userDto);
 			modelAndView.addObject("updateUser", userDto);
 		}
@@ -166,5 +176,11 @@ public class AdminController {
 
 		Set<RoleDto> roleDtos = roleService.getAllRoles();
 		return roleDtos;
+	}
+	
+	@ModelAttribute("dateFormat")
+	public String localeFormat(Locale locale) {
+		return FrenchLocalDateFormater.getPattern(locale);
+		
 	}
 }

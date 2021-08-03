@@ -1,5 +1,6 @@
 package ml.kalanblowSystemManagement.config;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -8,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.LocaleResolver;
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
 
 @Configuration
 public class PageConfiguration implements WebMvcConfigurer {
@@ -33,7 +37,7 @@ public class PageConfiguration implements WebMvcConfigurer {
 		controllerRegistry.addViewController("/profile").setViewName("profile");
 		controllerRegistry.addViewController("/error").setViewName("error");
 		controllerRegistry.addViewController("/users").setViewName("users");
-		 controllerRegistry.addViewController("/editeUser/{id}").setViewName("editUser");
+		controllerRegistry.addViewController("/editeUser/{id}").setViewName("editUser");
 		controllerRegistry.addViewController("/updateUser/{id}").setViewName("updateUser");
 		controllerRegistry.addViewController("/deleteUser/{id}").setViewName("deleteUser");
 	}
@@ -87,5 +91,12 @@ public class PageConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry formatterRegistry) {
+
+		formatterRegistry.addFormatterForFieldType(LocalDate.class, new FrenchLocalDateFormater());
+
 	}
 }

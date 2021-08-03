@@ -1,5 +1,7 @@
 package ml.kalanblowSystemManagement.controller.web.command;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -18,10 +20,16 @@ public class AdminSignupCommand {
 	private String lastName;
 	@NotNull
 	private String password;
+	
+	@NotNull
+	private String matchingPassword;
+	
 	@NotNull
 	private String email;
 
 	@NotNull
 	private String mobileNumber;
+	
+	private LocalDate birthDate;
 
 }

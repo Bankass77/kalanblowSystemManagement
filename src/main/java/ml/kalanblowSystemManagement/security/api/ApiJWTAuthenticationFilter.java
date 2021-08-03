@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -24,6 +23,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.security.SecurityConstants;
+
 
 public class ApiJWTAuthenticationFilter  extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;

@@ -1,6 +1,8 @@
 package ml.kalanblowSystemManagement.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,11 +42,12 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id",nullable = false,unique = true)
+	@Column(name = "user_id", nullable = false, unique = true)
 	private Long id;
 
 	@Column(name = "email", unique = true, updatable = true)
 	@NotNull
+	@Size(min = 4, max = 30)
 	private String email;
 
 	@Column(name = "firstName")
@@ -57,10 +61,16 @@ public class User implements Serializable {
 	@Column(name = "password")
 	@NotNull
 	private String password;
-	
 
-    @Column(name = "mobile_number")
-    private String mobileNumber;
+	@NotNull
+	@Column(name = "matchingPassword")
+	private String matchingPassword;
+
+	@Column(name = "mobile_number")
+	private String mobileNumber;
+
+	@Column(name = "birthDate")
+	private LocalDate birthDate;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DateUtils {
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
 
 	/**
 	 * @return

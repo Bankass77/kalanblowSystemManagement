@@ -1,7 +1,6 @@
 package ml.kalanblowSystemManagement.security;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +21,38 @@ import ml.kalanblowSystemManagement.service.UserService;
 @Transactional
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 
+	private final UserService userService;
+
 	@Autowired
-	private UserService userService;
+	public KalanblowSystemManagementCustomService(UserService userService) {
+		super();
+		this.userService = userService;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<UserDto> userDto = Optional.ofNullable(userService.findUserByEmail(username));
+		UserDto userDto = userService.findUserByEmail(username);
 
-		if (userDto.isPresent()) {
-			Set<GrantedAuthority> authorities = getAuthority(userDto.get().getRoleDtos());
+		if (userDto != null) {
+			Set<GrantedAuthority> authorities = getAuthority(userDto.getRoleDtos());
 
-			return buildUserForAuthentication(userDto.get(), authorities);
+			return buildUserForAuthentication(userDto, authorities);
 		} else {
 			throw new UsernameNotFoundException("User with email" + username + "does not exist");
 		}
 
 	}
 
+	boolean enabled = true;
+	boolean accountNonExpired = true;
+	boolean credentialsNonExpired = true;
+	boolean accountNonLocked = true;
+
 	private UserDetails buildUserForAuthentication(UserDto userDto, Set<GrantedAuthority> authorities) {
 
-		return new User(userDto.getEmail(), userDto.getPassword(), authorities);
+		return new User(userDto.getEmail(), userDto.getPassword(), enabled, accountNonExpired, credentialsNonExpired,
+				accountNonLocked, authorities);
 	}
 
 	private Set<GrantedAuthority> getAuthority(Set<RoleDto> roleDtos) {
