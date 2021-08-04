@@ -1,6 +1,8 @@
 package ml.kalanblowSystemManagement.controller.web.ui;
 
 import java.security.Principal;
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.modelmapper.ModelMapper;
@@ -77,7 +79,7 @@ public class LoginController {
 	}
 
 	protected void showUser(Principal principal, HttpSession session) {
-		UserDto userDto = (UserDto) session.getAttribute("user");
+		Optional<UserDto> userDto = Optional.ofNullable((UserDto) session.getAttribute("user"));
 
 		if (userDto != null) {
 			userDto = userService.findUserByEmail(principal.getName());

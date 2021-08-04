@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.security.api;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import ml.kalanblowSystemManagement.security.SecurityConstants;
-
 
 public class ApiJWTAuthorizationFilter extends BasicAuthenticationFilter {
 	public ApiJWTAuthorizationFilter(AuthenticationManager authManager) {

@@ -7,14 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
 public interface UserService {
 
 	UserDto findUserById(Long id);
 
-	UserDto findUserByEmail(String email);
+	Optional<UserDto> findUserByEmail(String email);
 
 	UserDto changeUserEmail(String newEmail);
 

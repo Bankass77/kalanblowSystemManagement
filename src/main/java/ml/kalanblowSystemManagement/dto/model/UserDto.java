@@ -17,8 +17,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import ml.kalanblowSystemManagement.constraint.EmailContraint;
-import ml.kalanblowSystemManagement.constraint.PasswordConstraint;
+import ml.kalanblowSystemManagement.annotation.EmailContraint;
+import ml.kalanblowSystemManagement.annotation.PasswordConstraintValueMatch;
+import ml.kalanblowSystemManagement.annotation.ValidPassword;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +30,14 @@ import ml.kalanblowSystemManagement.constraint.PasswordConstraint;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+
+@PasswordConstraintValueMatch.List({
+    @PasswordConstraintValueMatch(
+            field = "password",
+            fieldMatch = "matchingPassword",
+            message = "Passwords do not match!"
+    )
+})
 public class UserDto {
 
 	@EmailContraint
@@ -48,7 +58,7 @@ public class UserDto {
 
 	@NotNull
 	@NotEmpty
-	@PasswordConstraint
+	@ValidPassword
 	private String password;
 
 	@ApiModelProperty
@@ -63,7 +73,7 @@ public class UserDto {
 
 	@NotNull
 	@NotEmpty
-	@PasswordConstraint
+	@ValidPassword
 	private String matchingPassword;
 
 	@ApiModelProperty

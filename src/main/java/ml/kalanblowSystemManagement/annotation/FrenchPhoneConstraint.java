@@ -1,4 +1,4 @@
-package ml.kalanblowSystemManagement.constraint;
+package ml.kalanblowSystemManagement.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.security.form;
 
 import javax.servlet.ServletException;
@@ -15,14 +16,16 @@ import io.jsonwebtoken.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
+
 @Slf4j
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
+
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
-		if(authentication !=null) {
+		if (authentication != null) {
 			new SecurityContextLogoutHandler().logout(request, response, authentication);
-			log.info("User" + authentication.getName()+ "is logged out");
+			log.info("User" + authentication.getName() + "is logged out");
 		}
 	}
 }

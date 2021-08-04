@@ -1,4 +1,4 @@
-package ml.kalanblowSystemManagement.constraint;
+package ml.kalanblowSystemManagement.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,20 +8,22 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
+@Email(message="Please provide a valid email address")
 @Documented
-@Constraint(validatedBy =PasswordConstraintValidator.class)
+@Constraint(validatedBy = {})
 @Retention(RetentionPolicy.RUNTIME)
-@Size(min = 8, max = 100)
 @NotEmpty
+@Pattern(regexp = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",message="Invalid Email:le fomat du mail est incorrect")
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
-public @interface PasswordConstraint {
-
-	String message() default "Invalid password:le password doit contenir:chiffre + caractère minuscule + caractère majuscule + ponctuation + symbole";
+public @interface EmailContraint {
+	String message() default "Invalid Email:le fomat du mail est incorrect";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }

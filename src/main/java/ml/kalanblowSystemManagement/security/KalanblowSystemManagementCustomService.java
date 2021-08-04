@@ -1,6 +1,8 @@
+
 package ml.kalanblowSystemManagement.security;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.service.UserService;
 
 @Service
+
 @Transactional
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 
@@ -32,12 +35,12 @@ public class KalanblowSystemManagementCustomService implements UserDetailsServic
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		UserDto userDto = userService.findUserByEmail(username);
+		Optional<UserDto> userDto = userService.findUserByEmail(username);
 
 		if (userDto != null) {
-			Set<GrantedAuthority> authorities = getAuthority(userDto.getRoleDtos());
+			Set<GrantedAuthority> authorities = getAuthority(userDto.get().getRoleDtos());
 
-			return buildUserForAuthentication(userDto, authorities);
+			return buildUserForAuthentication(userDto.get(), authorities);
 		} else {
 			throw new UsernameNotFoundException("User with email" + username + "does not exist");
 		}

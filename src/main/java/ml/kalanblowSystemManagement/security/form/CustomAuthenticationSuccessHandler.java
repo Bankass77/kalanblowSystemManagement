@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.security.form;
 
 import javax.servlet.ServletException;
@@ -19,12 +20,14 @@ import ml.kalanblowSystemManagement.exception.ExceptionType;
 import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
 
 @Component
+
 @Slf4j
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@SneakyThrows
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {

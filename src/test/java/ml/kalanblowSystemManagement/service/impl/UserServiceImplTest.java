@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -23,9 +24,6 @@ import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
 import ml.kalanblowSystemManagement.service.UserService;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 
 @SpringBootTest
@@ -49,7 +47,8 @@ class UserServiceImplTest {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
-	UserService userService;
+	@InjectMocks
+	UserService userService = new UserServiceImpl(userRepository, roleRepository, modelMapper, passwordEncoder);
 
 	@BeforeEach
 	void initUseCase() {
@@ -61,11 +60,11 @@ class UserServiceImplTest {
 	void testSignup() {
 
 		UserDto userDto = new UserDto().setAdmin(true).setEmail("admin2@example.com").setFirstName("admin2")
-				.setLastName("admin2").setPassword(passwordEncoder.encode("Example2021!"))
-				.setMatchingPassword("Example2021!")
+				.setLastName("admin2").setPassword(passwordEncoder.encode("ExaMple2021!"))
+				.setMatchingPassword(passwordEncoder.encode("ExaMple2021!"))
 				.setMobileNumber("0267842387").setBirthDate(LocalDate.now());
 
-		when(userService.signup(any(UserDto.class))).thenReturn(userDto);
+		//(userService.signup(any(UserDto.class))).thenReturn(userDto);
 
 		UserDto saveUser = userService.signup(userDto);
 		assertAll("userDto", () -> assertThat(saveUser.getFullName()).isNotNull());

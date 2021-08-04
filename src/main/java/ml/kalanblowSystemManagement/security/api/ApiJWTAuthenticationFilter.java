@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.security.api;
 
 import java.io.IOException;
@@ -24,51 +25,43 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.security.SecurityConstants;
 
+public class ApiJWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+	private final AuthenticationManager authenticationManager;
 
-public class ApiJWTAuthenticationFilter  extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
+	public ApiJWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+		this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/auth", "POST"));
+	}
 
-    public ApiJWTAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/auth", "POST"));
-    }
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
+			throws AuthenticationException {
+		try {
+			User user = new ObjectMapper().readValue(req.getInputStream(), User.class);
+			return authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword(), new ArrayList<>()));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest req,
-                                                HttpServletResponse res) throws AuthenticationException {
-        try {
-            User user = new ObjectMapper().readValue(req.getInputStream(), User.class);
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            user.getEmail(),
-                            user.getPassword(),
-                            new ArrayList<>())
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
-        if (auth.getPrincipal() != null) {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-            String login = user.getUsername();
-            if (login != null && login.length() > 0) {
-                Claims claims = Jwts.claims().setSubject(login);
-                List<String> roles = new ArrayList<>();
-                user.getAuthorities().stream().forEach(authority -> roles.add(authority.getAuthority()));
-                claims.put("roles", roles);
-                String token = Jwts.builder()
-                        .setClaims(claims)
-                        .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-                        .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
-                        .compact();
-                res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
-            }
-        }
-    }
+	@Override
+	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
+			Authentication auth) throws IOException, ServletException {
+		if (auth.getPrincipal() != null) {
+			org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth
+					.getPrincipal();
+			String login = user.getUsername();
+			if (login != null && login.length() > 0) {
+				Claims claims = Jwts.claims().setSubject(login);
+				List<String> roles = new ArrayList<>();
+				user.getAuthorities().stream().forEach(authority -> roles.add(authority.getAuthority()));
+				claims.put("roles", roles);
+				String token = Jwts.builder().setClaims(claims)
+						.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+						.signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET).compact();
+				res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+			}
+		}
+	}
 }

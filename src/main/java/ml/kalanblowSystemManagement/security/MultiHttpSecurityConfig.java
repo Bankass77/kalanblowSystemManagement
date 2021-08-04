@@ -1,13 +1,11 @@
-package ml.kalanblowSystemManagement.security;
 
-import java.time.LocalDate;
+package ml.kalanblowSystemManagement.security;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,12 +19,12 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthenticationFilter;
 import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
-import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
 
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
 
 	@Configuration
+
 	@Order(1)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
@@ -45,7 +43,7 @@ public class MultiHttpSecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.csrf().disable().antMatcher("/api/**").authorizeRequests().antMatchers("/api/v1/user/**").permitAll()
-					/* .hasAuthority("ADMIN") */.anyRequest().authenticated().and().exceptionHandling()
+					.anyRequest().authenticated().and().exceptionHandling()
 					.authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
 					.addFilter(new ApiJWTAuthenticationFilter(authenticationManager()))
 					.addFilter(new ApiJWTAuthorizationFilter(authenticationManager())).sessionManagement()
@@ -54,6 +52,7 @@ public class MultiHttpSecurityConfig {
 	}
 
 	@Configuration
+
 	@Order(2)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
@@ -93,7 +92,6 @@ public class MultiHttpSecurityConfig {
 					"/actuator/**", "/swagger-ui/index.html", "/swagger-ui/");
 		}
 
-		
 	}
 
 }

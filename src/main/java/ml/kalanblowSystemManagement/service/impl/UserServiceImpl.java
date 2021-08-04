@@ -24,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.exception.EntityType;
 import ml.kalanblowSystemManagement.exception.ExceptionType;
@@ -70,14 +69,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto findUserByEmail(String email) {
+	public Optional<UserDto> findUserByEmail(String email) {
 
-		// Optional<User> user= userRepository.findUserByEmail("admin1@example.com");
-		Optional<User> user = userRepository.findUserByEmail(email);
+		Optional<User> user = userRepository.findByEmail(email);
 
 		if (user.isPresent()) {
 			log.debug("findUserByEmail:{}", user.get());
-			return UserMapper.userToUserDto(user.get());
+			return Optional.ofNullable(UserMapper.userToUserDto(user.get()));
 		}
 
 		throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, "User with this: " + email + "Not found");
@@ -115,7 +113,7 @@ public class UserServiceImpl implements UserService {
 	@SneakyThrows
 	public UserDto signup(UserDto userDto) {
 
-		if (emailExist(userDto.getEmail())) {
+		if (!emailExist(userDto.getEmail())) {
 
 			throw exception(EntityType.USER, ExceptionType.DUPLICATE_ENTITY,
 					"An user with that email adress already exists:" + userDto.getEmail());
@@ -139,7 +137,7 @@ public class UserServiceImpl implements UserService {
 	public UserDto changeUserPassword(String oldPassword, String newPassword) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String actualEmail = authentication.getName();
-		Optional<User> uOptional = userRepository.findUserByEmail(actualEmail);
+		Optional<User> uOptional = userRepository.findByEmail(actualEmail);
 		String unmodifiableMsg = "You cannot change this user's password.";
 		if (uOptional.isPresent()) {
 
@@ -248,11 +246,11 @@ public class UserServiceImpl implements UserService {
 			throw new ResponseStatusException(HttpStatus.CONFLICT,
 					"The user with the given e-mail already exists. Enter a different e-mail");
 		}
-		Optional<User> userByEmail = userRepository.findUserByEmail(newEmail);
+		Optional<User> userByEmail = userRepository.findByEmail(newEmail);
 		userByEmail.ifPresent(u -> {
 			throw exception(EntityType.USER, ExceptionType.DUPLICATE_ENTITY, userByEmail.get().getEmail());
 		});
-		Optional<User> userOpt = userRepository.findUserByEmail(actualEmail);
+		Optional<User> userOpt = userRepository.findByEmail(actualEmail);
 		if (userOpt.isPresent()) {
 			UserDto userDto = UserMapper.userToUserDto(userOpt.get());
 			userDto.setEmail(newEmail);
@@ -272,7 +270,7 @@ public class UserServiceImpl implements UserService {
 	@SneakyThrows
 	public void editUser(UserDto userDto) {
 
-		Optional<User> oldUser = userRepository.findUserByEmail(userDto.getEmail());
+		Optional<User> oldUser = userRepository.findByEmail(userDto.getEmail());
 		if (oldUser.isPresent()) {
 
 			UserMapper.userToUserDto(userRepository.save(oldUser.get()));
@@ -294,7 +292,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean emailExist(String email) {
 
-		return userRepository.findUserByEmail(email) != null;
+		return userRepository.findByEmail(email) != null;
 	}
 
 	@Override

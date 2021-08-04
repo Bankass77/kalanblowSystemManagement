@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.security;
 
 public interface SecurityConstants {
