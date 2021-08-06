@@ -136,7 +136,7 @@ public class DashboardController {
 		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
 		modelAndView.setViewName("admin");
-		return new ModelAndView("redirect:admin/admin");
+		return new ModelAndView("redirect:admin/homePage");
 	}
 
 	@GetMapping(value = { "/access_denied" })
