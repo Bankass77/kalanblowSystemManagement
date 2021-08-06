@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header(~{::title}, ~{})">
-    <title th:text="${status}"></title>
+<title th:text="${status}"></title>
 </head>
 <body>
-    <div>
-        <h1 th:text="#{forbidden}"></h1>
-        <br>
-        <a th:href="@{/kalanblow}" th:text="#{to.kalanblow}"></a>
-    </div>
-    <span sec:authorize="isAuthenticated()">
-        <div th:insert="~{fragments/footer :: footer}"></div>
-    </span>
-    <span sec:authorize="!isAuthenticated()">
-		<a th:text="#{to.main.page}" th:href="@{/}"></a>
+	<div class="container">
+		<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+		<div class="alert alert-danger">
+			<h1>Access Denied</h1>
+			<p>
+				You are not allowed to access this page. Try <a id="loginLink"
+					th:href="@{/login}">logging in</a>
+			</p>
+		</div>
+	</div>
+	<div>
+		<h1 th:text="#{forbidden}"></h1>
+		<br> <a th:href="@{/kalanblow}" th:text="#{to.kalanblow}"></a>
+	</div>
+	<span sec:authorize="isAuthenticated()">
+		<div th:insert="~{fragments/footer :: footer}"></div>
+	</span>
+	<span sec:authorize="!isAuthenticated()"> <a
+		th:text="#{to.main.page}" th:href="@{/}"></a>
 	</span>
 </body>
 </html>

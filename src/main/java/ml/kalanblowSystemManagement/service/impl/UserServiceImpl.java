@@ -1,5 +1,6 @@
 package ml.kalanblowSystemManagement.service.impl;
 
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.maxmind.geoip2.DatabaseReader;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import ml.kalanblowSystemManagement.config.PropertiesConfig;
 import ml.kalanblowSystemManagement.dto.mapper.UserMapper;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.exception.EntityType;
@@ -30,12 +34,14 @@ import ml.kalanblowSystemManagement.exception.ExceptionType;
 import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
 import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.User;
+import ml.kalanblowSystemManagement.model.UserLocation;
 import ml.kalanblowSystemManagement.model.UserRole;
 import ml.kalanblowSystemManagement.repository.RoleRepository;
+import ml.kalanblowSystemManagement.repository.UserLocationRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
 import ml.kalanblowSystemManagement.service.UserService;
 
-@Service(value = "userService")
+@Component(value = "userService")
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -48,14 +54,27 @@ public class UserServiceImpl implements UserService {
 
 	private final BCryptPasswordEncoder passwordEncoder;
 
+	@Qualifier("GeoIPCountry")
+	private final DatabaseReader databaseReader;
+
+	private final UserLocationRepository userLocationRepository;
+
+	
+	private  PropertiesConfig propertiesConfig;
+
+
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper,
-			BCryptPasswordEncoder bCryptPasswordEncoder) {
+			BCryptPasswordEncoder passwordEncoder, DatabaseReader databaseReader,
+			UserLocationRepository userLocationRepository, PropertiesConfig propertiesConfig) {
 		super();
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.modelMapper = modelMapper;
-		this.passwordEncoder = bCryptPasswordEncoder;
+		this.passwordEncoder = passwordEncoder;
+		this.databaseReader = databaseReader;
+		this.userLocationRepository = userLocationRepository;
+		this.propertiesConfig = propertiesConfig;
 	}
 
 	@Override
@@ -224,7 +243,7 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public Set<UserDto> findByLastName(String lastName) {
+	public Set<UserDto> findUserByLastName(String lastName) {
 
 		List<User> users = userRepository.findAllByLastNameContainingIgnoreCaseOrderByIdAsc(lastName);
 		List<UserDto> userDtos = users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
@@ -299,6 +318,38 @@ public class UserServiceImpl implements UserService {
 	public UserDto updateUserProfile(UserDto userDto) {
 
 		return null;
+	}
+
+	/*
+	 * @Override public Page<UserDto> findAllPageableOrderByLastName(Pageable
+	 * pageable) {
+	 * 
+	 * Page<User> uPage = userRepository.findAllPageableOrderByLastName(pageable);
+	 * int totalElements = (int) uPage.getTotalElements(); return new
+	 * PageImpl<>(uPage.stream().map(userDto -> new
+	 * UserDto()).collect(Collectors.toList()), pageable, totalElements); }
+	 */
+
+	@Override
+	public void addUserLocation(User user, String ip) {
+
+		if (!isGeoIpLibEnabled()) {
+			return;
+		}
+
+		try {
+			final InetAddress ipAddress = InetAddress.getByName(ip);
+			final String country = databaseReader.country(ipAddress).getCountry().getName();
+			UserLocation loc = new UserLocation(country, user);
+			loc.setEnabled(true);
+			userLocationRepository.save(loc);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private boolean isGeoIpLibEnabled() {
+		return Boolean.parseBoolean(propertiesConfig.getConfigValue("geo.ip.lib.enabled").toString());
 	}
 
 }

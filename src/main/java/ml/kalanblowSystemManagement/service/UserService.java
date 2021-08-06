@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
 public interface UserService {
@@ -19,7 +20,7 @@ public interface UserService {
 
 	Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName);
 
-	Set<UserDto> findByLastName(String lastName);
+	Set<UserDto> findUserByLastName(String lastName);
 
 	Optional<UserDto> findUserByRoles(UserRole name);
 
@@ -39,7 +40,11 @@ public interface UserService {
 
 	Page<UserDto> listUserByPage(Pageable pageable);
 	
+	//Page<UserDto> findAllPageableOrderByLastName(Pageable pageable);
+	
 	Set<UserDto> findUserbyMobileNumber(String mobileNumber);
+	
 	boolean emailExist(String email);
+	void addUserLocation(User user, String ip);
 
 }

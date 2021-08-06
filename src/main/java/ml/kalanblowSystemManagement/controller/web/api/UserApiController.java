@@ -38,13 +38,9 @@ import ml.kalanblowSystemManagement.service.UserService;
 @Api(value = "KSM-application", description = "Operations pertaining to user management in the KSM application")
 public class UserApiController {
 
+	@Autowired
 	private UserService userService;
 
-	@Autowired
-	public UserApiController(UserService userService) {
-		super();
-		this.userService = userService;
-	}
 
 	@GetMapping(value = "/signup")
 	public Response creatnewUserAdmin() {

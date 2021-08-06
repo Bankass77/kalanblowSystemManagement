@@ -19,8 +19,7 @@ import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.service.UserService;
 
-@Service
-
+@Service(value = "kalanblowSystemManagementCustomService")
 @Transactional
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 

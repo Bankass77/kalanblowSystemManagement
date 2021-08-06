@@ -32,6 +32,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
 
+	//Page<User> findAllPageableOrderByLastName(Pageable pageable);
+
 	List<User> findUserByMobileNumber(String mobileNumber);
 
 }

@@ -1,12 +1,12 @@
 package ml.kalanblowSystemManagement.controller.web.ui;
 
-import java.security.Principal;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,9 +38,9 @@ public class LoginController {
 	@SneakyThrows
 	@GetMapping("kalanblow")
 	public String tokalanblow(ModelAndView modelAndView, HttpSession session) {
-		UserDto userDto = (UserDto) session.getAttribute("user");
+		UserDto userDto = (UserDto) session.getAttribute("userName");
 		User user = new ModelMapper().map(userDto, User.class);
-		modelAndView.addObject("user", user);
+		modelAndView.addObject("userName", user);
 		if (("ADMIN").equals(user.getRoles())) {
 			return "admin/admin";
 		} else if ("STUDENT".equals(user.getRoles())) {
@@ -55,35 +55,35 @@ public class LoginController {
 	}
 
 	@GetMapping("/admin")
-	public String adminIndex(Principal principal, HttpSession session) {
-		showUser(principal, session);
+	public String adminIndex(Authentication authentication, HttpSession session) {
+		showUser( authentication, session);
 		return "redirect:kalanblow";
 	}
 
 	@GetMapping("/student")
-	public String engineerIndex(Principal principal, HttpSession session) {
-		showUser(principal, session);
+	public String engineerIndex(Authentication authentication, HttpSession session) {
+		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
 
 	@GetMapping("/teacher")
-	public String directorIndex(Principal principal, HttpSession session) {
-		showUser(principal, session);
+	public String directorIndex(Authentication authentication, HttpSession session) {
+		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
 
 	@GetMapping("/parent")
-	public String workerIndex(Principal principal, HttpSession session) {
-		showUser(principal, session);
+	public String workerIndex(Authentication authentication, HttpSession session) {
+		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
 
-	protected void showUser(Principal principal, HttpSession session) {
-		Optional<UserDto> userDto = Optional.ofNullable((UserDto) session.getAttribute("user"));
+	protected void showUser(Authentication authentication, HttpSession session) {
+		Optional<UserDto> userDto = Optional.ofNullable((UserDto) session.getAttribute("userName"));
 
-		if (userDto != null) {
-			userDto = userService.findUserByEmail(principal.getName());
-			session.setAttribute("user", userDto);
+		if (userDto.isPresent()) {
+			userDto = userService.findUserByEmail( authentication.getName());
+			session.setAttribute("userName", userDto);
 		}
 	}
 

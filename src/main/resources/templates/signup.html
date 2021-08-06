@@ -19,7 +19,7 @@
 </head>
 <body>
 
-	<div class="main">
+	<div class="main" layout:fragment="content">
 		<!-- Sign up form -->
 		<section class="signup">
 			<div class="container">
@@ -50,15 +50,16 @@
 							<div class="form-group">
 								<label for="email"><i class="zmdi zmdi-email"></i></label> <input
 									type="email" th:field="*{email}" name="email" id="email"
-									placeholder="Your Email" required="required" value="a"/> <small
+									placeholder="Your Email" required="required" value="a" /> <small
 									class="text-danger" th:if="${#fields.hasErrors('email')}"
 									th:errors="*{email}" style="color: red"></small>
 							</div>
 							<div class="form-group">
 								<label for="password"><i class="zmdi zmdi-lock"></i></label> <input
 									type="password" th:field="*{password}" name="password"
-									id="password" placeholder="Password" required="required" autocomplete="new-password"/> <small
-									class="text-danger" th:if="${#fields.hasErrors('password')}"
+									id="password" placeholder="Password" required="required"
+									autocomplete="new-password" /> <small class="text-danger"
+									th:if="${#fields.hasErrors('password')}"
 									th:errors="*{password}" style="color: red"></small>
 							</div>
 
@@ -66,8 +67,8 @@
 								<label for="matchingPassword"><i class="zmdi zmdi-lock"></i></label>
 								<input type="password" th:field="*{matchingPassword}"
 									name="matchingPassword" id="matchingPassword"
-									placeholder="confirm Password" required="required"  autocomplete="new-password"/> <small
-									class="text-danger"
+									placeholder="confirm Password" required="required"
+									autocomplete="new-password" /> <small class="text-danger"
 									th:if="${#fields.hasErrors('matchingPassword')}"
 									th:errors="*{matchingPassword}" style="color: red"></small>
 							</div>
@@ -106,7 +107,7 @@
 						<figure>
 							<img src="/auth/images/signup-image.jpg" alt="sing up image">
 						</figure>
-						 <a href="/login" class="signup-image-link">I am already member</a>
+						<a href="/login" class="signup-image-link">I am already member</a>
 					</div>
 				</div>
 			</div>
@@ -115,6 +116,6 @@
 
 	<!-- JS -->
 	<script src="/auth/vendor/jquery/jquery.min.js"></script>
-	
+
 </body>
 </html>

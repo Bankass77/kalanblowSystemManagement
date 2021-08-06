@@ -1,23 +1,75 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title th:utext="#{label.pages.home.title}"></title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Favicon icon -->
 <link rel="icon" type="image/png" href="favicon.png">
+
 <!-- Font Icon -->
 <link rel="stylesheet"
 	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
+
 <!-- Main css -->
 <link rel="stylesheet" href="/auth/css/style.css">
-<script src="js/wow/wow.min.js"></script>
+<link rel="stylesheet" href="/dashboard/html/css/style.css">
+<!-- Bootstrap Core CSS -->
+<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- chartist CSS -->
+<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
+	rel="stylesheet">
+<link
+	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
+	rel="stylesheet">
+<link
+	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
+	rel="stylesheet">
+<!--This page css - Morris CSS -->
+<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
+	rel="stylesheet">
+<!-- Custom CSS -->
+<link href="/dashboard/html/css/style.css" rel="stylesheet">
+<!-- You can change the theme colors from here -->
+<link href="/dashboard/html/css/colors/blue.css" id="theme"
+	rel="stylesheet">
+<!-- Material icons and fonts -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
+<script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
+<script src="/dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="/dashboard/html/js/jquery.slimscroll.js"></script>
+<!--Wave Effects -->
+<script src="/dashboard/html/js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="/dashboard/html/js/sidebarmenu.js"></script>
+<!--stickey kit -->
+<script
+	src="/dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<!--Custom JavaScript -->
+<script src="/dashboard/html/js/custom.min.js"></script>
+<!-- chartist chart -->
+<script src="/dashboard/assets/plugins/chartist-js/dist/chartist.min.js"></script>
+<script
+	src="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
+<!--c3 JavaScript -->
+<script src="/dashboard/assets/plugins/d3/d3.min.js"></script>
+<script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
+<!-- Chart JS -->
+<script src="/dashboard/html/js/dashboard1.js"></script>
+<script src="static/dashboard/html/js/wow/wow.min.js"></script>
 <script>
-        new WOW().init();
-    </script>
+	new WOW().init();
+</script>
 </head>
 
 <body class="bg-warning">
@@ -27,45 +79,20 @@
 		<!-- ============================================================== -->
 		<!-- Bread crumb and right sidebar toggle -->
 		<!-- ============================================================== -->
-		<div class="row page-titles">
-			<div class="col-md-5 col-8 align-self-center">
-				<h3 class="text-themecolor">Dashboard</h3>
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="home">Home</a></li>
-					<li class="breadcrumb-item active">Dashboard</li>
-				</ol>
-			</div>
-
-		</div>
-		<div>
-			<p sec:authorize="!hasAuthority('WRITE_PRIVILEGE')"
-				th:utext="#{message.unauth}">unauth</p>
-
-			<h1 sec:authorize="hasAuthority('WRITE_PRIVILEGE')"
-				th:utext="#{label.pages.admin.message}">admin</h1>
-		</div>
-		<button class="wow fadeInLeft bigButton">
-			<div th:insert="fragments/footer.html :: footer"></div>
-		</button>
-		<button class="wow fadeInRight bigButton">
-			<a th:text="#{users.list}" th:href="@{/users}"></a>
-		</button>
-		<button class="wow fadeInLeft bigButton">
-			<a th:text="#{users.create}" th:href="@{/signup}"></a>
-		</button>
-		<button class="wow fadeInRight bigButton">
-			<a th:text="#{edite.button.label} + ''"
-				th:href="@{/editUser/{id}(id=${user.id})}"></a>
-		</button>
-		<button class="wow fadeInRight bigButton">
-			<a th:text="#{update.button.label} + ''"
-				th:href="@{/updateUser/{id}(id=${user.id})}"></a>
-		</button>
-		<button class="wow fadeInRight bigButton">
-			<a th:text="#{delete.button.label} + ''"
-				th:href="@{/deleteUser/{id}(id=${user.id})}"></a>
-		</button>
-
+		<h1 class="h1">Bienvenue [[${#httpServletRequest.remoteUser}]]!</h1>
+		<h2 class="h2">Vous êtes connecté avec succès en tant qu'Admin !</h2>
+		<div sec:authorize="isAuthenticated()">N1 : Ce contenu n'est
+			montré qu'aux utilisateurs authentifiés.</div>
+		<div sec:authorize="hasAnyAuthority('ADMIN')">N2 : Ce contenu
+			n'est montré qu'aux administrateurs.</div>
+		<p>
+			Cliquez sur<a href="/users" class="">Ici</a>pour montrer tous les
+			enregistrements utilisateurs.
+		</p>
+		<form action="/logout" method="post">
+			<input type="submit" value="Sign Out"
+				class="input-group .form-control" />
+		</form>
 	</div>
 </body>
 </html>

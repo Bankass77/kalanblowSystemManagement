@@ -40,15 +40,23 @@ public class PageConfiguration implements WebMvcConfigurer {
 		controllerRegistry.addViewController("/editeUser/{id}").setViewName("editUser");
 		controllerRegistry.addViewController("/updateUser/{id}").setViewName("updateUser");
 		controllerRegistry.addViewController("/deleteUser/{id}").setViewName("deleteUser");
+		controllerRegistry.addViewController("/adminHome").setViewName("adminHomePage");
+		controllerRegistry.addViewController("/profile/email").setViewName("changeEmail");
+		controllerRegistry.addViewController("/password").setViewName("changePassword");
+		controllerRegistry.addViewController("/access_denied").setViewName("accessDenied");
+		controllerRegistry.addViewController("/kalanblow").setViewName("kalanblow");
+		controllerRegistry.addViewController("/admin").setViewName("admin");
+		controllerRegistry.addViewController("/teacher").setViewName("teacher");
+		controllerRegistry.addViewController("/student").setViewName("student");
+		controllerRegistry.addViewController("/parent").setViewName("parent");
 	}
 
-	@Bean
-	public FilterRegistrationBean hiddenHttpMethodFilter() {
-		FilterRegistrationBean filterRegBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());
-		filterRegBean.setUrlPatterns(Arrays.asList("/*"));
-		return filterRegBean;
-	}
-
+	
+	  @Bean public FilterRegistrationBean hiddenHttpMethodFilter() {
+	  FilterRegistrationBean filterRegBean = new FilterRegistrationBean(new
+	  HiddenHttpMethodFilter()); filterRegBean.setUrlPatterns(Arrays.asList("/*"));
+	  return filterRegBean; }
+	 
 	@Bean
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -99,4 +107,6 @@ public class PageConfiguration implements WebMvcConfigurer {
 		formatterRegistry.addFormatterForFieldType(LocalDate.class, new FrenchLocalDateFormater());
 
 	}
+	
+
 }

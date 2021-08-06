@@ -44,22 +44,26 @@ public class FormBasedJWTAuthenticationFilter extends UsernamePasswordAuthentica
 		return null;
 	}
 
-	@Override protected void successfulAuthentication(HttpServletRequest req,
-  HttpServletResponse res, FilterChain chain, Authentication auth) throws
-  IOException, ServletException { if (auth.getPrincipal() != null) { 
-	  // The  Auth Mechanism stores the Username the Principal.
-	  // The username is storedin the Subject field of the Token
-  org.springframework.security.core.userdetails.User user =
-  (org.springframework.security.core.userdetails.User) auth .getPrincipal();
-  String login = user.getUsername(); if (login != null && login.length() > 0) {
-  Claims claims = Jwts.claims().setSubject(login); List<String> roles = new
-  ArrayList<>(); user.getAuthorities().stream().forEach(authority ->
-  roles.add(authority.getAuthority()));
-  
-  claims.put("roles", roles); String token = Jwts.builder().setClaims(claims)
-  .setExpiration(new Date(System.currentTimeMillis() +
-  SecurityConstants.EXPIRATION_TIME)) .signWith(SignatureAlgorithm.HS512,
-  SecurityConstants.SECRET.getBytes()).compact();
-  res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX
-  + token); } } }
+	@Override
+	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
+			Authentication auth) throws IOException, ServletException {
+		if (auth.getPrincipal() != null) {
+			// The Auth Mechanism stores the Username the Principal.
+			// The username is storedin the Subject field of the Token
+			org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth
+					.getPrincipal();
+			String login = user.getUsername();
+			if (login != null && login.length() > 0) {
+				Claims claims = Jwts.claims().setSubject(login);
+				List<String> roles = new ArrayList<>();
+				user.getAuthorities().stream().forEach(authority -> roles.add(authority.getAuthority()));
+
+				claims.put("roles", roles);
+				String token = Jwts.builder().setClaims(claims)
+						.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+						.signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes()).compact();
+				res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+			}
+		}
+	}
 }

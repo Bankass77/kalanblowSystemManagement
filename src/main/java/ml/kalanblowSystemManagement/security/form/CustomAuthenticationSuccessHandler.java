@@ -4,30 +4,41 @@ package ml.kalanblowSystemManagement.security.form;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.io.IOException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import ml.kalanblowSystemManagement.config.PropertiesConfig;
 import ml.kalanblowSystemManagement.exception.EntityType;
 import ml.kalanblowSystemManagement.exception.ExceptionType;
 import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
+import ml.kalanblowSystemManagement.model.User;
+import ml.kalanblowSystemManagement.service.impl.DeviceService;
 
 @Component
-
 @Slf4j
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-	@SneakyThrows
+	@Autowired
+	private DeviceService deviceService;
 
+	@Autowired
+	PropertiesConfig propertiesConfig;
+
+	@SneakyThrows
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -36,12 +47,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		for (GrantedAuthority auth : authentication.getAuthorities()) {
 			log.debug(auth.getAuthority());
 			if ("ADMIN".equals(auth.getAuthority())) {
-				redirectStrategy.sendRedirect(request, response, "/dashboard");
+				redirectStrategy.sendRedirect(request, response, "/adminHome");
 				log.info("admin" + auth.getAuthority() + "is logged in");
 				break;
 			} else if ("STUDENT".equals(auth.getAuthority())) {
 
-				redirectStrategy.sendRedirect(request, response, "/dashboard");
+				redirectStrategy.sendRedirect(request, response, "/home");
 				log.info("student" + auth.getAuthority() + "is logged in");
 				break;
 
@@ -59,6 +70,35 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 				throw exception(EntityType.ROLE, ExceptionType.ENTITY_NOT_FOUND, "Role unknow");
 			}
 		}
+		clearAuthenticatrionAttributes(request);
+		loginNotification(authentication, request);
+	}
+
+	private void loginNotification(Authentication authentication, HttpServletRequest req) {
+
+		try {
+			if (authentication.getPrincipal() instanceof User && isGeoIpLibEnabled()) {
+				deviceService.verifyDevice((User) authentication.getPrincipal(), req);
+			}
+		} catch (Exception e) {
+			log.error("An error occured while verify device or location", e);
+
+			throw exception(EntityType.DEVICE, ExceptionType.ENTITY_EXCEPTION, e.getMessage());
+		}
+	}
+
+	private boolean isGeoIpLibEnabled() {
+
+		return Boolean.parseBoolean(propertiesConfig.getConfigValue("geao.ip.lib.enabled").toString());
+	}
+
+	protected void clearAuthenticatrionAttributes(final HttpServletRequest req) {
+
+		final HttpSession session = req.getSession(false);
+		if (session == null) {
+			return;
+		}
+		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 	}
 
 	private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {

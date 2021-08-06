@@ -3,12 +3,17 @@ package ml.kalanblowSystemManagement.controller.web.ui;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,13 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
 import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
 
 @Controller
 @Slf4j
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
 	@Autowired
@@ -59,7 +64,7 @@ public class AdminController {
 			@Valid @ModelAttribute("adminSignupCommand") AdminSignupCommand adminSignupCommand,
 			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-		//UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
+		// UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
 		ModelAndView modelAndView = new ModelAndView("signup");
 
 		if (userService.emailExist(adminSignupCommand.getEmail())) {
@@ -90,19 +95,39 @@ public class AdminController {
 
 		ModelAndView modelAndView = new ModelAndView("admin/allUsers");
 
-		// Set<UserDto> userDtos = userService.getAllUsers();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		Optional<UserDto> userDto = userService.findUserByEmail(authentication.getName());
 
 		Page<UserDto> pageInfo = userService.listUserByPage(pageable);
 
+		final Page<User> uPage = pageInfo.map(new Function<UserDto, User>() {
+
+			@Override
+			public User apply(UserDto userDto) {
+
+				User user = new User().setBirthDate(userDto.getBirthDate()).setEmail(userDto.getEmail())
+						.setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
+						.setMatchingPassword(userDto.getMatchingPassword()).setMobileNumber(userDto.getMobileNumber())
+						.setPassword(userDto.getPassword())
+						.setRoles(userDto.getRoleDtos().stream()
+								.map(role -> new ml.kalanblowSystemManagement.model.Role())
+								.collect(Collectors.toSet()));
+				return user;
+			}
+		});
+
 		// modelAndView.addObject("users", userDtos);
-		modelAndView.addObject("users", pageInfo);
+		modelAndView.addObject("users", uPage);
+		modelAndView.addObject("userName", userDto.get());
+		modelAndView.addObject("authorithy", userDto.get().getRoleDtos());
 		return modelAndView;
 	}
 
 	@GetMapping("/lastName")
-	public Set<UserDto> findAll(@RequestParam(required = false) String lastName) {
+	public Set<UserDto> findAllUserByLastName(String lastName) {
 		if (lastName != null)
-			return userService.findByLastName(lastName);
+			return userService.findUserByLastName(lastName);
 		else
 			return userService.getAllUsers();
 	}
@@ -177,10 +202,10 @@ public class AdminController {
 		Set<RoleDto> roleDtos = roleService.getAllRoles();
 		return roleDtos;
 	}
-	
+
 	@ModelAttribute("dateFormat")
 	public String localeFormat(Locale locale) {
 		return FrenchLocalDateFormater.getPattern(locale);
-		
+
 	}
 }

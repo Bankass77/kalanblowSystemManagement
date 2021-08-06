@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.service.RoleService;
 
-@Service(value = "roleService")
+@Component(value = "roleService")
 @Transactional
 @Slf4j
 public class RoleServiceImpl implements RoleService {

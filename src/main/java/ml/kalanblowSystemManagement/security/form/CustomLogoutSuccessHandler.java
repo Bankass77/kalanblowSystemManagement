@@ -16,7 +16,6 @@ import io.jsonwebtoken.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-
 @Slf4j
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 

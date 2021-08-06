@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 <title>Header</title>
@@ -75,10 +76,12 @@
 						href="profile" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false"><img
 							src="/dashboard/assets/images/users/1.jpg" alt="user"
-							class="profile-pic m-r-10" th:inline="text" />[[${userName}]]</a></li>
+							class="profile-pic m-r-10" th:inline="text" />>Bienvenue [[${#httpServletRequest.remoteUser}]]!</a></li>
 				</ul>
 			</div>
 			<div th:insert="fragments/lang.html :: languague"></div>
+			  <div sec:authorize="isAuthenticated()">
+      Authenticated as <span sec:authentication="name"></span></div>
 		</nav>
 	</header>
 	<script type="text/javascript">

@@ -2,7 +2,8 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
 <head>
-
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:text="#{label.pages.home.title}">home</title>
 </head>
 <body>
@@ -18,9 +19,9 @@
 </nav>
 
     <div class="container">
-	    <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:text="#{label.pages.user.message}">user</div>
+	    <div sec:authorize="hasAuthority('ADMIN')" th:text="#{label.pages.user.message}">user</div>
 	
-	    <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:text="#{label.pages.admin.message}"></div>
+	    <div sec:authorize="hasAuthority('ADMIN')" th:text="#{label.pages.admin.message}"></div>
 	     
 	    <p th:if="${param.user} != null" th:text="${param.user[0]}">user</p>
 	     
