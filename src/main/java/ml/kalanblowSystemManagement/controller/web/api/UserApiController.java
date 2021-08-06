@@ -33,7 +33,10 @@ import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.service.UserService;
 
 @RestController
-@RequestMapping(value="/api/v1/user",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/user"/*
+										 * ,consumes = MediaType.APPLICATION_JSON_VALUE, produces =
+										 * MediaType.APPLICATION_JSON_VALUE
+										 */)
 @Slf4j
 @Api(value = "KSM-application", description = "Operations pertaining to user management in the KSM application")
 public class UserApiController {

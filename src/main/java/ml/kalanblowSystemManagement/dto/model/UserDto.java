@@ -48,32 +48,34 @@ public class UserDto {
 
 	@NotNull
 	@NotEmpty
-	@ApiModelProperty
+	@ApiModelProperty(example = "First Name")
 	private String firstName;
 
 	@NotNull
 	@NotEmpty
-	@ApiModelProperty
+	@ApiModelProperty(example = "Last Name")
 	private String lastName;
 
 	@NotNull
 	@NotEmpty
 	@ValidPassword
+    @ApiModelProperty(example = "password")
 	private String password;
 
-	@ApiModelProperty
+	@ApiModelProperty(example = "isAdmin")
 	private boolean isAdmin;
 
-	@ApiModelProperty
+	@ApiModelProperty(example = "Mobile Number")
 	private String mobileNumber;
 
 	@NotNull
-	@ApiModelProperty
+	@ApiModelProperty(example = "birth Date")
 	private LocalDate birthDate;
 
 	@NotNull
 	@NotEmpty
 	@ValidPassword
+    @ApiModelProperty(example = "matchingPassword")
 	private String matchingPassword;
 
 	@ApiModelProperty

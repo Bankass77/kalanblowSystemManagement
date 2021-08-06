@@ -47,7 +47,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		for (GrantedAuthority auth : authentication.getAuthorities()) {
 			log.debug(auth.getAuthority());
 			if ("ADMIN".equals(auth.getAuthority())) {
-				redirectStrategy.sendRedirect(request, response, "/adminHome");
+				redirectStrategy.sendRedirect(request, response, "/dasboard");
 				log.info("admin" + auth.getAuthority() + "is logged in");
 				break;
 			} else if ("STUDENT".equals(auth.getAuthority())) {

@@ -120,23 +120,23 @@ public class DashboardController {
 
 	@GetMapping(value = "/home")
 	public ModelAndView home() {
-		ModelAndView modelAndView = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView("redirect:/dashboard");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("userName", "Welcome " + userDto.get().getFullName());
-		return new ModelAndView("redirect:dashboard");
+		return modelAndView;
 	}
 
 	@GetMapping(value = "/adminHome")
 	public ModelAndView adminHomePage() {
-		ModelAndView modelAndView = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView("redirect:/admin/homePage");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("currentUser", auth.getName());
 		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
 		modelAndView.setViewName("admin");
-		return new ModelAndView("redirect:admin/homePage");
+		return modelAndView;
 	}
 
 	@GetMapping(value = { "/access_denied" })

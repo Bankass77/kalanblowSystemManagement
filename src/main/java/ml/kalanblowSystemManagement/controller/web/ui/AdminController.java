@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +45,9 @@ public class AdminController {
 	@Autowired
 	private RoleService roleService;
 
+	@Autowired
+	private BCryptPasswordEncoder passworEncoder;
+	
 	@GetMapping(value = "/signup")
 	public ModelAndView signup() {
 
@@ -67,7 +71,7 @@ public class AdminController {
 		// UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
 		ModelAndView modelAndView = new ModelAndView("signup");
 
-		if (userService.emailExist(adminSignupCommand.getEmail())) {
+		if (!userService.emailExist(adminSignupCommand.getEmail())) {
 
 			bindingResult.reject("There is already a user registered with the email provided");
 			log.debug("There is already a user registered with the email provided");
@@ -108,8 +112,8 @@ public class AdminController {
 
 				User user = new User().setBirthDate(userDto.getBirthDate()).setEmail(userDto.getEmail())
 						.setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
-						.setMatchingPassword(userDto.getMatchingPassword()).setMobileNumber(userDto.getMobileNumber())
-						.setPassword(userDto.getPassword())
+						.setMatchingPassword(passworEncoder.encode(userDto.getMatchingPassword())).setMobileNumber(userDto.getMobileNumber())
+						.setPassword(passworEncoder.encode(userDto.getPassword()))
 						.setRoles(userDto.getRoleDtos().stream()
 								.map(role -> new ml.kalanblowSystemManagement.model.Role())
 								.collect(Collectors.toSet()));
@@ -139,8 +143,9 @@ public class AdminController {
 	private UserDto registerUserAdmin(@Valid AdminSignupCommand adminSignupCommand) {
 		UserDto userDto = new UserDto().setEmail(adminSignupCommand.getEmail())
 				.setFirstName(adminSignupCommand.getFirstName()).setLastName(adminSignupCommand.getLastName())
-				.setPassword(adminSignupCommand.getPassword()).setAdmin(true)
-				.setMatchingPassword(adminSignupCommand.getMatchingPassword())
+				.setPassword(passworEncoder.encode(adminSignupCommand.getPassword())).setAdmin(true)
+				.setMatchingPassword(passworEncoder.encode(adminSignupCommand.getMatchingPassword()))
+				.setMobileNumber(adminSignupCommand.getMobileNumber())
 				.setBirthDate(adminSignupCommand.getBirthDate());
 		UserDto userDto2 = userService.signup(userDto);
 		return userDto2;

@@ -61,19 +61,19 @@ public class LoginController {
 	}
 
 	@GetMapping("/student")
-	public String engineerIndex(Authentication authentication, HttpSession session) {
+	public String studentIndex(Authentication authentication, HttpSession session) {
 		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
 
 	@GetMapping("/teacher")
-	public String directorIndex(Authentication authentication, HttpSession session) {
+	public String teachearIndex(Authentication authentication, HttpSession session) {
 		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
 
 	@GetMapping("/parent")
-	public String workerIndex(Authentication authentication, HttpSession session) {
+	public String parentIndex(Authentication authentication, HttpSession session) {
 		showUser( authentication, session);
 		return "redirect:/kalanblow";
 	}
