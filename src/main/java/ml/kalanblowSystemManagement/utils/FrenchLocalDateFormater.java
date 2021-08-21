@@ -10,7 +10,7 @@ import org.springframework.format.Formatter;
 public class FrenchLocalDateFormater implements Formatter<LocalDate> {
 
 	public static final String FRENCH_PATTER = "dd/MM/yyyy";
-	public static final String NORMAL_PATTERN = "dd/MM/yyyy";
+	public static final String NORMAL_PATTERN = "yyyy/MM/dd";
 
 	@Override
 	public String print(LocalDate object, Locale locale) {

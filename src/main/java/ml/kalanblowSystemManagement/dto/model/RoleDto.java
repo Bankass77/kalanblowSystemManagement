@@ -20,6 +20,8 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleDto {
 	
+	
+	private Long id;
 	private String userRoleName;
 
 }

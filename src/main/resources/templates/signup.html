@@ -30,6 +30,17 @@
 							id="register-form" th:action="@{/signup}"
 							th:object="${adminSignupCommand}">
 							<div class="form-group">
+								<label th:for="gender"><i class="zmdi zmdi-male-female"></i>Select
+									gender</label> <br> <select name="gender" id="gender"
+									th:field="*{gender}">
+									<option value="MALE" th:selected="${gender eq 'M'}">Male</option>
+									<option value="FEMALE" th:selected="${gender eq 'F'}">Female</option>
+								</select> <small class="text-danger-padded"
+									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small><small
+									class="text-danger-padded"
+									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small>
+							</div>
+							<div class="form-group">
 								<label for="firstName"><i
 									class="zmdi zmdi-account material-icons-name"></i></label> <input
 									type="text" th:field="*{firstName}" name="firstName"
@@ -85,9 +96,40 @@
 								<label for="birthDate"><i class="zmdi zmdi-calendar"></i></label>
 								<input type="text" th:field="*{birthDate}" name="birthDate"
 									id="birthDate" th:placeholder="${dateFormat}"
-									required="required" /> <small class="text-danger"
-									th:if="${#fields.hasErrors('birthDate')}"
+									required="required"
+									th:value="${#temporals.format(birthDate, 'dd/MM/yyyy')}" /> <small
+									class="text-danger" th:if="${#fields.hasErrors('birthDate')}"
 									th:errors="*{birthDate}" style="color: red"></small>
+							</div>
+							<div class="form-group">
+								<label for="createDate"><i class="zmdi zmdi-calendar"></i></label>
+								<input type="date" class="form-control" th:id="createDatess"
+									th:field="*{createdDate}" name="createDate"
+									th:value="${#temporals.format(createdDate)}" /> <small
+									class="text-danger-padded"
+									th:if="${#fields.hasErrors('createdDate')}"
+									th:errors="*{createdDate}">createDate Error</small>
+							</div>
+							<div>
+								<label for="lastModificationDate"><i
+									class="zmdi zmdi-calendar"></i></label> <input type="date"
+									class="form-control" th:id="lastModificationDate"
+									th:field="*{lastModifiedDate}" name="lastModificationDate"
+									th:value="${#temporals.format(lastModificationDate)}" /> <small
+									class="text-danger-padded"
+									th:if="${#fields.hasErrors('lastModifiedDate')}"
+									th:errors="*{lastModifiedDate}">createDate Error</small>
+							</div>
+							<div class="form-group ">
+								<label class="" for="role">Roles:</label><br />
+								<div class="">
+
+									<select name="role" id="role">
+										<option th:each="listRoles: ${roles}"
+											th:value="${listRoles.id}"
+											th:text="${listRoles.userRoleName}">
+									</select>
+								</div>
 							</div>
 
 							<div class="form-group">
@@ -112,6 +154,9 @@
 				</div>
 			</div>
 		</section>
+		<div class="text-xs mt-2 text-gray-500 text-center">
+			<span th:text="${version}"></span>
+		</div>
 	</div>
 
 	<!-- JS -->

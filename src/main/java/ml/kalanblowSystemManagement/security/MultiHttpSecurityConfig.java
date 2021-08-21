@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -34,8 +35,10 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthenticationFilter;
 import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
+//import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
 
 @EnableWebSecurity
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class MultiHttpSecurityConfig {
 
 	@Configuration
@@ -71,6 +74,7 @@ public class MultiHttpSecurityConfig {
 			http.httpBasic();
 
 		}
+
 	}
 
 	@Configuration
@@ -83,14 +87,20 @@ public class MultiHttpSecurityConfig {
 
 		private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+		//private final RememberMeServices rememberMeServices;
+
 		@Autowired
 		public FormLoginWebSecurityConfigurerAdapter(BCryptPasswordEncoder passwordEncoder,
 				@Lazy KalanblowSystemManagementCustomService customService,
-				CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+				CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler/*
+																						 * , RememberMeServices
+																						 * rememberMeServices
+																						 */) {
 			super();
 			this.passwordEncoder = passwordEncoder;
 			this.customService = customService;
 			this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+			//this.rememberMeServices = rememberMeServices;
 		}
 
 		@Override
@@ -109,7 +119,11 @@ public class MultiHttpSecurityConfig {
 					.permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessHandler(new CustomLogoutSuccessHandler()).deleteCookies("JSESSIONID")
 					.logoutSuccessUrl("/").and().exceptionHandling();
-
+			/*
+			 * http.rememberMe().key("remember-me").useSecureCookie(true).
+			 * tokenValiditySeconds(60 * 60 * 24 * 10)
+			 * .rememberMeServices(rememberMeServices);
+			 */ // 10 days
 		}
 
 		@Override
@@ -140,7 +154,7 @@ public class MultiHttpSecurityConfig {
 			expressionHandler.setRoleHierarchy(roleHierarchy());
 			return expressionHandler;
 		}
-
+		
 	}
 
 }

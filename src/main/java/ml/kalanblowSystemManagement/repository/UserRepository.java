@@ -6,13 +6,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
 @Repository(value = "userRepository")
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>{
 
 	Optional<User> findUserById(Long id);
 
@@ -31,8 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	List<User> findAllByOrderByIdAsc();
 
 	List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
-
-	//Page<User> findAllPageableOrderByLastName(Pageable pageable);
 
 	List<User> findUserByMobileNumber(String mobileNumber);
 

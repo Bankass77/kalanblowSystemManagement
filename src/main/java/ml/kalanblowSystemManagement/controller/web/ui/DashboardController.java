@@ -120,7 +120,7 @@ public class DashboardController {
 
 	@GetMapping(value = "/home")
 	public ModelAndView home() {
-		ModelAndView modelAndView = new ModelAndView("redirect:/dashboard");
+		ModelAndView modelAndView = new ModelAndView("redirect:dashboard");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("userName", "Welcome " + userDto.get().getFullName());
@@ -129,13 +129,26 @@ public class DashboardController {
 
 	@GetMapping(value = "/adminHome")
 	public ModelAndView adminHomePage() {
-		ModelAndView modelAndView = new ModelAndView("redirect:/admin/homePage");
+		ModelAndView modelAndView = new ModelAndView("admin/homepage");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("currentUser", auth.getName());
 		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
-		modelAndView.setViewName("admin");
+	
+		return modelAndView;
+	}
+
+	
+	@GetMapping(value = "/staffHomePage")
+	public ModelAndView adminPage() {
+		ModelAndView modelAndView = new ModelAndView("admin/admin");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("currentUser", auth.getName());
+		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
+		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur user!");
+	
 		return modelAndView;
 	}
 
@@ -145,4 +158,10 @@ public class DashboardController {
 		modelAndView.setViewName("error/403error");
 		return modelAndView;
 	}
+	
+	@GetMapping("/search")
+	public String search() {
+		return "search";
+	}
+
 }

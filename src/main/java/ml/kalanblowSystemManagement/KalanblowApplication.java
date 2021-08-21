@@ -1,36 +1,49 @@
 package ml.kalanblowSystemManagement;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
+
 import lombok.extern.slf4j.Slf4j;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
-import ml.kalanblowSystemManagement.model.Role;
-import ml.kalanblowSystemManagement.model.User;
-import ml.kalanblowSystemManagement.model.UserRole;
-import ml.kalanblowSystemManagement.repository.RoleRepository;
-import ml.kalanblowSystemManagement.repository.UserRepository;
-import ml.kalanblowSystemManagement.service.UserService;
 
 @SpringBootApplication
 @Slf4j
 public class KalanblowApplication {
+	
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(KalanblowApplication.class, args);
-	}
 
+
+		
+	}
+	@Autowired
+	private WebApplicationContext webAppContext;
+	private final static LocalDateTime startDateTime = LocalDateTime.now();
+	private final static DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("EEE, d MMM yyyy h:mm a");
+
+	@RequestMapping("/server")
+	@ResponseBody
+	public String infoTagServer(){
+	return new StringJoiner("<br>")
+	.add("-------------------------------------")
+	.add(" Server: "+
+	webAppContext.getServletContext().getServerInfo())
+	.add(" Start date: "+
+	startDateTime.format(DT_FORMATTER))
+	.add(" Version: " +
+	webAppContext.getBean("webAppVersion")).add("--------------------------------------")
+	.toString();
+	}
+	
 	/*
 	 * @Autowired private BCryptPasswordEncoder passwordEncoder;
 	 * 

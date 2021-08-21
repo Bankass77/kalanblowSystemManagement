@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head th:fragment="header">
+<meta charset="utf-8" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/style.css"
+	th:href="@{/resources/css/style.css}" />
+<title th:text="#{user.del}">Title</title>
+</head>
+<body>
+	<div th:insert="fragments/sidebar :: sidebar"></div>
+
+	<div class="container-fluid" th:insert="fragments/navigation"></div>
+<div>
+	<h1 data-th-text="#{user.del}">Delete User</h1>
+<table class="box-table-a">
+
+		<tr>
+			<td data-th-text="#{label.user.id}">id</td>
+			<td data-th-text="${userId.id}">User id</td>
+		</tr>
+		<tr>
+			<td data-th-text="#{label.user.firstName}">First Name</td>
+			<td data-th-text="${userId.firstName}"></td>
+		</tr>
+		<tr>
+			<td data-th-text="#{label.user.lastName}">Last Name</td>
+			<td data-th-text="${userId.lastName}"></td>
+		</tr>
+		<tr>
+			<td data-th-text="#{label.user.email}">Email</td>
+			<td data-th-text="${userId.email}"></td>
+		</tr>
+
+		<tr>
+			<td data-th-text="#{label.user.password}">Password</td>
+			<td data-th-text="${userId.password}"></td>
+		</tr>
+		<tr>
+			<td data-th-text="#{label.user.confirmPass}">Confirm Password</td>
+			<td data-th-text="${userId.matchingPassword}"></td>
+		</tr>
+		<tr>
+			<td data-th-text="#{abel.user.mobileNumber}">mobileNumber</td>
+			<td data-th-text="${userId.mobileNumber}"></td>
+		</tr>
+		<tr>
+			<td data-th-text="#{label.user.birthDate}">birthDate</td>
+			<td data-th-text="${userId.birthDate}"></td>
+		</tr>
+		<tr>
+			<td><a href="#"
+				data-th-href="@{/deleteUser(id=${userId.id},phase=confirm)}">
+					<button type="button" data-th-text="#{delete.button.label}">Delete</button>
+			</a></td>
+			<td><a href="#"
+				data-th-href="@{/deleteUser(id=${userId.id},phase=cancel)}">
+					<button type="button" data-th-text="#{cancel.button.label}">Cancel</button>
+			</a></td>
+		</tr>
+	</table>
+
+</div>
+	
+</body>
+</html>

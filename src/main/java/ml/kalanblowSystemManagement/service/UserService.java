@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import ml.kalanblowSystemManagement.dto.model.UserDto;
@@ -40,8 +41,9 @@ public interface UserService {
 
 	Page<UserDto> listUserByPage(Pageable pageable);
 	
-	//Page<UserDto> findAllPageableOrderByLastName(Pageable pageable);
+	Page<UserDto> findAllPageableOrderByLastName(String queryString, Pageable pageable);
 	
+	 Page<UserDto> findAllPageable(PageRequest of);
 	Set<UserDto> findUserbyMobileNumber(String mobileNumber);
 	
 	boolean emailExist(String email);

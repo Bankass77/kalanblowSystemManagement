@@ -14,7 +14,7 @@ import ml.kalanblowSystemManagement.model.User;
 public class UserMapper {
 
 	public static UserDto userToUserDto(User user) {
-		return new UserDto().setEmail(user.getEmail())
+		return new UserDto().setId(user.getId()).setEmail(user.getEmail())
 				.setFirstName(user.getFirstName())
 				.setLastName(user.getLastName())
 				.setPassword(user.getPassword())
@@ -23,7 +23,9 @@ public class UserMapper {
 						.map(roleDto -> new ModelMapper().map(roleDto, RoleDto.class))
 						.collect(Collectors.toSet()))
 				.setMobileNumber(user.getMobileNumber())
-				.setBirthDate(user.getBirthDate());
+				.setBirthDate(user.getBirthDate()).setGender(user.getGender())
+				.setCreatedDate(user.getCreatedDate()).setLastModifiedDate(user.getLastModifiedDate())
+				.setAdresse(user.getAdresse()).setAdressePro(user.getAdressePro());
 
 	}
 

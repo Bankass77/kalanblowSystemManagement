@@ -2,6 +2,7 @@ package ml.kalanblowSystemManagement.service.impl;
 
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserLocation;
 import ml.kalanblowSystemManagement.model.UserRole;
+import ml.kalanblowSystemManagement.model.UserSpecification;
 import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.repository.UserLocationRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
@@ -59,9 +62,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserLocationRepository userLocationRepository;
 
-	
-	private  PropertiesConfig propertiesConfig;
-
+	private PropertiesConfig propertiesConfig;
 
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper,
@@ -320,15 +321,17 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	/*
-	 * @Override public Page<UserDto> findAllPageableOrderByLastName(Pageable
-	 * pageable) {
-	 * 
-	 * Page<User> uPage = userRepository.findAllPageableOrderByLastName(pageable);
-	 * int totalElements = (int) uPage.getTotalElements(); return new
-	 * PageImpl<>(uPage.stream().map(userDto -> new
-	 * UserDto()).collect(Collectors.toList()), pageable, totalElements); }
-	 */
+	@Override
+	public Page<UserDto> findAllPageableOrderByLastName(String queryString, Pageable pageable) {
+		UserSpecification userSpecification = new UserSpecification(queryString);
+
+		Page<User> uPage = userRepository.findAll(userSpecification, pageable);
+
+		int totalElements = (int) uPage.getTotalElements();
+
+		return new PageImpl<>(uPage.stream().map(userDto -> new UserDto()).collect(Collectors.toList()), pageable,
+				totalElements);
+	}
 
 	@Override
 	public void addUserLocation(User user, String ip) {
@@ -350,6 +353,29 @@ public class UserServiceImpl implements UserService {
 
 	private boolean isGeoIpLibEnabled() {
 		return Boolean.parseBoolean(propertiesConfig.getConfigValue("geo.ip.lib.enabled").toString());
+	}
+
+	@Override
+	public Page<UserDto> findAllPageable(PageRequest of) {
+		int pageSize = of.getPageSize();
+		int currentPage = of.getPageNumber();
+		int startItem = currentPage * pageSize;
+
+		List<User> user = userRepository.findAll();
+		List<User> list;
+
+		if (user.size() < startItem) {
+
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, user.size());
+			list = user.subList(startItem, toIndex);
+		}
+		Page<User> users = new PageImpl<User>(list, PageRequest.of(currentPage, pageSize), user.size());
+		List<UserDto> userDtos = users.stream().map(userDto -> modelMapper.map(userDto, UserDto.class))
+				.collect(Collectors.toList());
+		final Page<UserDto> uPage = new PageImpl<>(userDtos.subList(startItem, currentPage), of, userDtos.size());
+		return uPage;
 	}
 
 }

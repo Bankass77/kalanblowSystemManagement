@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -38,6 +37,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	@Autowired
 	PropertiesConfig propertiesConfig;
 
+	private static final int ONE_DAY_MINUTES = 24 * 60;
+	private static final String X_SET_AUTHORIZATION_BEARER_HEADER = "X-Set-Authorization-Bearer";
+	
+	
 	@SneakyThrows
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -47,10 +50,18 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		for (GrantedAuthority auth : authentication.getAuthorities()) {
 			log.debug(auth.getAuthority());
 			if ("ADMIN".equals(auth.getAuthority())) {
-				redirectStrategy.sendRedirect(request, response, "/dasboard");
+				redirectStrategy.sendRedirect(request, response, "/adminHome");
 				log.info("admin" + auth.getAuthority() + "is logged in");
 				break;
-			} else if ("STUDENT".equals(auth.getAuthority())) {
+			}
+			else if ("STAFF".equals(auth.getAuthority())) {
+
+				redirectStrategy.sendRedirect(request, response, "/staffHomePage");
+				log.info("Staff" + auth.getAuthority() + "is logged in");
+				break;
+
+			} 
+			else if ("STUDENT".equals(auth.getAuthority())) {
 
 				redirectStrategy.sendRedirect(request, response, "/home");
 				log.info("student" + auth.getAuthority() + "is logged in");
@@ -70,6 +81,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 				throw exception(EntityType.ROLE, ExceptionType.ENTITY_NOT_FOUND, "Role unknow");
 			}
 		}
+
+	
 		clearAuthenticatrionAttributes(request);
 		loginNotification(authentication, request);
 	}

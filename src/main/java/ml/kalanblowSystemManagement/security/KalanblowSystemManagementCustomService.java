@@ -12,14 +12,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.service.UserService;
 
-@Service(value = "kalanblowSystemManagementCustomService")
+@Component(value = "kalanblowSystemManagementCustomService")
 @Transactional
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 

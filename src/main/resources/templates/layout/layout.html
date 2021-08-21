@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
 
 <head th:replace="fragments/header :: header">
-<title th:include=":: #pageTitle">Header</title>
+<title layout::title-pattern="$LAYOUT_TITLE-CONTENT_TITLE">Header</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body class="fix-header fix-sidebar card-no-border">
@@ -17,25 +22,64 @@
 				stroke-width="2" stroke-miterlimit="10" />
     </svg>
 	</div>
+	<div class=""
+     x-data="sidebarMenu()"
+     @keydown.window.escape="closeSidebar">
+    <!-- Off-canvas menu for mobile -->
+    <div th:replace="fragments/sidebar :: mobile"></div>
+
+    <!-- Static sidebar for desktop -->
+    <div th:replace="fragments/sidebar :: desktop"></div>
+
+    <div class="">
+        <div th:replace="fragments/top-menu :: menu"></div>
+
+        <main class=" tabindex="0">
+            <div layout:fragment="page-content"> <!--2-->
+            </div>
+        </main>
+    </div>
+</div>
 	<!-- ============================================================== -->
 	<!-- Main wrapper - style you can find in pages.scss -->
 	<!-- ============================================================== -->
-	<div id="main-wrapper">
+	<div id="main-wrapper" x-data="sidebarMenu()"
+		@keydown.window.escape="closeSidebar">
+		<!-- Off-canvas menu for mobile -->
+		<div th:replace="fragments/sidebar :: mobile"></div>
+		<!-- Static sidebar for desktop -->
+		<div th:replace="fragments/sidebar :: desktop"></div>
 		<!-- Topbar header - style you can find in pages.scss -->
 		<div th:replace="fragments/navigation :: navigation"></div>
 		<!-- Left Sidebar - style you can find in sidebar.scss  -->
 		<div th:replace="fragments/sidebar :: sidebar"></div>
+		<div sec:authorize="isAuthenticated()">
+			You are logged as <b sec:authentication="name" /> with roles <span
+				sec:authentication="authorities" /> -
+			<form th:action="@{/logout}" method="post"
+				style="display: inline-block">
+				<input type="submit" value="Sign Out" />
+			</form>
+			<hr />
+		</div>
 		<!-- Page wrapper  -->
 		<div class="page-wrapper" id="mainContent">
-			<div layout:fragment="content"></div>
+			<div layout:fragment="page-content"></div>
 			<div th:replace="fragments/footer :: footer"></div>
 		</div>
 	</div>
+	<script th:src="@{/js/user-popup-menu.js}"></script>
+	<script type="text/javascript" layout:fragment="script">
+	</script>
+	<script> function  sidebarMenu()  
+	{ return  { show:  false, openSidebar()  { this.show  =  true; },
+		closeSidebar()  { this.show  =  false; }, isVisible()
+		{ return  this.show  ===  true; } }; } </script>
+	<th:block layout:fragment="page-scripts">  ③ </th:block>
 	<!-- ============================================================== -->
 	<!-- End Wrapper -->
 	<!-- ============================================================== -->
-	<script type="text/javascript" layout:fragment="script">
-</script>
+
 </body>
 
 </html>

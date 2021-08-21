@@ -30,7 +30,8 @@
 					</div>
 
 					<div class="signin-form">
-						<h2 class="form-title">Login</h2>
+						<h3 class="form-title">Login with email and Password
+							please.</h3>
 						<form method="POST" class="register-form" id="login-form"
 							th:action="@{/login}">
 							<div class="form-group">
@@ -58,6 +59,10 @@
 						<div id="errors" class="text-danger"
 							th:if="${(param.error != null) and (param.error[0] == 'true')}"
 							style="color: red">Invalid email or password</div>
+
+						<div th:if="${param.logout}">
+							<div class="alert alert-info">You have been logged out.</div>
+						</div>
 						<div class="social-login">
 							<span class="social-label">Or login with</span>
 							<ul class="socials">

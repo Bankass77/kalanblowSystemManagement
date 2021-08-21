@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="UTF-8">
+<title th:text="#{user.edit}">Editer</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<!-- Favicon icon -->
+<link rel="icon" type="image/png" href="favicon.png">
+
+<!-- Font Icon -->
+<link rel="stylesheet"
+	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+<!-- Main css -->
+<link rel="stylesheet" href="/auth/css/style.css">
+<link rel="stylesheet" href="/dashboard/html/css/style.css">
+<!-- Bootstrap Core CSS -->
+<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- chartist CSS -->
+<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
+	rel="stylesheet">
+<link
+	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
+	rel="stylesheet">
+<link
+	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
+	rel="stylesheet">
+<!--This page css - Morris CSS -->
+<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
+	rel="stylesheet">
+<!-- Custom CSS -->
+<link href="/dashboard/html/css/style.css" rel="stylesheet">
+<!-- You can change the theme colors from here -->
+<link href="/dashboard/html/css/colors/blue.css" id="theme"
+	rel="stylesheet">
+<!-- Material icons and fonts -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
+<script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
+<script src="/dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="/dashboard/html/js/jquery.slimscroll.js"></script>
+<!--Wave Effects -->
+<script src="/dashboard/html/js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="/dashboard/html/js/sidebarmenu.js"></script>
+<!--stickey kit -->
+<script
+	src="/dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<!--Custom JavaScript -->
+<script src="/dashboard/html/js/custom.min.js"></script>
+<!-- chartist chart -->
+<script src="/dashboard/assets/plugins/chartist-js/dist/chartist.min.js"></script>
+<script
+	src="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
+<!--c3 JavaScript -->
+<script src="/dashboard/assets/plugins/d3/d3.min.js"></script>
+<script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
+<!-- Chart JS -->
+<script src="/dashboard/html/js/dashboard1.js"></script>
+<script type="text/javascript" th:src="@{/js/checkfirstName.js}"></script>
+</head>
+<body>
+	<div class="container-fluid" th:insert="fragments/navigation"></div>
+	<div th:insert="fragments/sidebar :: sidebar"></div>
+
+	<form class="container"
+		th:method="post" th:action="@{/editeUser}" method="POST"
+		th:object="${editeUser}">
+		<h1 data-th-text="#{user.headers.edit.title}">Edit</h1>
+		<div class="form-group">
+			<label for="firstName"><i
+				class="zmdi zmdi-account material-icons-name"></i></label> <input
+				type="text" th:field="*{firstName}" name="firstName" id="firstName"
+				placeholder="First Name" required="required" /> <small
+				class="text-danger" th:if="${#fields.hasErrors('firstName')}"
+				th:errors="*{firstName}"></small>
+		</div>
+
+		<div class="form-group">
+			<label for="lastName"><i class="zmdi zmdi-account-o"></i></label> <input
+				type="text" th:field="*{lastName}" name="lastName" id="lastName"
+				placeholder="Last Name" required="required" /> <small
+				class="text-danger" th:if="${#fields.hasErrors('lastName')}"
+				th:errors="*{lastName}" style="color: red"></small>
+		</div>
+
+		<div class="form-group">
+			<label for="email"><i class="zmdi zmdi-email"></i></label> <input
+				type="email" th:field="*{email}" name="email" id="email"
+				placeholder="Your Email" required="required" value="a" /> <small
+				class="text-danger" th:if="${#fields.hasErrors('email')}"
+				th:errors="*{email}" style="color: red"></small>
+		</div>
+		<div class="form-group">
+			<label for="password"><i class="zmdi zmdi-lock"></i></label> <input
+				type="password" th:field="*{password}" name="password" id="password"
+				placeholder="Password" required="required"
+				autocomplete="new-password" /> <small class="text-danger"
+				th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+				style="color: red"></small>
+		</div>
+
+		<div class="form-group">
+			<label for="matchingPassword"><i class="zmdi zmdi-lock"></i></label>
+			<input type="password" th:field="*{matchingPassword}"
+				name="matchingPassword" id="matchingPassword"
+				placeholder="confirm Password" required="required"
+				autocomplete="new-password" /> <small class="text-danger"
+				th:if="${#fields.hasErrors('matchingPassword')}"
+				th:errors="*{matchingPassword}" style="color: red"></small>
+		</div>
+
+		<div class="form-group">
+			<label for="mobileNumber"><i class="zmdi zmdi-phone"></i></label> <input
+				type="text" th:field="*{mobileNumber}" name="mobileNumber"
+				id="mobileNumber" placeholder="Contact Number" /> <small
+				class="text-danger" th:if="${#fields.hasErrors('mobileNumber')}"
+				th:errors="*{mobileNumber}" style="color: red"></small>
+		</div>
+		<div class="form-group">
+			<label for="birthDate"><i class="zmdi zmdi-calendar"></i></label> <input
+				type="text" th:field="*{birthDate}" name="birthDate" id="birthDate"
+				th:placeholder="${dateFormat}" required="required" /> <small
+				class="text-danger" th:if="${#fields.hasErrors('birthDate')}"
+				th:errors="*{birthDate}" style="color: red"></small>
+		</div>
+	<!-- 		<div class="mb-3">
+			<label class="form-group" th:text="#{user.roles}"></label>
+			<select class="form-select bg-secondary border-dark"
+				aria-label="Default select example" th:field="*{roles}">
+				<option th:each="role : ${roles}" th:value="${role.userRoleName}"
+					th:text="#{${role}}"></option>
+			</select>
+			
+		</div> -->
+
+		<div class="text-center">
+			<button class="btn btn-outline-success" type="submit"
+				th:text="#{update.button.label}" name="action">save</button>
+				<span></span><span></span>
+				<button class="btn btn-outline-secondary" type="submit"
+				th:text="#{cancel.button.label}" name="action">Cancel</button>
+		</div>
+		<br>
+		<!-- <div class="text-center">
+			<button class="btn btn-outline-secondary" type="submit"
+				th:text="#{cancel.button.label}" name="action">Cancel</button>
+		</div> -->
+	</form>
+
+</body>
+</html>

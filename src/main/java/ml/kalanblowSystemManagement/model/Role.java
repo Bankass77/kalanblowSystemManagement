@@ -54,5 +54,7 @@ public class Role implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<User> users;
 	
+	
+	
 
 }

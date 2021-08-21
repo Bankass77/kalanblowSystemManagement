@@ -1,11 +1,15 @@
 package ml.kalanblowSystemManagement.dto.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,6 +24,8 @@ import lombok.experimental.Accessors;
 import ml.kalanblowSystemManagement.annotation.EmailContraint;
 import ml.kalanblowSystemManagement.annotation.PasswordConstraintValueMatch;
 import ml.kalanblowSystemManagement.annotation.ValidPassword;
+import ml.kalanblowSystemManagement.model.Adresse;
+import ml.kalanblowSystemManagement.model.Gender;
 
 
 @AllArgsConstructor
@@ -38,8 +44,11 @@ import ml.kalanblowSystemManagement.annotation.ValidPassword;
             message = "Passwords do not match!"
     )
 })
+@Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
 public class UserDto {
 
+	private Long id;
+	
 	@EmailContraint
 	@NotNull
 	@NotEmpty
@@ -78,8 +87,23 @@ public class UserDto {
     @ApiModelProperty(example = "matchingPassword")
 	private String matchingPassword;
 
-	@ApiModelProperty
+	@ApiModelProperty(example = "authorithy")
 	private Set<RoleDto> roleDtos = new HashSet<>();
+	
+	@ApiModelProperty(example = "sexe")
+	private Gender gender;
+	
+	@ApiModelProperty(example = "create date")
+	private LocalDateTime createdDate;
+	
+	@ApiModelProperty(example = "last modify date")
+	private LocalDateTime lastModifiedDate;
+	
+	@ApiModelProperty(example = "adresse")
+	private Adresse adresse;
+	
+	@ApiModelProperty(example = "professional adress")
+	private Adresse adressePro;
 
 	public String getFullName() {
 		return firstName != null ? firstName.concat(" ").concat(lastName) : "";

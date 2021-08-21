@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns
+	="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
 
-<head th:fragment="header(pageTitle='Kalablow System Mangement', links)">
+<head th:fragment="header(title='Kalablow System Mangement', links)">
 <th:block th:replace="internal.exit" />
-<title th:replace="${pageTitle}">Dashboard</title>
+<title th:replace="${title}">Dashboard</title>
+  <!-- placeholder for additional links -->
 <th:block th:replace="${links}" />
 
 <meta charset="utf-8">
