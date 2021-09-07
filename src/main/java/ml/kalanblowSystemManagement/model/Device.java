@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.time.LocalDateTime;
@@ -13,20 +14,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Table(name = "device")
+@Table(
+        name = "device")
 @Entity
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Device {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	private Long userId;
-	private String deviceDetails;
-	private String location;
-	private LocalDateTime lastLoggedIn;
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.AUTO)
+    private Long id;
+    private Long userId;
+    private String deviceDetails;
+    private String location;
+    private LocalDateTime lastLoggedIn;
 
 }

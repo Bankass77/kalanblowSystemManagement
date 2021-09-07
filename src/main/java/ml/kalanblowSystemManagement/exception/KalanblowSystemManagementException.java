@@ -98,7 +98,9 @@ public class KalanblowSystemManagementException {
 		}
 		return String.format(template, (Object[]) args);
 	}
-
+	   // -------------------------------------------------------------------------
+    // No String/variable interpolation in Java. Use format instead.
+    // -------------------------------------------------------------------------
 	public static class EntityNotFoundException extends RuntimeException {
 		/**
 		 * 
@@ -107,6 +109,10 @@ public class KalanblowSystemManagementException {
 
 		public EntityNotFoundException(String message) {
 			super(message);
+		}
+		
+		public EntityNotFoundException(String template, Object arg1, Object arg2, Throwable cause) {
+		    super(MessageFormat.format(template, arg1, arg2), cause);
 		}
 	}
 

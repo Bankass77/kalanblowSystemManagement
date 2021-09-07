@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -29,6 +31,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -36,13 +40,17 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,118 +63,209 @@ import ml.kalanblowSystemManagement.annotation.PastLocalDate;
 import ml.kalanblowSystemManagement.annotation.ValidPassword;
 import ml.kalanblowSystemManagement.utils.GenderConverter;
 
-@Table(name = "user", indexes = @Index(name = "idx_user_email", columnList = "email", unique = true))
+@EntityListeners(AuditingEntityListener.class)
+@Table(
+        name = "user",
+        indexes = @Index(
+                name = "idx_user_email",
+                columnList = "email",
+                unique = true))
 @Entity
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "USER_TYPE")
+@JsonInclude(
+        value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(
+        ignoreUnknown = true)
+@Inheritance(
+        strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(
+        discriminatorType = DiscriminatorType.STRING,
+        name = "USER_TYPE")
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id", nullable = false, unique = true)
-	private Long id;
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.AUTO)
+    @Column(
+            name = "user_id",
+            nullable = false,
+            unique = true)
+    private Long id;
 
-	@Column(name = "email", unique = true, updatable = true)
-	@NotNull
-	@Size(min = 4, max = 30)
-	@EmailContraint
-	private String email;
+    @Column(
+            name = "email",
+            unique = true,
+            updatable = true)
+    @NotNull
+    @Size(
+            min = 4,
+            max = 30)
+    @EmailContraint
+    private String email;
 
-	@Column(name = "firstName")
-	@NotNull
-	private String firstName;
+    @Column(
+            name = "firstName")
+    @NotNull
+    private String firstName;
 
-	@Column(name = "lastName")
-	@NotNull
-	private String lastName;
+    @Column(
+            name = "lastName")
+    @NotNull
+    private String lastName;
 
-	@Column(name = "password")
-	@NotNull
-	@ValidPassword
-	private String password;
-	
-	@Lob
-	@Column(name = "photo")
-	private byte[] photo;
+    @Column(
+            name = "password")
+    @NotNull
+    @ValidPassword
+    private String password;
 
-	@NotNull
-	@Column(name = "matchingPassword")
-	@ValidPassword
-	private String matchingPassword;
+    @Lob
+    @Column(
+            name = "photo")
+    private byte[] photo;
 
-	@Column(name = "mobile_number")
-	@FrenchPhoneConstraint
-	private String mobileNumber;
+    @NotNull
+    @Column(
+            name = "matchingPassword")
+    @ValidPassword
+    private String matchingPassword;
 
-	@Column(name = "birthday", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@NotNull
-	@PastLocalDate
-	@Past(message = "Date input is invalid for a  birth date.")
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate birthDate;
+    @Column(
+            name = "mobile_number")
+    @FrenchPhoneConstraint
+    private String mobileNumber;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "role_id") })
-	private Set<Role> roles = new HashSet<Role>();
+    @Column(
+            name = "birthday",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @NotNull
+    @PastLocalDate
+    @Past(
+            message = "Date input is invalid for a  birth date.")
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	@JoinColumn(name = "id")
-	private Set<Device> devices = new HashSet<>();
+    @DateTimeFormat(
+            pattern = "dd/MM/yyyy")
+    private LocalDate birthDate;
 
-	@Column(name = "sexe")
-	@NotNull
-	@Convert(converter = GenderConverter.class)
-	@Enumerated(EnumType.STRING)
-	private Gender gender;
+    @ManyToMany(
+            fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {
+                @JoinColumn(
+                        name = "user_id")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(
+                        name = "role_id")
+            })
+    private Set<Role> roles = new HashSet<Role>();
 
-	@Column(name = "createdDate", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@DateTimeFormat(pattern = "dd/MM/yyyy HH:MM:SS")
-	@JsonFormat(pattern = "dd/MM/yyyy HH:MM:SS")
-	@CreationTimestamp
-	private LocalDateTime createdDate;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Cache(
+            usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JoinColumn(
+            name = "id")
+    private Set<Device> devices = new HashSet<>();
 
-	@Column(name = "lastModifiedDate", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@DateTimeFormat(pattern = "dd/MM/yyyy HH:MM:SS")
-	@UpdateTimestamp
-	@JsonFormat(pattern = "dd/MM/yyyy HH:MM:SS")
-	private LocalDateTime lastModifiedDate;
+    @Column(
+            name = "sexe")
+    @NotNull(
+            message = "Sex is required")
+    @Convert(
+            converter = GenderConverter.class)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "street", column = @Column(name = "street")),
+    @Column(
+            name = "createdDate",
+            columnDefinition = "TIMESTAMP",
+            insertable = true,
+            updatable = false)
+    @JsonFormat(
+            pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonDeserialize(
+            using = LocalDateTimeDeserializer.class)
+    @CreatedDate
+    @DateTimeFormat(
+            pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime createdDate;
 
-			@AttributeOverride(name = "streetNumber", column = @Column(name = "streetNumber")),
+    @Column(
+            name = "lastModifiedDate",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            nullable = false,
+            updatable = false)
+    @JsonFormat(
+            pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonDeserialize(
+            using = LocalDateTimeDeserializer.class)
+    @LastModifiedDate
+    @DateTimeFormat(
+            pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime lastModifiedDate;
 
-			@AttributeOverride(name = "codePostal", column = @Column(name = "codePostal")),
+    @CreatedBy
+    @Column(
+            columnDefinition = "bigint default 1",
+            updatable = false)
+    protected Long createdBy;
 
-			@AttributeOverride(name = "city", column = @Column(name = "city")),
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(
+                name = "street",
+                column = @Column(
+                        name = "street")),
 
-			@AttributeOverride(name = "state", column = @Column(name = "state")) })
-	private Adresse adresse;
+        @AttributeOverride(
+                name = "streetNumber",
+                column = @Column(
+                        name = "streetNumber")),
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "street", column = @Column(name = "street_pro")),
+        @AttributeOverride(
+                name = "codePostal",
+                column = @Column(
+                        name = "codePostal")),
 
-			@AttributeOverride(name = "streetNumber", column = @Column(name = "streetNumber_pro")),
+        @AttributeOverride(
+                name = "city",
+                column = @Column(
+                        name = "city")),
 
-			@AttributeOverride(name = "codePostal", column = @Column(name = "codePostal_pro")),
+        @AttributeOverride(
+                name = "state",
+                column = @Column(
+                        name = "state")),
 
-			@AttributeOverride(name = "city", column = @Column(name = "city_pro")),
+        @AttributeOverride(
+                name = "country",
+                column = @Column(
+                        name = "country"))
+    })
+    private Adresse adresse;
 
-			@AttributeOverride(name = "state", column = @Column(name = "state_pro")) })
-	private Adresse adressePro;
+    public String getFullName() {
+        return firstName != null ? firstName.concat(" ").concat(lastName) : "";
+    }
 
-	public String getFullName() {
-		return firstName != null ? firstName.concat(" ").concat(lastName) : "";
-	}
+    @PrePersist
+    void onCreate() {
+        this.setCreatedDate(LocalDateTime.now());
+        this.setLastModifiedDate(LocalDateTime.now());
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        this.setLastModifiedDate(LocalDateTime.now());
+    }
 }

@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.io.Serializable;
@@ -25,41 +26,54 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Entity
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "persistent_logins", indexes = @Index(name = "idx_persistentLogin_series", columnList = "series", unique = true))
+@Table(
+        name = "persistent_logins",
+        indexes = @Index(
+                name = "idx_persistentLogin_series",
+                columnList = "series",
+                unique = true))
 @Setter
 @Getter
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(
+        value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(
+        ignoreUnknown = true)
 public class PersistentLogin implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@Size(max = 50)
-	private String series;
-	@Column(length = 39)
-	@Size(min = 0, max = 39)
-	private String ipAdresse;
+    @Id
+    @Size(
+            max = 50)
+    private String series;
+    @Column(
+            length = 39)
+    @Size(
+            min = 0,
+            max = 39)
+    private String ipAdresse;
 
-	private String fullName;
+    private String fullName;
 
-	@NotNull
-	@Size(max = 24)
-	private String token;
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastUsed;
+    @NotNull
+    @Size(
+            max = 24)
+    private String token;
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastUsed;
 
-	@CreatedBy
-	private User user;
+    @CreatedBy
+    private User user;
 
-	public PersistentLogin(PersistentRememberMeToken token) {
-		this.series = token.getSeries();
-		this.fullName = token.getUsername();
-		this.token = token.getTokenValue();
-		this.lastUsed = token.getDate();
-	}
+    public PersistentLogin(PersistentRememberMeToken token) {
+        this.series = token.getSeries();
+        this.fullName = token.getUsername();
+        this.token = token.getTokenValue();
+        this.lastUsed = token.getDate();
+    }
 }

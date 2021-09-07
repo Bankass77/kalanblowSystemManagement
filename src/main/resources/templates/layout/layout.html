@@ -6,7 +6,7 @@
 	layout:decorator="layout/layout">
 
 <head th:replace="fragments/header :: header">
-<title layout::title-pattern="$LAYOUT_TITLE-CONTENT_TITLE">Header</title>
+<title layout::title-pattern="$LAYOUT_TITLE-CONTENT_TITLE">Kalanblow System Management</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,8 +43,7 @@
 	<!-- ============================================================== -->
 	<!-- Main wrapper - style you can find in pages.scss -->
 	<!-- ============================================================== -->
-	<div id="main-wrapper" x-data="sidebarMenu()"
-		@keydown.window.escape="closeSidebar">
+	<div id="main-wrapper">
 		<!-- Off-canvas menu for mobile -->
 		<div th:replace="fragments/sidebar :: mobile"></div>
 		<!-- Static sidebar for desktop -->

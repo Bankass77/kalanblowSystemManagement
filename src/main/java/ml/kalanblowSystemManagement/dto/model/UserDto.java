@@ -3,10 +3,12 @@ package ml.kalanblowSystemManagement.dto.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -102,9 +104,6 @@ public class UserDto {
 	@ApiModelProperty(example = "adresse")
 	private Adresse adresse;
 	
-	@ApiModelProperty(example = "professional adress")
-	private Adresse adressePro;
-
 	public String getFullName() {
 		return firstName != null ? firstName.concat(" ").concat(lastName) : "";
 	}

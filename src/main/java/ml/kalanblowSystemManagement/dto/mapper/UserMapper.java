@@ -25,7 +25,7 @@ public class UserMapper {
 				.setMobileNumber(user.getMobileNumber())
 				.setBirthDate(user.getBirthDate()).setGender(user.getGender())
 				.setCreatedDate(user.getCreatedDate()).setLastModifiedDate(user.getLastModifiedDate())
-				.setAdresse(user.getAdresse()).setAdressePro(user.getAdressePro());
+				.setAdresse(user.getAdresse());
 
 	}
 

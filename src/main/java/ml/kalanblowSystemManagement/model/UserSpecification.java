@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.util.ArrayList;
@@ -12,22 +13,22 @@ import org.springframework.data.jpa.domain.Specification;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class UserSpecification implements Specification<User>{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class UserSpecification implements Specification<User> {
 
-	String userQuery;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-		
-		ArrayList<Predicate> predicates = new ArrayList<>();
-	
-		
-		if (userQuery != null && userQuery != "" ) {
+    String userQuery;
+
+    @Override
+    public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query,
+            CriteriaBuilder criteriaBuilder) {
+
+        ArrayList<Predicate> predicates = new ArrayList<>();
+
+        if (userQuery != null && userQuery != "") {
             predicates.add(criteriaBuilder.like(root.get("firstName"), '%' + userQuery + '%'));
             predicates.add(criteriaBuilder.like(root.get("lastName"), '%' + userQuery + '%'));
             predicates.add(criteriaBuilder.like(root.get("city"), '%' + userQuery + '%'));
@@ -36,7 +37,9 @@ public class UserSpecification implements Specification<User>{
             predicates.add(criteriaBuilder.like(root.get("country"), '%' + userQuery + '%'));
         }
 
-		   return (! predicates.isEmpty() ? criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()])) : null);
-	}
+        return (!predicates.isEmpty()
+                ? criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]))
+                : null);
+    }
 
 }

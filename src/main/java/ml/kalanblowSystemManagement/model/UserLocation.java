@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import javax.persistence.Entity;
@@ -15,29 +16,36 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Table(name = "userLocation")
+@Table(
+        name = "userLocation")
 @Entity
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLocation {
-	
-	public UserLocation(String country2, User user2) {
-		
-	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    public UserLocation(String country2, User user2) {
 
-	private String country;
+    }
 
-	private boolean enabled;
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.AUTO)
+    private Long id;
 
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false, name = "user_id")
-	private User user;
+    private String country;
+
+    private boolean enabled;
+
+    @ManyToOne(
+            targetEntity = User.class,
+            fetch = FetchType.EAGER)
+    @JoinColumn(
+            nullable = false,
+            name = "user_id")
+    private User user;
 
 }

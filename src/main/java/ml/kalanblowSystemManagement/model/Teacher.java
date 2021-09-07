@@ -1,12 +1,10 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -27,37 +25,45 @@ import lombok.experimental.Accessors;
 @Getter
 
 @Setter
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 
-@JsonInclude(content = Include.NON_NULL)
+@JsonInclude(
+        content = Include.NON_NULL)
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(
+        ignoreUnknown = true)
 
 @NoArgsConstructor
 
-@PrimaryKeyJoinColumn(name = "user_id")
+@PrimaryKeyJoinColumn(
+        name = "user_id")
 
-@DiscriminatorColumn(name = "TEACHER")
+@DiscriminatorColumn(
+        name = "TEACHER")
 
 @Entity
 
-@Table(name = "teacher")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(
+        name = "teacher")
+@Cache(
+        usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Teacher extends User {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column
-	private String degree;
+    @Column
+    private String degree;
 
-	@Column
-	private String matricule;
+    @Column
+    private String matricule;
 
-	@Column(name = "entry_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(
+            name = "entry_date",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private LocalDate entryDate;
-
-
+    @DateTimeFormat(
+            pattern = "dd/MM/yyyy")
+    private LocalDate entryDate;
 
 }

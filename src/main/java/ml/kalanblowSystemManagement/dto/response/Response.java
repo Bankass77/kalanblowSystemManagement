@@ -1,5 +1,10 @@
 package ml.kalanblowSystemManagement.dto.response;
 
+
+
+
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -8,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import ml.kalanblowSystemManagement.utils.DateUtils;
 
 @Getter
 @Setter
@@ -17,6 +21,7 @@ import ml.kalanblowSystemManagement.utils.DateUtils;
 @JsonInclude(content = Include.NON_NULL)
 @NoArgsConstructor
 public class Response<T> {
+    
 	private Status status;
 	private Object metadata;
 	private Object errors;
@@ -79,7 +84,7 @@ public class Response<T> {
 	public void addErrorMsgToResponse(String errorMsg, Exception ex) {
 
 		ResponseError error = new ResponseError().setDetails(errorMsg).setMessage(ex.getMessage())
-				.setLocalDateTime(DateUtils.today());
+				.setLocalDateTime(LocalDateTime.now());
 		setErrors(error);
 	}
 

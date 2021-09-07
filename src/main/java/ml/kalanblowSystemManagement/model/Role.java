@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.model;
 
 import java.io.Serializable;
@@ -11,11 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.persistence.JoinColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -25,36 +24,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
-@Table(name = "role")
+@Table(
+        name = "role")
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
+@Accessors(
+        chain = true)
 public class Role implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "role_id", unique = true, nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.AUTO)
+    @Column(
+            name = "role_id",
+            unique = true,
+            nullable = false)
+    private Long id;
 
-	@Column(name = "userRole", nullable = false, unique = true)
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	private UserRole userRoleName;
+    @Column(
+            name = "userRole",
+            nullable = false,
+            unique = true)
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private UserRole userRoleName;
 
-	@ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<User> users;
-	
-	
-	
+    @ManyToMany(
+            mappedBy = "roles",
+            fetch = FetchType.EAGER)
+    @OnDelete(
+            action = OnDeleteAction.CASCADE)
+    private Set<User> users;
 
 }

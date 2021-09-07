@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,8 +69,7 @@ public class SearchController {
             cellData.put("firstName", userDto.getFirstName());
             cellData.put("lastName", userDto.getLastName());
             cellData.put("email", userDto.getEmail());
-            cellData.put("city", userDto.getAdresse().getCity());
-            cellData.put("country", userDto.getAdresse().getState());
+            cellData.put("address", userDto.getAdresse());
             cellData.put("phoneNumber", userDto.getMobileNumber());
             cells.add(cellData);
         });

@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.service.impl;
 
 import java.util.HashSet;
@@ -16,28 +17,30 @@ import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.service.RoleService;
 
-@Component(value = "roleService")
+@Component(
+        value = "roleService")
 @Transactional
 @Slf4j
 public class RoleServiceImpl implements RoleService {
 
-	private RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
-	@Autowired
-	public RoleServiceImpl(RoleRepository roleRepository) {
-		super();
-		this.roleRepository = roleRepository;
-	}
+    @Autowired
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        super();
+        this.roleRepository = roleRepository;
+    }
 
-	@Override
-	public Set<RoleDto> getAllRoles() {
+    @Override
+    public Set<RoleDto> getAllRoles() {
 
-		List<Role> roles = roleRepository.findAll();
-		log.debug("roles:{}", roles);
-		List<RoleDto> roleDtos = roles.stream().map(roleDtO -> new ModelMapper().map(roleDtO, RoleDto.class))
-				.collect(Collectors.toList());
+        List<Role> roles = roleRepository.findAll();
+        log.debug("roles:{}", roles);
+        List<RoleDto> roleDtos =
+                roles.stream().map(roleDtO -> new ModelMapper().map(roleDtO, RoleDto.class))
+                        .collect(Collectors.toList());
 
-		return new HashSet<>(roleDtos);
-	}
+        return new HashSet<>(roleDtos);
+    }
 
 }

@@ -27,7 +27,6 @@ import ml.kalanblowSystemManagement.repository.UserRepository;
 import ml.kalanblowSystemManagement.service.UserService;
 import static org.assertj.core.api.Java6Assertions.assertThat; 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SpringBootTest
 
