@@ -1,5 +1,5 @@
 
-package ml.kalanblowSystemManagement.utils;
+package ml.kalanblowSystemManagement.utils.paging;
 
 import java.util.ArrayList;
 import java.util.Arrays;

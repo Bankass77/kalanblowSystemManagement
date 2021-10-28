@@ -1,5 +1,5 @@
 
-package ml.kalanblowSystemManagement.utils;
+package ml.kalanblowSystemManagement.utils.date;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

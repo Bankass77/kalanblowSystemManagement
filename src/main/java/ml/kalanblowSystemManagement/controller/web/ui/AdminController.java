@@ -5,17 +5,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,8 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,27 +35,36 @@ import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.model.Gender;
-import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
+import ml.kalanblowSystemManagement.service.searching.UserFinder;
+import ml.kalanblowSystemManagement.service.searching.UserSearchErrorResponse;
+import ml.kalanblowSystemManagement.service.searching.UserSearchParameters;
+import ml.kalanblowSystemManagement.service.searching.UserSearchResult;
 import ml.kalanblowSystemManagement.utils.CaseInsensitiveEnumEditor;
-import ml.kalanblowSystemManagement.utils.FrenchLocalDateFormater;
-import ml.kalanblowSystemManagement.utils.Pager;
-import ml.kalanblowSystemManagement.utils.InitialPagingSizes;
+import ml.kalanblowSystemManagement.utils.date.FrenchLocalDateFormater;
+import ml.kalanblowSystemManagement.utils.paging.InitialPagingSizes;
+import ml.kalanblowSystemManagement.utils.paging.Pager;
 
 @Controller
 @Slf4j
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
+    
+    public static final String EDIT_USER_FORM = "admin/editUser";
+    public static final String REDIRECT_ADMIN_PAGE_USERS = "redirect:/admin/allUsers";
     @Autowired
     private UserService userService;
+
+    private UserFinder userFinder;
+
+    private UserSearchErrorResponse userSearchErrorResponse;
 
     @Autowired
     private RoleService roleService;
 
-    @Autowired
     private BCryptPasswordEncoder passworEncoder;
 
     @RequestMapping(
@@ -111,95 +119,71 @@ public class AdminController {
     }
 
     /**
+     * Get all users or search users if searching parameters exist
+     * 
      * @param pageable
      * @return
      */
     @RequestMapping(
             value = "/users",
             method = RequestMethod.GET)
-    public ModelAndView getUsersList(Pageable pageable,
-            @RequestParam("pageSize") Optional<Integer> pageSize,
-            @RequestParam("page") Optional<Integer> page) {
+    public ModelAndView getUsersList(ModelAndView modelAndView,
+            UserSearchParameters userSearchParameters) {
 
-        ModelAndView modelAndView = new ModelAndView("admin/allUsers");
+        modelAndView = new ModelAndView("admin/allUsers");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Optional<UserDto> userDto = userService.findUserByEmail(authentication.getName());
 
-        Page<UserDto> pageInfo =
-                userService.findAllPageableOrderByLastName(userDto.get().toString(), pageable);
-
-        final Page<User> uPage = pageInfo.map(new Function<UserDto, User>() {
-
-            @Override
-            public User apply(UserDto userDto) {
-
-                User user = new User().setId(userDto.getId()).setBirthDate(userDto.getBirthDate())
-                        .setEmail(userDto.getEmail()).setFirstName(userDto.getFirstName())
-                        .setLastName(userDto.getLastName())
-                        .setMatchingPassword(passworEncoder.encode(userDto.getMatchingPassword()))
-                        .setMobileNumber(userDto.getMobileNumber())
-                        .setPassword(passworEncoder.encode(userDto.getPassword()))
-                        .setGender(userDto.getGender())
-                        .setRoles(userDto.getRoleDtos().stream()
-                                .map(role -> new ml.kalanblowSystemManagement.model.Role())
-                                .collect(Collectors.toSet()))
-                        .setCreatedDate(userDto.getCreatedDate())
-                        .setLastModifiedDate(userDto.getLastModifiedDate())
-                        .setAdresse(userDto.getAdresse());
-                return user;
-            }
-        });
-        // Evaluate page size. If requested parameter is null, return initial
         // page size
-        int evalPageSize = pageSize.orElse(InitialPagingSizes.INITIAL_PAGE_SIZE);
-        // Evaluate page. If requested parameter is null or less than 0 (to
-        // prevent exception), return initial size. Otherwise, return value of
-        // param. decreased by 1.
-        int evalPage = (page.orElse(0) < 1) ? InitialPagingSizes.INITIAL_PAGE_SIZE : page.get() - 1;
+        int selectedPageSize =
+                userSearchParameters.getPageSize().orElse(InitialPagingSizes.INITIAL_PAGE_SIZE);
+        // Evaluate page size. If requested parameter is null, return initial
+        int selectedPage =
+                (userSearchParameters.getPage().orElse(0) < 1) ? InitialPagingSizes.INITIAL_PAGE
+                        : (userSearchParameters.getPage().get() - 1);
 
-        Page<UserDto> userPage = userService.listUserByPage(PageRequest.of(evalPage, evalPageSize));
+        PageRequest pageRequest =
+                PageRequest.of(selectedPage, selectedPageSize, Sort.by(Direction.ASC, "id"));
+        UserSearchResult userSearchResult = new UserSearchResult();
 
-        int totalPages = userPage.getTotalPages();
-
-        Pager pager = new Pager(totalPages, uPage.getNumber(), InitialPagingSizes.BUTTONS_TO_SHOW,
-                totalPages);
-
-        if (totalPages > 0) {
-
-            List<Integer> pageNumbers =
-                    IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
-
-            modelAndView.addObject("pageNumbers", pageNumbers);
+        if (userSearchParameters.getPropertyValue().isEmpty()
+                || userSearchParameters.getPropertyValue().get().isEmpty()) {
+            userSearchResult.setUserPage(userService.findAllPageable(pageRequest));
         }
-        modelAndView.addObject("users", uPage);
-        // evaluate page size
-        modelAndView.addObject("selectedPageSize", evalPageSize);
-        // add page sizes
-        modelAndView.addObject("pageSizes", InitialPagingSizes.PAGE_SIZES);
-        // add pager
+        else {
+
+            userSearchResult = userFinder.searchUsersByProperty(pageRequest, userSearchParameters);
+
+            if (userSearchResult.isNumberFormatException()) {
+
+                return userSearchErrorResponse.respondToNumberFormatException(userSearchResult,
+                        modelAndView);
+            }
+
+            if (userSearchResult.getUserPage().getTotalElements() == 0) {
+
+                modelAndView = userSearchErrorResponse.respondToEmptySearchResult(modelAndView,
+                        pageRequest);
+                userSearchResult.setUserPage(userService.findAllPageable(pageRequest));
+            }
+
+            modelAndView.addObject("usersProperty", userSearchParameters.getUsersProperty().get());
+            modelAndView.addObject("propertyValue", userSearchParameters.getPropertyValue().get());
+        }
+
+        Pager pager = new Pager(userSearchResult.getUserPage().getTotalPages(),
+                userSearchResult.getUserPage().getNumber(), InitialPagingSizes.BUTTONS_TO_SHOW,
+                userSearchResult.getUserPage().getTotalElements());
         modelAndView.addObject("pager", pager);
+        modelAndView.addObject("users", userSearchResult.getUserPage());
+        modelAndView.addObject("selectedPageSize", selectedPageSize);
+        modelAndView.addObject("pageSizes", InitialPagingSizes.PAGE_SIZES);
         modelAndView.addObject("userName", userDto.get());
         modelAndView.addObject("authorithy", userDto.get().getRoleDtos());
+
         return modelAndView;
-    }
-
-    @RequestMapping(
-            value = "/users/{lastName}",
-            method = RequestMethod.GET)
-    public Set<UserDto> showUserListwithLastName(ModelAndView modelAndView,
-            @RequestParam("lastName") String lastName) {
-        if (lastName != null) {
-
-            Set<UserDto> userDtos = userService.findUserByLastName(lastName);
-
-            modelAndView.addObject("users", userDtos);
-            return userDtos;
-        }
-
-        else
-            return userService.getAllUsers();
     }
 
     /**
@@ -207,8 +191,7 @@ public class AdminController {
      * @return userDto
      */
     private UserDto registerUserAdmin(@Valid AdminSignupCommand adminSignupCommand) {
-        UserDto userDto = new UserDto()
-                .setEmail(adminSignupCommand.getEmail())
+        UserDto userDto = new UserDto().setEmail(adminSignupCommand.getEmail())
                 .setFirstName(adminSignupCommand.getFirstName())
                 .setLastName(adminSignupCommand.getLastName())
                 .setPassword(passworEncoder.encode(adminSignupCommand.getPassword()))
@@ -228,51 +211,49 @@ public class AdminController {
      * @param id
      * @return
      */
-    @RequestMapping(
-            value = "/editeUser",
-            method = RequestMethod.GET)
-    public ModelAndView editingUserByIdPage(Optional<UserDto> userDto, @RequestParam(
+    @GetMapping( "/editeUser/{id}")
+    public ModelAndView editingUser(Optional<UserDto> userDto, @RequestParam(
             value = "id",
             required = true) int id) {
         log.info("User/edit-Get: Id to query=" + id);
         userDto = Optional.ofNullable(userService.findUserById(Long.valueOf(id)));
         log.info("User/edit-Get: Id to query=" + id);
-
-        ModelAndView modelAndView = new ModelAndView("admin/editeUser");
+      Set<RoleDto> roleDtos= roleService.getAllRoles();
+      userDto.get().setRoleDtos(userService.getAssignedRoleSet(userDto.get()));
+        ModelAndView modelAndView = new ModelAndView(EDIT_USER_FORM);
 
         modelAndView.addObject("editeUser", userDto.get());
-        modelAndView.addObject("roles", initializeAuthorities());
+        modelAndView.addObject("roles", roleDtos);
 
         return modelAndView;
 
     }
 
-    @RequestMapping(
-            value = "/editeUser",
-            method = RequestMethod.POST)
-    public ModelAndView editingUserByIdPages(@ModelAttribute UserDto userDto, @RequestParam(
-            value = "action",
-            required = true) String action, BindingResult bindingResult) {
+    @PostMapping("/editeUser/{id}")
+    public ModelAndView editingUser( @ModelAttribute("oldUser") @Valid UserDto userDto,@PathVariable Long id,
+           
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
 
-        ModelAndView modelAndView = new ModelAndView("redirect:/admin/allUsers");
-        String message = null;
-
-        if (action.equals("save")) {
-            userService.editUser(userDto);
-            message = "Strategy was successfully edited.";
-            log.info("User/edit-Post: Id to query=" + userDto);
-            modelAndView.addObject("message", message);
+        ModelAndView modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
+        Optional<UserDto> uOptional= Optional.ofNullable(userService.findUserById(id));
+        Set<RoleDto> roleDtos= roleService.getAllRoles();
+        boolean emailAlreadyExists= userService.findByEmailAndIdNot(userDto.getEmail(), id) !=null;
+        boolean validationFailed= emailAlreadyExists || bindingResult.hasErrors();
+        
+        if (emailAlreadyExists) {
+            bindingResult.rejectValue("email", "UniqueUsername.user.username");
+        }
+        if (validationFailed) {
+            modelAndView.addObject("userDto", userDto);
+            modelAndView.addObject("roleList", roleDtos);
+            modelAndView.addObject("org.springframework.validation.BindingResult.userDto", bindingResult);
+            
             return modelAndView;
         }
-
-        if (action.equals("Cancel")) {
-            message = "user" + userDto + "edit cancelled";
-        }
-        if (bindingResult.hasErrors()) {
-
-            return modelAndView;
-        }
-        return modelAndView;
+        userService.updateUserProfile(uOptional.get());
+        redirectAttributes.addFlashAttribute("userHasBeenUpdated", true);
+        return new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
 
     }
 
@@ -304,14 +285,14 @@ public class AdminController {
         }
         if (phase.equals("confirm")) {
 
-            modelAndView = new ModelAndView("redirect:/admin/allUsers");
+            modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
             userDto = userService.deleteUserById(userDto.getId());
             String message = "User" + userDto.getId() + " was successfully deleted.";
             modelAndView.addObject("message", message);
         }
 
         if (phase.equals("cancel")) {
-            modelAndView = new ModelAndView("redirect:/admin/allUsers");
+            modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
             String message = "User delete was cancelled.";
             modelAndView.addObject("message", message);
         }

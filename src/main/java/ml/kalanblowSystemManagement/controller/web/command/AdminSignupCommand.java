@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,7 @@ import ml.kalanblowSystemManagement.annotation.EmailContraint;
 import ml.kalanblowSystemManagement.annotation.FrenchPhoneConstraint;
 import ml.kalanblowSystemManagement.annotation.ValidPassword;
 import ml.kalanblowSystemManagement.exception.NotExistingUser;
-import ml.kalanblowSystemManagement.model.Adresse;
+import ml.kalanblowSystemManagement.model.Addresse;
 import ml.kalanblowSystemManagement.model.Gender;
 import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.ValidationGroupOne;
@@ -84,7 +83,7 @@ public class AdminSignupCommand {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-    @Embedded
-    private Adresse adresse;
+ 
+    private Addresse adresse;
 
 }

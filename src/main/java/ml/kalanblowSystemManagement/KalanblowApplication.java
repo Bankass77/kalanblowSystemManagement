@@ -1,31 +1,14 @@
 
 package ml.kalanblowSystemManagement;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import lombok.extern.slf4j.Slf4j;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
-import ml.kalanblowSystemManagement.model.Role;
-import ml.kalanblowSystemManagement.model.User;
-import ml.kalanblowSystemManagement.model.UserRole;
-import ml.kalanblowSystemManagement.repository.RoleRepository;
-import ml.kalanblowSystemManagement.repository.UserRepository;
-import ml.kalanblowSystemManagement.service.UserService;
 
 @SpringBootApplication
 @Slf4j
-//@EnableJpaAuditing
+@EnableJpaAuditing
 public class KalanblowApplication {
 
     public static void main(String[] args) {

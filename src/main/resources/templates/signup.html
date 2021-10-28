@@ -30,8 +30,11 @@
 							id="register-form" th:action="@{/signup}"
 							th:object="${adminSignupCommand}">
 							<div class="form-group">
-								<label th:for="gender"><i class="zmdi zmdi-account-o"></i>Select
-									gender</label> <br> <select name="gender" id="gender"
+								<!-- <label th:for="gender"><i class="zmdi zmdi-account-o"></i>Select
+									gender</label> -->
+								<label class="block text-sm font-medium text-gray-700"
+									th:text="#{user.register.sexe}"> Gender </label>
+								<!--  <br> <select name="gender" id="gender"
 									th:field="*{gender}">
 									<option th:each="possibleGender: ${genders}"
 										th:value="${possibleGender}" th:text="${possibleGender}"></option>
@@ -39,7 +42,18 @@
 								</select> <small class="text-danger-padded"
 									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small><small
 									class="text-danger-padded"
-									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small>
+									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small> -->
+								<div>
+									<th:block th:each="possibleGender,iter : ${genders}">
+										<input type="radio" th:id="${'gender-'+possibleGender}"
+											th:field="*{gender}" th:value="${possibleGender}"
+											class="mr-1 focus:ring-green-500 h-4 w-4 text-green-500 border-gray-300"
+											th:classappend="${iter.index > 0 ?'ml-4':''}">
+										<label th:for="${'gender-'+possibleGender}"
+											th:text="#{'Gender.'+${possibleGender}}"
+											class="text-sm font-medium text-gray-700"> </label>
+									</th:block>
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="firstName"><i
@@ -88,7 +102,8 @@
 								<label for="street"><i class="zmdi zmdi-city"></i></label> <input
 									type="text" th:field="*{adresse.street}" name="street"
 									id="street" placeholder="street" required="required" /> <small
-									class="text-danger" th:if="${#fields.hasErrors('adresse.street')}"
+									class="text-danger"
+									th:if="${#fields.hasErrors('adresse.street')}"
 									th:errors="*{adresse.street}" style="color: red"></small><br>
 							</div>
 							<div class="form-group">

@@ -3,7 +3,6 @@ package ml.kalanblowSystemManagement.dto.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
@@ -26,7 +25,7 @@ import lombok.experimental.Accessors;
 import ml.kalanblowSystemManagement.annotation.EmailContraint;
 import ml.kalanblowSystemManagement.annotation.PasswordConstraintValueMatch;
 import ml.kalanblowSystemManagement.annotation.ValidPassword;
-import ml.kalanblowSystemManagement.model.Adresse;
+import ml.kalanblowSystemManagement.model.Addresse;
 import ml.kalanblowSystemManagement.model.Gender;
 
 
@@ -102,7 +101,7 @@ public class UserDto {
 	private LocalDateTime lastModifiedDate;
 	
 	@ApiModelProperty(example = "adresse")
-	private Adresse adresse;
+	private Addresse adresse;
 	
 	public String getFullName() {
 		return firstName != null ? firstName.concat(" ").concat(lastName) : "";

@@ -252,7 +252,7 @@ public class User implements Serializable {
                 column = @Column(
                         name = "country"))
     })
-    private Adresse adresse;
+    private Addresse adresse;
 
     public String getFullName() {
         return firstName != null ? firstName.concat(" ").concat(lastName) : "";

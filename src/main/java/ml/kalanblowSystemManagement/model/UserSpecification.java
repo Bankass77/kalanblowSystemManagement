@@ -31,10 +31,10 @@ public class UserSpecification implements Specification<User> {
         if (userQuery != null && userQuery != "") {
             predicates.add(criteriaBuilder.like(root.get("firstName"), '%' + userQuery + '%'));
             predicates.add(criteriaBuilder.like(root.get("lastName"), '%' + userQuery + '%'));
-            predicates.add(criteriaBuilder.like(root.get("city"), '%' + userQuery + '%'));
+            //predicates.add(criteriaBuilder.like(root.get("adresse"), '%' + userQuery + '%'));
             predicates.add(criteriaBuilder.like(root.get("email"), '%' + userQuery + '%'));
             predicates.add(criteriaBuilder.like(root.get("mobileNumber"), '%' + userQuery + '%'));
-            predicates.add(criteriaBuilder.like(root.get("country"), '%' + userQuery + '%'));
+          
         }
 
         return (!predicates.isEmpty()

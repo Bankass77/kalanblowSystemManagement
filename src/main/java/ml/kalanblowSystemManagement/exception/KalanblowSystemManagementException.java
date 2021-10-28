@@ -12,9 +12,13 @@ import ml.kalanblowSystemManagement.config.PropertiesConfig;
 
 @Component
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class KalanblowSystemManagementException {
+public class KalanblowSystemManagementException  extends Exception{
 
-	@Autowired
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    @Autowired
 	private static PropertiesConfig propertiesConfig;
 
 	/**

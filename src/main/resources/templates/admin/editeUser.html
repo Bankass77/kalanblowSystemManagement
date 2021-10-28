@@ -79,7 +79,7 @@
 	<div th:insert="fragments/sidebar :: sidebar"></div>
 
 	<form class="container"
-		th:method="post" th:action="@{/editeUser}" method="POST"
+		th:method="post" th:action="@{/editeUser/{id}(id=${editeUser.id})}" method="POST"
 		th:object="${editeUser}">
 		<h1 data-th-text="#{user.headers.edit.title}">Edit</h1>
 		<div class="form-group">
@@ -139,16 +139,22 @@
 				class="text-danger" th:if="${#fields.hasErrors('birthDate')}"
 				th:errors="*{birthDate}" style="color: red"></small>
 		</div>
-	<!-- 		<div class="mb-3">
-			<label class="form-group" th:text="#{user.roles}"></label>
-			<select class="form-select bg-secondary border-dark"
-				aria-label="Default select example" th:field="*{roles}">
-				<option th:each="role : ${roles}" th:value="${role.userRoleName}"
-					th:text="#{${role}}"></option>
-			</select>
-			
-		</div> -->
-
+		<div class="form-group">
+			<label class="form-group" th:text="#{user.roles}">Roles</label>
+			<div>
+			  <p th:each="role, rowStat: ${roles}">
+			  <input id="editedUserRoles" type="checkbox"  th:field="*{roles[_${rowStat.index}_].id" th:value="${role.id}">
+			<label th:tex="${role.userRoleName}">Role</label>
+			</div>
+		</div> 
+		<!--  <div class="form-group">
+                            <label for="editUserEnabled">Enabled</label>
+                            <div>
+                                <input id="editUserEnabled" type="checkbox" th:field="*{enabled}" th:value="*{enabled}">
+                                Enabled
+                                </input>
+                            </div>
+                        </div> -->
 		<div class="text-center">
 			<button class="btn btn-outline-success" type="submit"
 				th:text="#{update.button.label}" name="action">save</button>

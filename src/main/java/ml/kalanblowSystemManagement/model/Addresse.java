@@ -10,7 +10,7 @@ import lombok.Setter;
 @Embeddable
 @Setter
 @Getter
-public class Adresse {
+public class Addresse {
 
     @Column(
             insertable = false,

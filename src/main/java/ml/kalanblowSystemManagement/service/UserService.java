@@ -1,3 +1,4 @@
+
 package ml.kalanblowSystemManagement.service;
 
 import java.util.Optional;
@@ -7,46 +8,57 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
 public interface UserService {
 
-	UserDto findUserById(Long id);
+    UserDto findUserById(Long id);
 
-	Optional<UserDto> findUserByEmail(String email);
+    Page<UserDto> findByIdPageable(Long id, Pageable pageRequest);
 
-	UserDto changeUserEmail(String newEmail);
+    public Page<UserDto> findByEmailContaining(String email, Pageable pageable);
 
-	Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName);
+    UserDto findByEmailAndIdNot(String email, Long id);
+    
+    Optional<UserDto> findUserByEmail(String email);
 
-	Set<UserDto> findUserByLastName(String lastName);
+    UserDto changeUserEmail(String newEmail);
+    
+    boolean emailExist(String email);
 
-	Optional<UserDto> findUserByRoles(UserRole name);
+    Page<UserDto> findByFirstNameContaining(String name, PageRequest pageRequest);
 
-	UserDto signup(UserDto userDto);
+    Optional<UserDto> findUserByfirstNameAndLastName(String firstName, String lastName);
 
-	UserDto updateUserProfile(UserDto userDto);
+    Set<UserDto> findUserByLastName(String lastName);
 
-	public void editUser(UserDto userDTO);
+    Optional<UserDto> findUserByRoles(UserRole name);
 
-	UserDto changeUserPassword(String oldPassword, String newPassword);
+    UserDto signup(UserDto userDto);
 
-	UserDto deleteUserById(Long id);
+    UserDto updateUserProfile(UserDto userDto);
 
-	UserDto deleteUserByEmail(String email);
+    void editUser(UserDto userDTO);
 
-	Set<UserDto> getAllUsers();
+    UserDto changeUserPassword(String oldPassword, String newPassword);
 
-	Page<UserDto> listUserByPage(Pageable pageable);
-	
-	Page<UserDto> findAllPageableOrderByLastName(String queryString, Pageable pageable);
-	
-	 Page<UserDto> findAllPageable(PageRequest of);
-	Set<UserDto> findUserbyMobileNumber(String mobileNumber);
-	
-	boolean emailExist(String email);
-	void addUserLocation(User user, String ip);
+    UserDto deleteUserById(Long id);
 
+    UserDto deleteUserByEmail(String email);
+
+    Set<UserDto> getAllUsers();
+
+    Page<UserDto> listUserByPage(Pageable pageable);
+
+    Page<UserDto> findAllPageableOrderByLastName(String queryString, Pageable pageable);
+
+    Page<UserDto> findAllPageable(PageRequest of);
+
+    Set<UserDto> findUserbyMobileNumber(String mobileNumber);
+
+    void addUserLocation(User user, String ip);
+    Set<RoleDto> getAssignedRoleSet(UserDto userDto);
 }

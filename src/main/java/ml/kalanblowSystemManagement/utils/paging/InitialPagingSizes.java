@@ -1,5 +1,5 @@
 
-package ml.kalanblowSystemManagement.utils;
+package ml.kalanblowSystemManagement.utils.paging;
 
 public final class InitialPagingSizes {
     private InitialPagingSizes() {
