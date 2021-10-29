@@ -83,7 +83,8 @@ public class AdminSignupCommand {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
- 
+    Long createdBy;
+    
     private Addresse adresse;
 
 }

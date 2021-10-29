@@ -89,7 +89,7 @@ public class UserDto {
 	private String matchingPassword;
 
 	@ApiModelProperty(example = "authorithy")
-	private Set<RoleDto> roleDtos = new HashSet<>();
+	private Set<RoleDto> roles = new HashSet<>();
 	
 	@ApiModelProperty(example = "sexe")
 	private Gender gender;
@@ -102,6 +102,9 @@ public class UserDto {
 	
 	@ApiModelProperty(example = "adresse")
 	private Addresse adresse;
+	
+	@ApiModelProperty(example = "createdBy")
+	private Long createdBy;
 	
 	public String getFullName() {
 		return firstName != null ? firstName.concat(" ").concat(lastName) : "";

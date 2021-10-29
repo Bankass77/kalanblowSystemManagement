@@ -133,7 +133,7 @@ public class DashboardController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("currentUser", auth.getName());
-		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
+		modelAndView.addObject("Authority", userDOptional.get().getRoles());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
 	
 		return modelAndView;
@@ -146,7 +146,7 @@ public class DashboardController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("currentUser", auth.getName());
-		modelAndView.addObject("Authority", userDOptional.get().getRoleDtos());
+		modelAndView.addObject("Authority", userDOptional.get().getRoles());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur user!");
 	
 		return modelAndView;

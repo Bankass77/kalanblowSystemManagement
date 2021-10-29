@@ -35,7 +35,7 @@ public class Addresse {
     @Column(
             insertable = false,
             updatable = false)
-    private int codePostale;
+    private Integer codePostale;
 
     @Column(
             insertable = false,

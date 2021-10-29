@@ -1,6 +1,7 @@
 
 package ml.kalanblowSystemManagement.controller.web.ui;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -52,7 +54,6 @@ import ml.kalanblowSystemManagement.utils.paging.Pager;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    
     public static final String EDIT_USER_FORM = "admin/editUser";
     public static final String REDIRECT_ADMIN_PAGE_USERS = "redirect:/admin/allUsers";
     @Autowired
@@ -65,7 +66,10 @@ public class AdminController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
     private BCryptPasswordEncoder passworEncoder;
+
+    private ModelMapper modelMapper;
 
     @RequestMapping(
             value = "/signup",
@@ -150,7 +154,7 @@ public class AdminController {
 
         if (userSearchParameters.getPropertyValue().isEmpty()
                 || userSearchParameters.getPropertyValue().get().isEmpty()) {
-            userSearchResult.setUserPage(userService.findAllPageable(pageRequest));
+            userSearchResult.setUserPage(userService.listUserByPage(pageRequest));
         }
         else {
 
@@ -181,7 +185,7 @@ public class AdminController {
         modelAndView.addObject("selectedPageSize", selectedPageSize);
         modelAndView.addObject("pageSizes", InitialPagingSizes.PAGE_SIZES);
         modelAndView.addObject("userName", userDto.get());
-        modelAndView.addObject("authorithy", userDto.get().getRoleDtos());
+        modelAndView.addObject("authorithy", userDto.get().getRoles());
 
         return modelAndView;
     }
@@ -200,7 +204,9 @@ public class AdminController {
                 .setMobileNumber(adminSignupCommand.getMobileNumber())
                 .setBirthDate(adminSignupCommand.getBirthDate())
                 .setGender(adminSignupCommand.getGender())
-                .setAdresse(adminSignupCommand.getAdresse());
+                .setAdresse(adminSignupCommand.getAdresse())
+                .setCreatedBy(adminSignupCommand.getCreatedBy())
+                .setLastModifiedDate(LocalDateTime.now()).setCreatedDate(LocalDateTime.now());
         UserDto userDto2 = userService.signup(userDto);
         return userDto2;
 
@@ -211,44 +217,46 @@ public class AdminController {
      * @param id
      * @return
      */
-    @GetMapping( "/editeUser/{id}")
+    @GetMapping("/editeUser/{id}")
     public ModelAndView editingUser(Optional<UserDto> userDto, @RequestParam(
             value = "id",
             required = true) int id) {
         log.info("User/edit-Get: Id to query=" + id);
         userDto = Optional.ofNullable(userService.findUserById(Long.valueOf(id)));
         log.info("User/edit-Get: Id to query=" + id);
-      Set<RoleDto> roleDtos= roleService.getAllRoles();
-      userDto.get().setRoleDtos(userService.getAssignedRoleSet(userDto.get()));
+        Set<RoleDto> roleDtos = roleService.getAllRoles();
+        userDto.get().setRoles(userService.getAssignedRoleSet(userDto.get()));
         ModelAndView modelAndView = new ModelAndView(EDIT_USER_FORM);
 
         modelAndView.addObject("editeUser", userDto.get());
         modelAndView.addObject("roles", roleDtos);
 
         return modelAndView;
-
+        
     }
 
     @PostMapping("/editeUser/{id}")
-    public ModelAndView editingUser( @ModelAttribute("oldUser") @Valid UserDto userDto,@PathVariable Long id,
-           
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public ModelAndView editingUser(@ModelAttribute("oldUser") @Valid UserDto userDto,
+            @PathVariable Long id,
+
+            BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         ModelAndView modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
-        Optional<UserDto> uOptional= Optional.ofNullable(userService.findUserById(id));
-        Set<RoleDto> roleDtos= roleService.getAllRoles();
-        boolean emailAlreadyExists= userService.findByEmailAndIdNot(userDto.getEmail(), id) !=null;
-        boolean validationFailed= emailAlreadyExists || bindingResult.hasErrors();
-        
+        Optional<UserDto> uOptional = Optional.ofNullable(userService.findUserById(id));
+        Set<RoleDto> roleDtos = roleService.getAllRoles();
+        boolean emailAlreadyExists =
+                userService.findByEmailAndIdNot(userDto.getEmail(), id) != null;
+        boolean validationFailed = emailAlreadyExists || bindingResult.hasErrors();
+
         if (emailAlreadyExists) {
             bindingResult.rejectValue("email", "UniqueUsername.user.username");
         }
         if (validationFailed) {
             modelAndView.addObject("userDto", userDto);
             modelAndView.addObject("roleList", roleDtos);
-            modelAndView.addObject("org.springframework.validation.BindingResult.userDto", bindingResult);
-            
+            modelAndView.addObject("org.springframework.validation.BindingResult.userDto",
+                    bindingResult);
+
             return modelAndView;
         }
         userService.updateUserProfile(uOptional.get());
@@ -279,15 +287,15 @@ public class AdminController {
         log.info("user/delet_Get | id=" + id + "|phase= " + phase + "|" + userDto);
 
         if (phase.equals("stage")) {
-            String message = "user" + userDto.getId() + "queued for display.";
+            String message = "user" + userDto + "queued for display.";
             modelAndView.addObject("userId", userDto);
             modelAndView.addObject("message", message);
         }
         if (phase.equals("confirm")) {
 
             modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
-            userDto = userService.deleteUserById(userDto.getId());
-            String message = "User" + userDto.getId() + " was successfully deleted.";
+            userDto = userService.deleteUser(userDto);
+            String message = "User" + userDto + " was successfully deleted.";
             modelAndView.addObject("message", message);
         }
 

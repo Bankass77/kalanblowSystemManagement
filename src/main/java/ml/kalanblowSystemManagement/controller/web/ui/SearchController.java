@@ -27,19 +27,22 @@ import ml.kalanblowSystemManagement.service.UserService;
 @NoArgsConstructor
 @RequestMapping("/user")
 public class SearchController {
-	
-	private UserService searchService;
 
-	@Autowired
-	public SearchController(UserService searchService) {
-		this.searchService = searchService;
-	}
+    private UserService searchService;
 
-	@RequestMapping("/search")
-	public ModelAndView search(@PathVariable Map<String, Object> params) {
-		int draw = params.containsKey("draw") ? Integer.parseInt(params.get("draw").toString()) : 1;
-        int length = params.containsKey("length") ? Integer.parseInt(params.get("length").toString()) : 30;
-        int start = params.containsKey("start") ? Integer.parseInt(params.get("start").toString()) : 30;
+    @Autowired
+    public SearchController(UserService searchService) {
+        this.searchService = searchService;
+    }
+
+    @RequestMapping("/search")
+    public ModelAndView search(@PathVariable Map<String, Object> params) {
+        int draw = params.containsKey("draw") ? Integer.parseInt(params.get("draw").toString()) : 1;
+        int length =
+                params.containsKey("length") ? Integer.parseInt(params.get("length").toString())
+                        : 30;
+        int start =
+                params.containsKey("start") ? Integer.parseInt(params.get("start").toString()) : 30;
         int currentPage = start / length;
 
         String sortName = "id";
@@ -47,25 +50,26 @@ public class SearchController {
         String dataTableOrderColumnName = "columns[" + dataTableOrderColumnIdx + "][data]";
         if (params.containsKey(dataTableOrderColumnName))
             sortName = params.get(dataTableOrderColumnName).toString();
-        String sortDir = params.containsKey("order[0][dir]") ? params.get("order[0][dir]").toString() : "asc";
+        String sortDir =
+                params.containsKey("order[0][dir]") ? params.get("order[0][dir]").toString()
+                        : "asc";
 
-        Sort.Order sortOrder = new Sort.Order((sortDir.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC), sortName);
+        Sort.Order sortOrder = new Sort.Order(
+                (sortDir.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC), sortName);
         Sort sort = Sort.by(sortOrder);
 
-        Pageable pageRequest = PageRequest.of(currentPage,
-                length,
-                sort);
+        Pageable pageRequest = PageRequest.of(currentPage, length, sort);
 
         String queryString = (String) (params.get("search[value]"));
 
-        Page<UserDto> uPage = searchService.findAllPageableOrderByLastName(queryString, pageRequest);
+        Page<UserDto> uPage =
+                searchService.findAllPageableOrderByLastName(queryString, pageRequest);
 
         long totalRecords = uPage.getTotalElements();
 
         List<Map<String, Object>> cells = new ArrayList<>();
         uPage.forEach(userDto -> {
             Map<String, Object> cellData = new HashMap<>();
-            cellData.put("id", userDto.getId());
             cellData.put("firstName", userDto.getFirstName());
             cellData.put("lastName", userDto.getLastName());
             cellData.put("email", userDto.getEmail());
@@ -84,11 +88,12 @@ public class SearchController {
         String json = null;
         try {
             json = new ObjectMapper().writeValueAsString(jsonMap);
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-		ModelAndView modelAndView = new ModelAndView("resultPage");
-		modelAndView.addObject("search", json);
-		return modelAndView;
-	}
+        ModelAndView modelAndView = new ModelAndView("resultPage");
+        modelAndView.addObject("search", json);
+        return modelAndView;
+    }
 }

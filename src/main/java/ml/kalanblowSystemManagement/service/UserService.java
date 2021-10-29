@@ -22,11 +22,11 @@ public interface UserService {
     public Page<UserDto> findByEmailContaining(String email, Pageable pageable);
 
     UserDto findByEmailAndIdNot(String email, Long id);
-    
+
     Optional<UserDto> findUserByEmail(String email);
 
     UserDto changeUserEmail(String newEmail);
-    
+
     boolean emailExist(String email);
 
     Page<UserDto> findByFirstNameContaining(String name, PageRequest pageRequest);
@@ -46,6 +46,7 @@ public interface UserService {
     UserDto changeUserPassword(String oldPassword, String newPassword);
 
     UserDto deleteUserById(Long id);
+    UserDto deleteUser(UserDto userDto);
 
     UserDto deleteUserByEmail(String email);
 
@@ -60,5 +61,8 @@ public interface UserService {
     Set<UserDto> findUserbyMobileNumber(String mobileNumber);
 
     void addUserLocation(User user, String ip);
+
     Set<RoleDto> getAssignedRoleSet(UserDto userDto);
+
+  
 }

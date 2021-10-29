@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,7 +49,8 @@ import lombok.experimental.Accessors;
 @Table(
         name = "student")
 
-@AllArgsConstructor // @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@AllArgsConstructor 
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Student extends User {
 
     private static final long serialVersionUID = 1L;

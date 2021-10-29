@@ -202,4 +202,31 @@
 			<includes> <include>application.properties</include> </includes> </resource> 
 			</resources> -->
 	</build>
+	<profiles>
+	<profile>
+        <id>dev</id>
+        <activation>
+            <!-- Default to dev so we avoid any accidents with prod! :) -->
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <!-- This can be a single value, or a comma-separated list -->
+            <spring.profiles.to.activate>dev</spring.profiles.to.activate>
+        </properties>
+    </profile>
+    <profile>
+        <id>uat</id>
+        <properties>
+            <!-- This can be a single value, or a comma-separated list -->
+            <spring.profiles.to.activate>uat</spring.profiles.to.activate>
+        </properties>
+    </profile>
+    <profile>
+        <id>prod</id>
+        <properties>
+            <!-- This can be a single value, or a comma-separated list -->
+            <spring.profiles.to.activate>prod</spring.profiles.to.activate>
+        </properties>
+    </profile>
+	</profiles>
 </project>

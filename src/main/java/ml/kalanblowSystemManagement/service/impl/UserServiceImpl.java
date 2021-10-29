@@ -2,6 +2,7 @@
 package ml.kalanblowSystemManagement.service.impl;
 
 import java.net.InetAddress;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -183,6 +184,8 @@ public class UserServiceImpl implements UserService {
                 .setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
                 .setMatchingPassword(userDto.getMatchingPassword())
                 .setPassword(userDto.getPassword()).setMobileNumber(userDto.getMobileNumber())
+                .setAdresse(userDto.getAdresse()).setCreatedBy(userDto.getCreatedBy())
+                .setCreatedDate(LocalDateTime.now()).setLastModifiedDate(LocalDateTime.now()).setPhoto(null)
                 .setRoles(new HashSet<>(Arrays.asList(userRole)));
 
         return UserMapper.userToUserDto(userRepository.save(user));
@@ -396,7 +399,9 @@ public class UserServiceImpl implements UserService {
                 .setLastName(userDto.getLastName())
                 .setMatchingPassword(userDto.getMatchingPassword())
                 .setMobileNumber(userDto.getMobileNumber()).setPassword(userDto.getPassword())
-                .setFirstName(userDto.getFullName()).setCreatedDate(userDto.getCreatedDate());
+                .setFirstName(userDto.getFullName()).setCreatedDate(userDto.getCreatedDate())
+                .setCreatedBy(userDto.getCreatedBy()).setAdresse(userDto.getAdresse())
+                .setLastModifiedDate(LocalDateTime.now()).setPhoto(null);
 
         return UserMapper.userToUserDto(userRepository.save(persistedUser));
     }
@@ -506,7 +511,7 @@ public class UserServiceImpl implements UserService {
     public Set<RoleDto> getAssignedRoleSet(UserDto userDto) {
 
         Map<Long, RoleDto> assignedRoleMap = new HashedMap<>();
-        Set<RoleDto> roleDtos = userDto.getRoleDtos();
+        Set<RoleDto> roleDtos = userDto.getRoles();
 
         for (RoleDto roleDto : roleDtos) {
             assignedRoleMap.put(roleDto.getId(), roleDto);
@@ -529,6 +534,20 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userRole;
+    }
+
+    @Override
+    public UserDto deleteUser(UserDto userDto) {
+        User persistedUser = new User().setAdresse(userDto.getAdresse())
+                .setBirthDate(userDto.getBirthDate()).setEmail(userDto.getEmail())
+                .setFirstName(userDto.getFirstName()).setGender(userDto.getGender())
+                .setLastName(userDto.getLastName())
+                .setMatchingPassword(userDto.getMatchingPassword())
+                .setMobileNumber(userDto.getMobileNumber()).setPassword(userDto.getPassword())
+                .setFirstName(userDto.getFullName()).setCreatedDate(userDto.getCreatedDate())
+                .setCreatedBy(userDto.getCreatedBy()).setAdresse(userDto.getAdresse())
+                .setLastModifiedDate(LocalDateTime.now()).setPhoto(null);
+        return UserMapper.userToUserDto(userRepository.deleteUserById(persistedUser.getId()));
     }
 
   

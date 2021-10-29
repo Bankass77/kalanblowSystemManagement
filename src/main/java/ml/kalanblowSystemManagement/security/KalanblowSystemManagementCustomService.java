@@ -38,7 +38,7 @@ public class KalanblowSystemManagementCustomService implements UserDetailsServic
         Optional<UserDto> userDto = userService.findUserByEmail(username);
 
         if (userDto != null) {
-            Set<GrantedAuthority> authorities = getAuthority(userDto.get().getRoleDtos());
+            Set<GrantedAuthority> authorities = getAuthority(userDto.get().getRoles());
 
             return buildUserForAuthentication(userDto.get(), authorities);
         }

@@ -107,18 +107,7 @@
 
 		<div class="card-header bg-dark font-white">
 
-			<!-- 			<div class="input-group col-md-7 col-xl-6">
 
-				<input type="text" class="form-control" id="searchName"
-					placeholder=""> <span class="input-group-btn">
-					<button class="btn btn-secondary" type="button" id="searchNameBtn">
-						<i class="fa fa-search" aria-hidden="true"></i>
-					</button>
-				</span> <a class="btn btn-primary" data-toggle="modal"
-					data-target="#flipFlop" role="button" id="addUser"><i
-					class="fa fa-plus" aria-hidden="true"></i></a>
-
-			</div> -->
 			<!--Search user-->
 			<div class="row col-lg-12 d-flex flex-nowrap pb-2">
 				<div class="input-group">
@@ -138,49 +127,49 @@
 
 			<!--Table with users-->
 			<div th:if="${users.isEmpty()}">[[#{no.users}]]</div>
-			<div th:unless="${users.isEmpty()}" id="mainContainerRepleace"
-				class="row">
-				<table class="table table-dark table-hover">
-					<thead>
-
-						<tr>
-							<th onclick="sortTable(0)">ID</th>
-							<th onclick="sortTable(1)">firstName</th>
-							<th onclick="sortTable(2)">lastName</th>
-							<th onclick="sortTable(3)">mobileNumber</th>
-							<th onclick="sortTable(4)">Email</th>
-							<th></th>
-							<th></th>
-							<th></th>
-						</tr>
-						<!-- 	<tr>
-							<th scope="col" th:text="#{label.user.id}"></th>
-							<th scope="col" th:text="#{user.headers.firstName}"></th>
-							<th scope="col" th:text="#{user.headers.lastName}"></th>
-							<th scope="col" th:text="#{user.headers.email}"></th>
-							<th scope="col" th:text="#{user.headers.mobileNumber}"></th>
-							<th scope="col" th:text="#{label.user.birthDate}"></th>
-							<th scope="col" th:text="#{label.user.password}"></th>
-							<th scope="col" th:text="#{label.user.confirmPass}"></th>
-							<th scope="col" th:text="#{user.roles}"></th>
-							<th scope="col" th:text="#{header.address.list}"></th>
+			<div class="table-responsive" th:unless="${users.isEmpty()}"
+				id="mainContainerRepleace">
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr class="table-active">
+							<th onclick="sortTable(0)" scope="col" th:text="#{label.user.id}"></th>
+							<th onclick="sortTable(1)" scope="col"
+								th:text="#{user.headers.firstName}"></th>
+							<th onclick="sortTable(2)" scope="col"
+								th:text="#{user.headers.lastName}"></th>
+							<th onclick="sortTable(3)" scope="col"
+								th:text="#{user.headers.email}"></th>
+							<th onclick="sortTable(4)" scope="col"
+								th:text="#{user.headers.mobileNumber}"></th>
+							<th onclick="sortTable(5)" scope="col"
+								th:text="#{label.user.birthDate}"></th>
+							<th onclick="sortTable(6)" scope="col"
+								th:text="#{label.user.password}"></th>
+							<th onclick="sortTable(7)" scope="col"
+								th:text="#{label.user.confirmPass}"></th>
+							<th onclick="sortTable(8)" scope="col" th:text="#{user.roles}"></th>
+							<th onclick="sortTable(9)" scope="col"
+								th:text="#{header.address.list}"></th>
 							<th scope="col" th:text="#{user.del}"></th>
 							<th scope="col" th:text="#{user.edit}"></th>
-						</tr> -->
+						</tr>
 					</thead>
 					<tbody align="center">
-						<tr th:each="user : ${users}">
-							<td scope="row" th:text="${user.id}"></td>
-							<td scope="row" th:text="${user.firstName}"></td>
-							<td scope="row" th:text="${user.lastName}"></td>
-							<td scope="row" th:text="${user.email}"></td>
-							<td scope="row" th:text="${user.mobileNumber}"></td>
-							<td scope="row" th:text="${user.birthDate}"></td>
-							<td scope="row" th:text="${user.password}"></td>
-							<td scope="row" th:text="${user.matchingPassword}"></td>
-							<td scope="row" th:text="${user.getRoles()}"></td>
+						<tr th:each="user : ${users}" class="table-primary">
+							<td class="table-primary" scope="col" th:text="${user.id}"></td>
+							<td class="table-secondary" scope="col"
+								th:text="${user.firstName}"></td>
+							<td class="table-success" scope="col" th:text="${user.lastName}"></td>
+							<td class="table-danger" scope="col" th:text="${user.email}"></td>
+							<td class="table-warning" scope="col"
+								th:text="${user.mobileNumber}"></td>
+							<td class="table-info" scope="col" th:text="${user.birthDate}"></td>
+							<td class="table-light" scope="col" th:text="${user.password}"></td>
+							<td class="table-dark" scope="col"
+								th:text="${user.matchingPassword}"></td>
+							<td class="table-secondary" th:text="${user.roles}"></td>
 							<td>
-								<p th:each="address : ${user.addresse}">
+								<p th:each="address : ${user.adresse}">
 									<span th:text="${address.street}">Street</span> <span
 										th:text="${address.streetNumber}">Street Number</span> <span
 										th:text="${address.city}">City</span> <span
@@ -193,13 +182,6 @@
 								style="color: green">Enabled</span> <span th:case="false"
 								style="color: red">Disabled</span></td> -->
 
-							<!--Edit user button-->
-							<td><a style="text-decoration: none; color: blue"
-								th:href="@{/editeUser/{id}(id=${editeUser.id})}" class="editBtn"
-								data-toggle="tooltip" data-placement="right" title="Edit user">
-									<i class="fa fa-edit"></i>
-							</a></td>
-
 							<!--Remove user button-->
 							<td><a id="remove-link"
 								style="text-decoration: none; color: red" data-toggle='modal'
@@ -207,6 +189,12 @@
 								title="Remove user"
 								th:onclick="'setRowIndexAndUserId(this, ' + ${user.id} + ')'">
 									<i class="fa fa-times" aria-hidden="true"></i>
+							</a></td>
+							<!--Edit user button-->
+							<td><a style="text-decoration: none; color: blue"
+								th:href="@{/editeUser/{id}(id=${user.id})}" class="editBtn"
+								data-toggle="tooltip" data-placement="right" title="Edit user">
+									<i class="fa fa-edit"></i>
 							</a></td>
 					</tbody>
 				</table>
