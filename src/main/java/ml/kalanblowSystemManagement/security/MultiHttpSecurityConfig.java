@@ -25,9 +25,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 
@@ -36,7 +38,8 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthenticationFilter;
 import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
-//import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
+import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
+import ml.kalanblowSystemManagement.security.remember.LoginFilter;
 
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -92,21 +95,20 @@ public class MultiHttpSecurityConfig {
 
         private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-        // private final RememberMeServices rememberMeServices;
+        private final JpaPesristentTokenRepository jpersistentTokenRepository;
 
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(BCryptPasswordEncoder passwordEncoder,
                 @Lazy KalanblowSystemManagementCustomService customService,
-                CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler/*
-                                                                                      * ,
-                                                                                      * RememberMeServices
-                                                                                      * rememberMeServices
-                                                                                      */) {
+                CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                JpaPesristentTokenRepository jpersistentTokenRepository
+
+        ) {
             super();
             this.passwordEncoder = passwordEncoder;
             this.customService = customService;
             this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
-            // this.rememberMeServices = rememberMeServices;
+            this.jpersistentTokenRepository = jpersistentTokenRepository;
         }
 
         @Override
@@ -128,10 +130,10 @@ public class MultiHttpSecurityConfig {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                     .deleteCookies("JSESSIONID").logoutSuccessUrl("/").and().exceptionHandling();
-            /*
-             * http.rememberMe().key("remember-me").useSecureCookie(true). tokenValiditySeconds(60 *
-             * 60 * 24 * 10) .rememberMeServices(rememberMeServices);
-             */ // 10 days
+
+            http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
+                    .userDetailsService(customService);
+
         }
 
         @Override

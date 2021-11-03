@@ -6,9 +6,14 @@ import java.util.Set;
 
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import ml.kalanblowSystemManagement.model.PersistentLogin;
 import ml.kalanblowSystemManagement.repository.RememberMeTokenRepository;
 
+@Repository("persistentTokenRepository")
+@Transactional
 public class JpaPesristentTokenRepository implements PersistentTokenRepository {
 
 	private final RememberMeTokenRepository rememberMeTokenRepository;

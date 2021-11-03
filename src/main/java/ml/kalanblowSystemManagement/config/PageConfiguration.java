@@ -81,28 +81,12 @@ public class PageConfiguration implements WebMvcConfigurer {
         return messageSource;
     }
 
-    /*
-     * @Bean public LocalValidatorFactoryBean getValidator() { LocalValidatorFactoryBean bean = new
-     * LocalValidatorFactoryBean(); bean.setValidationMessageSource(messageSource()); return bean; }
-     */
-
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.getDefault());
         return slr;
     }
-
-    /*
-     * @Bean public Formatter<LocalDateTime> localDateTimeFormatter() { return new
-     * Formatter<LocalDateTime>() {
-     * 
-     * @Override public LocalDateTime parse(String text, Locale locale) throws ParseException {
-     * return LocalDateTime.parse(text, DATE_TIME_FORMATTER); }
-     * 
-     * @Override public String print(LocalDateTime object, Locale locale) { return
-     * DATE_TIME_FORMATTER.format(object); } }; }
-     */
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
@@ -126,14 +110,14 @@ public class PageConfiguration implements WebMvcConfigurer {
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
     }
-    
-      @Override public void addFormatters(FormatterRegistry formatterRegistry) {
-      
-      formatterRegistry.addFormatterForFieldType(LocalDate.class, new FrenchLocalDateFormater());
-      formatterRegistry.addFormatter(new LocalDateTimeFormatter());
-      
-      }
-     
+
+    @Override
+    public void addFormatters(FormatterRegistry formatterRegistry) {
+
+        formatterRegistry.addFormatterForFieldType(LocalDate.class, new FrenchLocalDateFormater());
+        formatterRegistry.addFormatter(new LocalDateTimeFormatter());
+
+    }
 
     public void configurePathMatch(PathMatchConfigurer configurer) {
         UrlPathHelper urlPathHelper = new UrlPathHelper();
@@ -154,4 +138,6 @@ public class PageConfiguration implements WebMvcConfigurer {
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 
+    
+     
 }
