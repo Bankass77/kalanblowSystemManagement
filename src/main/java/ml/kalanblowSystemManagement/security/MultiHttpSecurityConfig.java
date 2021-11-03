@@ -39,7 +39,6 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
 import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
-import ml.kalanblowSystemManagement.security.remember.LoginFilter;
 
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
