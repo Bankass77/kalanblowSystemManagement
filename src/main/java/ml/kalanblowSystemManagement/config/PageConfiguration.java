@@ -4,7 +4,6 @@ package ml.kalanblowSystemManagement.config;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -12,12 +11,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -44,14 +40,15 @@ public class PageConfiguration implements WebMvcConfigurer {
         controllerRegistry.addViewController("/home").setViewName("home");
         controllerRegistry.addViewController("/dashboard").setViewName("dashboard");
         controllerRegistry.addViewController("/login").setViewName("login");
-        controllerRegistry.addViewController("/signup").setViewName("signup");
+        controllerRegistry.addViewController("/adminPage/signup").setViewName("signup");
         controllerRegistry.addViewController("/logout").setViewName("logout");
         controllerRegistry.addViewController("/profile").setViewName("profile");
+        controllerRegistry.addViewController("/adminPage/roles").setViewName("roles");
+        controllerRegistry.addViewController("/adminPage/roles/newRole").setViewName("newRole");
         controllerRegistry.addViewController("/error").setViewName("error");
-        controllerRegistry.addViewController("/users").setViewName("users");
-        controllerRegistry.addViewController("/editeUser").setViewName("editeUser");
-        // controllerRegistry.addViewController("/editeUser/**").setViewName("updateUser");
-        controllerRegistry.addViewController("/deleteUser/**").setViewName("deleteUser");
+        controllerRegistry.addViewController("/adminPage/users").setViewName("users");
+        controllerRegistry.addViewController("/adminPage/editeUser/**").setViewName("editeUser");
+        controllerRegistry.addViewController("/adminPage/deleteUser/**").setViewName("deleteUser");
         controllerRegistry.addViewController("/lastName").setViewName("lastname");
         controllerRegistry.addViewController("/adminHome").setViewName("adminHomePage");
         controllerRegistry.addViewController("/profile/email").setViewName("changeEmail");
@@ -125,19 +122,7 @@ public class PageConfiguration implements WebMvcConfigurer {
         configurer.setUrlPathHelper(urlPathHelper);
     }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        PageableHandlerMethodArgumentResolver resolver =
-                new PageableHandlerMethodArgumentResolver();
-        resolver.setPageParameterName("page");
-        resolver.setSizeParameterName("size");
-        resolver.setOneIndexedParameters(false);
-        resolver.setFallbackPageable(PageRequest.of(0, 50));
-        resolver.setMaxPageSize(100);
-        resolvers.add(resolver);
-        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
-    }
 
-    
+  
      
 }

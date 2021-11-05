@@ -27,9 +27,9 @@
 					<div class="signup-form">
 						<h2 class="form-title">Sign up</h2>
 						<form action="#" method="POST" class="register-form"
-							id="register-form" th:action="@{/signup}"
+							id="register-form" th:action="@{/adminPage/signup}"
 							th:object="${adminSignupCommand}">
-							<div class="form-group">
+							<div class="form-group" th:fragment="gender" >
 								<!-- <label th:for="gender"><i class="zmdi zmdi-account-o"></i>Select
 									gender</label> -->
 								<label class="block text-sm font-medium text-gray-700"
@@ -43,7 +43,7 @@
 									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small><small
 									class="text-danger-padded"
 									th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></small> -->
-								<div>
+								<div  class="form-group" >
 									<th:block th:each="possibleGender,iter : ${genders}">
 										<input type="radio" th:id="${'gender-'+possibleGender}"
 											th:field="*{gender}" th:value="${possibleGender}"
@@ -55,7 +55,7 @@
 									</th:block>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="firstName" >
 								<label for="firstName"><i
 									class="zmdi zmdi-account material-icons-name"></i></label> <input
 									type="text" th:field="*{firstName}" name="firstName"
@@ -65,7 +65,7 @@
 									th:errors="*{firstName}"></small>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group"  th:fragment="lastName" >
 								<label for="lastName"><i class="zmdi zmdi-account-o"></i></label>
 								<input type="text" th:field="*{lastName}" name="lastName"
 									id="lastName" placeholder="Last Name" required="required" /> <small
@@ -73,14 +73,14 @@
 									th:errors="*{lastName}" style="color: red"></small>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group" th:fragment="email" >
 								<label for="email"><i class="zmdi zmdi-email"></i></label> <input
 									type="email" th:field="*{email}" name="email" id="email"
 									placeholder="Your Email" required="required" value="a" /> <small
 									class="text-danger" th:if="${#fields.hasErrors('email')}"
 									th:errors="*{email}" style="color: red"></small>
 							</div>
-							<div class="form-group">
+							<div class="form-group" th:fragment="password" >
 								<label for="password"><i class="zmdi zmdi-lock"></i></label> <input
 									type="password" th:field="*{password}" name="password"
 									id="password" placeholder="Password" required="required"
@@ -89,7 +89,7 @@
 									th:errors="*{password}" style="color: red"></small>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group" th:fragment="matchingPassword" >
 								<label for="matchingPassword"><i class="zmdi zmdi-lock"></i></label>
 								<input type="password" th:field="*{matchingPassword}"
 									name="matchingPassword" id="matchingPassword"
@@ -98,7 +98,7 @@
 									th:if="${#fields.hasErrors('matchingPassword')}"
 									th:errors="*{matchingPassword}" style="color: red"></small>
 							</div>
-							<div class="form-group">
+							<div class="form-group" th:fragment="street">
 								<label for="street"><i class="zmdi zmdi-city"></i></label> <input
 									type="text" th:field="*{adresse.street}" name="street"
 									id="street" placeholder="street" required="required" /> <small
@@ -106,7 +106,7 @@
 									th:if="${#fields.hasErrors('adresse.street')}"
 									th:errors="*{adresse.street}" style="color: red"></small><br>
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="streetNumber">
 								<label for="streetNumber"><i class="zmdi zmdi-city"></i></label>
 								<input type="number" th:field="*{adresse.streetNumber}"
 									name="streetNumber" id="streetNumber"
@@ -117,7 +117,7 @@
 
 							</div>
 
-							<div class="form-group">
+							<div class="form-group"  th:fragment="state">
 								<label for="state"><i class="zmdi zmdi-city"></i></label> <input
 									type="text" th:field="*{adresse.state}" name="state" id="state"
 									placeholder="state" required="required" /> <small
@@ -125,7 +125,7 @@
 									th:if="${#fields.hasErrors('adresse.state')}"
 									th:errors="*{adresse.state}" style="color: red"></small><br>
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="codePostale">
 								<label for="codepostale"><i class="zmdi zmdi-city"></i></label>
 								<input type="number" th:field="*{adresse.codePostale}"
 									name="codepostale" id="codepostale" placeholder="code postal"
@@ -134,17 +134,15 @@
 									th:errors="*{adresse.codePostale}" style="color: red"></small><br>
 
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="country">
 								<label for="country"><i class="zmdi zmdi-city"></i></label> <input
 									type="text" th:field="*{adresse.country}" name="country"
 									id="country" placeholder="country" required="required" /> <small
 									class="text-danger"
 									th:if="${#fields.hasErrors('adresse.country')}"
 									th:errors="*{adresse.country}" style="color: red"></small><br>
-
-
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="mobileNumber">
 								<label for="mobileNumber"><i class="zmdi zmdi-phone"></i></label>
 								<input type="text" th:field="*{mobileNumber}"
 									name="mobileNumber" id="mobileNumber"
@@ -152,7 +150,7 @@
 									th:if="${#fields.hasErrors('mobileNumber')}"
 									th:errors="*{mobileNumber}" style="color: red"></small>
 							</div>
-							<div class="form-group">
+							<div class="form-group"  th:fragment="birthDate">
 								<label for="birthDate"><i class="zmdi zmdi-calendar"></i></label>
 								<input type="text" th:field="*{birthDate}" name="birthDate"
 									id="birthDate" th:placeholder="${dateFormat}"
@@ -161,7 +159,7 @@
 									th:if="${#fields.hasErrors('birthDate')}"
 									th:errors="*{birthDate}" style="color: red"></small>
 							</div>
-							<div class="form-group">
+							<div class="form-group" th:fragment="createDate">
 								<label for="createDate"><i class="zmdi zmdi-calendar"></i></label>
 								<input type="datetime-local" class="form-control"
 									th:id="createDate" th:field="*{createdDate}" name="createDate"
@@ -170,7 +168,7 @@
 									th:if="${#fields.hasErrors('createdDate')}"
 									th:errors="*{createdDate}">createDate Error</small>
 							</div>
-							<div>
+							<div  class="form-group"  th:fragment="lastModificationDate">
 								<label for="lastModificationDate"><i
 									class="zmdi zmdi-calendar"></i></label> <input type="datetime-local"
 									class="form-control" th:id="lastModificationDate"
@@ -178,9 +176,9 @@
 									th:value="${#temporals.format(lastModificationDate)}" /> <small
 									class="text-danger-padded"
 									th:if="${#fields.hasErrors('lastModifiedDate')}"
-									th:errors="*{lastModifiedDate}">createDate Error</small>
+									th:errors="*{lastModifiedDate}">lastModifiedDate Error</small>
 							</div>
-							<div class="form-group ">
+							<div class="form-group "  th:fragment="roles">
 								<label class="form-check-label" for="role">Roles:</label><br />
 								<div class="">
 									<select name="role" id="role">
@@ -197,7 +195,7 @@
 									agree all statements in <a href="#" class="term-service">Terms
 										of service</a></label>
 							</div>
-							<div class="form-group form-button">
+							<div class="form-group form-button" th:fragment="submit">
 								<input type="submit" name="signup" id="signup"
 									class="form-submit" value="Register" />
 							</div>

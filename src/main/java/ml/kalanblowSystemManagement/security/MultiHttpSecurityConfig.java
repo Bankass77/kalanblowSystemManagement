@@ -131,7 +131,7 @@ public class MultiHttpSecurityConfig {
                     .deleteCookies("JSESSIONID").logoutSuccessUrl("/").and().exceptionHandling();
 
             http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
-                    .userDetailsService(customService);
+                    .userDetailsService(customService).tokenValiditySeconds((int) SecurityConstants.EXPIRATION_TIME);
 
         }
 

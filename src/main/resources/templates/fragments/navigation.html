@@ -92,13 +92,6 @@
 			<!-- ============================================================== -->
 			<!-- Logo -->
 			<!-- ============================================================== -->
-			<!-- 	<div class="nav-wrapper indigo">
-				<ul class="right">
-					<li><a class="dropdown-button" href="#!"
-						data-activates="lang-dropdown"><i
-							class="mdi-action-language right"></i> Lang</a></li>
-				</ul>
-			</div> -->
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/dashboard"> <!-- Logo icon --> <b>
 						<!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -111,6 +104,7 @@
 				</span>
 				</a>
 			</div>
+			<br>
 			<!-- ============================================================== -->
 			<!-- End Logo -->
 			<!-- ============================================================== -->
@@ -128,26 +122,6 @@
 						class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark"
 						href="javascript:void(0)"><i class="mdi mdi-menu"></i></a></li>
 					
-			<!-- 	 <li class="nav-item hidden-sm-down search-box"><a
-						class="nav-link hidden-sm-down text-muted waves-effect waves-dark"
-						href="javascript:void(0)"><i class="ti-search"></i></a>
-						<form class="app-search">
-							<input type="text" class="form-control"
-								placeholder="Search & enter"> <a class="srh-btn"><i
-								class="ti-close"></i></a>
-							<div class="listBlock">
-								<div class="search-block">
-									<input type="text" id="searchLastName" name="searchLastName" /> <br />
-									<label for="searchLastName" th:text="#{search.label}">Search
-										label:</label><br/>
-									<button id="searchButton" name="searchButton"
-										onclick="retrieveUsers()" type="button"
-										th:text="#{search.button}">Search button</button>
-								</div><br/>
-								Results block
-								<div id="resultsBlock"></div>
-							</div>
-						</form> </li> -->
 				</ul>
 				<!-- ============================================================== -->
 				<!-- User profile and search -->
@@ -156,13 +130,27 @@
 					<!-- ============================================================== -->
 					<!-- Profile -->
 					<!-- ============================================================== -->
+					
+					  <!--region Displaying Bienvenue  + user-->
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
 						href="profile" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false"><img
 							src="/dashboard/assets/images/users/1.jpg" alt="user"
 							class="profile-pic m-r-10" th:inline="text" align="top" />Bienvenue
-							[[${#httpServletRequest.remoteUser}]]!</a></li>
+							<span sec:authentication="name"!></span>!</a></li>
+							  <!--endregion-->
+							  
+							   <!--region For ROLE_ADMIN display admin page-->
+                <!--================================================================================================-->
+                <li class="nav-item d-flex">
+                    <i class="align-self-center fas fa-user-cog" style="color: white;"></i>
+                    <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/adminPage}" href="/adminPage">
+                        Admin Page
+                    </a>
+                </li>
+                <!--================================================================================================-->
+                <!--endregion-->
 				</ul>
 			</div>
 		</nav>

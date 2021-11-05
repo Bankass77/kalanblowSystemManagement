@@ -1,37 +1,53 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<!-- <head th:replace="fragments/header:: header"> -->
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
 </head>
 <body>
+	<div class="container-fluid" th:insert="fragments/navigation"></div>
+	<div th:insert="fragments/sidebar :: sidebar"></div>
+	<div id="admin-section" class="container">
+		<h1 th:text="#{user.roles.edite}"></h1>
+		<div class="admin-inner">
+			<div class="container-fluid">
+				<div class="form-group">
 
-<nav th:replace="fragments/header :: nav"></nav>
+					<div id="admin-content">
+						<form class="admin-form"
+							th:action="@{/adminPage/roles/{id}(id=${role.id})}"
+							th:object="${role}" th:method="post" method="post">
+							<div class="form-group">
+								<label for="editRoleName">Name</label> <input id="editRoleName"
+									type="text" class="form-control" th:field="*{userRoleName}">
+								<p class="text-danger"
+									th:if="${#fields.hasErrors('userRoleName')}"
+									th:errors="*{userRoleName}"></p>
 
-<div id="admin-section">
-    <div class="admin-inner">
-        <div class="container">
-            <div class="d-flex flex-row" >
-                <div th:replace="fragments/sidebar :: sidebar"></div>
+							</div>
+							<a class="btn btn-dark" th:href="@{/adminPage/roles}">Cancel</a>
+							<span></span>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                <div id="admin-content" >
-                    <form class="admin-form" th:action="@{/admin/roles/{id}(id=${role.id})}"
-                          th:object="${role}" th:method="post" method="post">
-                        <div class="form-group">
-                            <label for="editRoleName">Name</label>
-                            <input id="editRoleName" type="text" class="form-control" th:field="*{userRoleName}" >
-                            <p class="text-danger" th:if="${#fields.hasErrors('userRoleName')}" th:errors="*{userRoleName}"></p>
-
-                        </div>
-                        <a class="btn btn-dark" th:href="@{/admin/roles}">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<footer th:replace="fragments/footer :: footer"></footer>
-<div th:replace="fragments/jsScripts :: scripts"></div>
+	<footer th:replace="fragments/footer :: footer"></footer>
+	<div th:replace="fragments/jsScripts :: scripts"></div>
 
 </body>
 </html>

@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
+<!-- <link rel="icon" type="image/png" href="favicon.png"> -->
 
 <!-- Font Icon -->
 <link rel="stylesheet"
@@ -71,8 +71,6 @@
 </head>
 
 <body>
-
-
 	<div th:fragment="sidebar">
 		<!-- ============================================================== -->
 		<!-- Left Sidebar - style you can find in sidebar.scss  -->
@@ -83,21 +81,46 @@
 				<!-- Sidebar navigation-->
 				<nav class="sidebar-nav">
 					<ul id="sidebarnav">
-						<li><a class="waves-effect waves-dark" href="dashboard"
-							aria-expanded="false"><i class="mdi mdi-gauge"></i><span
-								class="hide-menu">Dashboard</span></a></li>
-						<li><a class="waves-effect waves-dark" href="users"
-							aria-expanded="false"><i class="mdi mdi-factory"></i><span
-								class="hide-menu">Users</span></a></li>
-						<li><a class="waves-effect waves-dark" href="bus"
-							aria-expanded="false"><i class="mdi mdi-bus"></i><span
-								class="hide-menu">Students</span></a></li>
-						<li><a class="waves-effect waves-dark" href="trip"
-							aria-expanded="false"><i class="mdi mdi-road-variant"></i><span
-								class="hide-menu">Parents</span></a></li>
-						<li><a class="waves-effect waves-dark" href="profile"
-							aria-expanded="false"><i class="mdi mdi-account-check"></i><span
-								class="hide-menu">School life</span></a></li>
+						<li><a
+							th:replace="fragments/sidebar-buttons :: mobile-button(title='Dashboard', link=@{dashboard})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a></li>
+						<li><a
+							th:replace="fragments/sidebar-buttons :: mobile-button(title='Users', link=@{/adminPage/users})"
+							class="waves-effect waves-dark" 
+							aria-expanded="false"><i
+								class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
+							<a th:replace="fragments/sidebar-buttons :: mobile-button(title='Roles', link=@{/adminPage/roles})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-factory"></i><span class="hide-menu">Role</span></a>
+							<a
+							th:replace="fragments/sidebar-buttons :: mobile-button(title='CReate New Role', link=@{/adminPage/roles/newRole})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-factory"></i><span class="hide-menu">Create
+									new Role</span></a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Students', link='#')"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-bus"></i><span class="hide-menu">Students</span></a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-road-variant"></i><span class="hide-menu">Parents</span></a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='User Profile', link=@{/profile})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-account-check"></i><span class="hide-menu">users
+									Profile</span></a></li>
+									<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Change User Password', link=@{/password})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-account-check"></i><span class="hide-menu">Change user Password
+								</span></a></li>
+								
+								<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Change User Email', link=@{/profile/email})"
+							class="waves-effect waves-dark" aria-expanded="false"><i
+								class="mdi mdi-account-check"></i><span class="hide-menu">Change user Email
+								</span></a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Calendar', link='#')">Calendar</a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Documents', link='#')"
+							href="#">Documents</a></li>
+						<li><a th:replace="fragments/sidebar-buttons :: mobile-button(title='Reports', link='#')">Reports</a></li>
 					</ul>
 				</nav>
 				<!-- End Sidebar navigation -->
@@ -115,14 +138,52 @@
 				<a href="logout" class="link" data-toggle="tooltip" title="Logout"><i
 					class="mdi mdi-power"></i></a>
 			</div>
-			<div class="fixed inset-0 flex z-40">
-				<!--
-        
-	<!-- End Bottom points-->
-
-
-	</aside>
+		</aside>
 	</div>
+	<div th:fragment="mobile"
+     class="md:hidden"
+     x-show="isVisible()">
+    <div class="fixed inset-0 flex z-40">
+        <!--
+          Off-canvas menu overlay
+        -->
+        <div class="fixed inset-0" aria-hidden="true"
+             x-show="isVisible()">
+            <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+        </div>
+        <!--
+          Off-canvas menu
+        -->
+        <div class="form-group"
+             x-show="isVisible()">
+            <div class="absolute top-0 right-0 -mr-12 pt-2">
+                <!--
+                  Close sidebar menu button
+                -->
+                <button class="form-group"
+                        @click="closeSidebar">
+                    <span class="sr-only">Close sidebar</span>
+
+                </button>
+            </div>
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+                <nav class="px-2">
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link='#', title=#{menu.dashboard})"></a>
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link=@{/adminPage/users}, title=#{menu.users})"></a>
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link=@{/adminPage/roles}, title=#{menu.teams})"></a>
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link='#', title=#{menu.calendar})"></a>
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link='#', title=#{menu.documents})"></a>
+                    <a th:replace="fragments/sidebar-buttons :: mobile-button(link='#', title=#{menu.reports})"></a>
+                </nav>
+            </div>
+        </div>
+        <div class="flex-shrink-0 w-14" aria-hidden="true">
+            <!-- Dummy element to force sidebar to shrink to fit close icon -->
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

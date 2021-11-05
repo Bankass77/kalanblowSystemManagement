@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,10 +22,12 @@ import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.service.RoleService;
 
 @Controller
+@RequestMapping("/adminPage")
 public class RoleController {
 
     public static final String REDIRECT_ADMIN_PAGE_ROLES = "redirect:/admin/roles";
     public static final String ADMIN_PAGE_ROLE_EDIT_ROLE = "admin/role/editRole";
+    public static final String ADMIN_PAGE_ROLE_CREATE_ROLE="admin/role/newRole";
     private RoleService roleService;
 
     @Autowired
@@ -83,7 +86,7 @@ public class RoleController {
 
         model.addAttribute("newRole", new RoleDto());
 
-        return "admin/role/newRole";
+        return ADMIN_PAGE_ROLE_CREATE_ROLE;
     }
 
     @PostMapping("/roles/newRole")
@@ -93,7 +96,7 @@ public class RoleController {
         boolean roleNameAlreadyExists = roleService.findByName(newRole.getUserRoleName()) != null;
         boolean hasErrors = roleNameAlreadyExists || bindingResult.hasErrors();
 
-        String formWithErrors = "admin/role/newRole";
+        String formWithErrors = ADMIN_PAGE_ROLE_CREATE_ROLE;
 
         if (roleNameAlreadyExists) {
 

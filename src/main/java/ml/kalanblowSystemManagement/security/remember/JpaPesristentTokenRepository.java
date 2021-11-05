@@ -41,6 +41,7 @@ public class JpaPesristentTokenRepository implements PersistentTokenRepository {
 			token.setUser(token.getUser());
 			token.setFullName(token.getFullName());
 			token.setIpAdresse(token.getIpAdresse());
+			token.setUser(token.getUser());
 		}
 
 	}

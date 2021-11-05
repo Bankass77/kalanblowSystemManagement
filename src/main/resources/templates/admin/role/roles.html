@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+
 </head>
+
 <body>
-	<nav th:replace="fragments/header :: nav"></nav>
 
-	<div id="admin-section">
-		<div class="admin-inner">
+
+	<div class="container-fluid" th:insert="fragments/navigation"></div>
+	<div th:insert="fragments/sidebar :: sidebar"></div>
+	<div>
+		<div class="container-fluid" id="mainContainer">
 			<div class="container">
+			<h1 th:text="#{user.roles}"></h1>
 				<div class="d-flex flex-row">
-					<div th:replace="fragments/sidebar :: sidebar"></div>
-
 					<div id="admin-content">
 						<div th:if="${roleHasBeenSaved}"
 							class="alert alert-success alert-dismissible fade show"
@@ -43,22 +50,20 @@
 									<td th:text="${role.id}">>1</td>
 									<td th:text="${role.userRoleName}">Role Name</td>
 									<td><a style="text-decoration: none; color: blue;"
-										th:href="@{/admin/roles/{id}(id=${role.id})}" class="edit-btn"
-										data-toggle="tooltip" data-placement="right" title="Edit role">
-											<i class="fa fa-edit"></i>
+										th:href="@{/adminPage/roles/{id}(id=${role.id})}"
+										class="edit-btn" data-toggle="tooltip" data-placement="right"
+										title="Edit role"> <i class="fa fa-edit"></i>
 									</a></td>
 								</tr>
 							</tbody>
 						</table>
-						<a href="#" th:href="@{/admin/roles/newRole}">
-							<button type="button" class="btn btn-primary">New Role</button>
-						</a>
+						<a href="#" th:href="@{/adminPage/roles/newRole}"><span></span>
+							<button type="button" class="btn btn-primary">New Role</button> </a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<footer th:replace="fragments/footer :: footer"></footer>
 
 	<div th:replace="fragments/jsScripts :: scripts"></div>

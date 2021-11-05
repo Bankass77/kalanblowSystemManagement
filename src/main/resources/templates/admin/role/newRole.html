@@ -1,41 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<!-- <head th:replace="fragments/headear :: header"> -->
+
 </head>
 <body>
 
-<nav th:replace="fragments/header :: nav"></nav>
+	<div class="container-fluid" th:insert="fragments/navigation"></div>
+	<div th:insert="fragments/sidebar :: sidebar"></div>
+	<div id="admin-section">
+		<div class="admin-inner">
+			<div class="container">
+			<h1 th:text="#{user.roles.create}"></h1>
+				<div class="d-flex flex-row">
 
-<div id="admin-section">
-    <div class="admin-inner">
-        <div class="container">
-            <div class="d-flex flex-row" >
-                <div th:replace="fragments/sidebar :: sidebar"></div>
-                <div id="admin-content" >
-                    <form class="admin-form" th:action="@{/admin/roles/newRole}"  th:object="${newRole}" th:method="post" method="post">
-                        <ul class="global-errors" th:if="${#fields.hasErrors('global')}">
-                            <li class="text-danger" th:each="err : ${#fields.errors('global')}"
-                                th:text="${err}">Input is incorrect</li>
-                        </ul>
-                        <div class="form-group">
-                            <label for="newRolename">Name</label>
-                            <input type="text" class="form-control" th:field="*{userRoleName}" id="newRolename" placeholder="Enter name">
-                            <p class="text-danger" th:if="${#fields.hasErrors('userRoleName')}" th:errors="*{userRoleName}"></p>
-                        </div>
-                        <a class="btn btn-dark" th:href="@{/admin/roles}">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+					<div id="admin-content">
+						<form class="admin-form" th:action="@{/adminPage/roles/newRole}"
+							th:object="${newRole}" th:method="post" method="post">
+							<ul class="global-errors" th:if="${#fields.hasErrors('global')}">
+								<li class="text-danger"
+									th:each="err : ${#fields.errors('global')}" th:text="${err}">Input
+									is incorrect</li>
+							</ul>
+							<div class="form-group">
+								<label for="newRolename">Name:</label><br> <input type="text"
+									class="form-control" th:field="*{userRoleName}"
+									id="newRolename" placeholder="Enter name">
+								<p class="text-danger"
+									th:if="${#fields.hasErrors('userRoleName')}"
+									th:errors="*{userRoleName}"></p>
+							</div>
+							<a class="btn btn-dark" th:href="@{/admin/roles}">Cancel</a>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-<div th:replace="fragments/jsScripts :: scripts"></div>
+	<footer th:replace="fragments/footer :: footer"></footer>
+	<div th:replace="fragments/jsScripts :: scripts"></div>
 
 </body>
 </html>
-© 2021 GitHub, Inc.
-Terms
-Privacy
+

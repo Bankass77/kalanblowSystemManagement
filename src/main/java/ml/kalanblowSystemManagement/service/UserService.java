@@ -46,6 +46,7 @@ public interface UserService {
     UserDto changeUserPassword(String oldPassword, String newPassword);
 
     UserDto deleteUserById(Long id);
+
     UserDto deleteUser(UserDto userDto);
 
     UserDto deleteUserByEmail(String email);
@@ -64,5 +65,4 @@ public interface UserService {
 
     Set<RoleDto> getAssignedRoleSet(UserDto userDto);
 
-  
 }

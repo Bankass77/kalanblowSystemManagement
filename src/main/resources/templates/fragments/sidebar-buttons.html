@@ -1,30 +1,22 @@
-<html xmlns:th="http://www.thymeleaf.org"
->
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
 
 <!-- tag::mobile-button[] -->
-<a th:fragment="mobile-button(link, title, menuItem, icon)"
-   th:href="${link}"
-   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-   th:classappend="${activeMenuItem == menuItem}? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
->
-    <div class="mr-4 h-6 w-6"
-         th:classappend="${activeMenuItem == menuItem}?'text-gray-500':'text-gray-400 group-hover:text-gray-500'">
-        <svg th:replace="${icon}"></svg>
-    </div>
-    [[${title}]]
+<a th:fragment="mobile-button(link, title)"
+	th:href="${link}">
+		<!-- <svg th:replace="${icon}"></svg> -->
+	[[${title}]]
 </a>
 <!-- end::mobile-button[] -->
 
-<a th:fragment="desktop-button(link, title, menuItem, icon)"
-   th:href="${link}"
-   class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-   th:classappend="${activeMenuItem == menuItem}? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
->
-    <div class="mr-3 h-6 w-6"
-         th:classappend="${activeMenuItem == menuItem}?'text-gray-500':'text-gray-400 group-hover:text-gray-500'">
-        <svg th:replace="${icon}"></svg>
-    </div>
-    [[${title}]]
+<a th:fragment="desktop-button(link, title)"
+	th:href="${link}"
+	class="form-group">
+
+	 [[${title}]]
 </a>
 
 </html>

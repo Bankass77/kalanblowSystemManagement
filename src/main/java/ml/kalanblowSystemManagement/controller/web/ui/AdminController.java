@@ -19,8 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.model.EditeMode;
 import ml.kalanblowSystemManagement.model.Gender;
 import ml.kalanblowSystemManagement.model.UserRole;
 import ml.kalanblowSystemManagement.service.RoleService;
@@ -52,10 +55,13 @@ import ml.kalanblowSystemManagement.utils.paging.Pager;
 @Controller
 @Slf4j
 @PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/adminPage")
 public class AdminController {
 
-    public static final String EDIT_USER_FORM = "admin/editUser";
-    public static final String REDIRECT_ADMIN_PAGE_USERS = "redirect:/admin/allUsers";
+    public static final String EDIT_USER_FORM = "admin/user/editeUser";
+
+    public static final String REDIRECT_ADMIN_PAGE_USERS = "redirect:/admin/user/allUsers";
+
     @Autowired
     private UserService userService;
 
@@ -80,6 +86,7 @@ public class AdminController {
         modelAndView.addObject("adminSignupCommand", new AdminSignupCommand());
         modelAndView.addObject("roles", initializeAuthorities());
         modelAndView.addObject("genders", List.of(Gender.FEMALE, Gender.MALE));
+        modelAndView.addObject("editeMode", EditeMode.CREATE);
         return modelAndView;
     }
 
@@ -96,8 +103,6 @@ public class AdminController {
     public ModelAndView creatnewUserAdmin(
             @Valid @ModelAttribute("adminSignupCommand") AdminSignupCommand adminSignupCommand,
             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
-        // UserDto userDto = userService.findUserByEmail(adminSignupCommand.getEmail());
         ModelAndView modelAndView = new ModelAndView("signup");
 
         if (!userService.emailExist(adminSignupCommand.getEmail())) {
@@ -116,6 +121,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("message",
                     "SuccesFully added the new user with admin role");
             modelAndView.addObject("successMessage", redirectAttributes);
+          modelAndView.addObject("editeMode", EditeMode.CREATE);
 
             log.debug(" A user registered with the email provided");
         }
@@ -134,7 +140,7 @@ public class AdminController {
     public ModelAndView getUsersList(ModelAndView modelAndView,
             UserSearchParameters userSearchParameters) {
 
-        modelAndView = new ModelAndView("admin/allUsers");
+        modelAndView = new ModelAndView("admin/user/allUsers");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -218,30 +224,27 @@ public class AdminController {
      * @return
      */
     @GetMapping("/editeUser/{id}")
-    public ModelAndView editingUser(Optional<UserDto> userDto, @RequestParam(
-            value = "id",
-            required = true) int id) {
+    public String getEditingUser(@PathVariable Long id, Model model) {
         log.info("User/edit-Get: Id to query=" + id);
-        userDto = Optional.ofNullable(userService.findUserById(Long.valueOf(id)));
+        Optional<UserDto> userDto = Optional.ofNullable(userService.findUserById(id));
         log.info("User/edit-Get: Id to query=" + id);
         Set<RoleDto> roleDtos = roleService.getAllRoles();
         userDto.get().setRoles(userService.getAssignedRoleSet(userDto.get()));
-        ModelAndView modelAndView = new ModelAndView(EDIT_USER_FORM);
 
-        modelAndView.addObject("editeUser", userDto.get());
-        modelAndView.addObject("roles", roleDtos);
+        model.addAttribute("editeUser", userDto.get());
+        model.addAttribute("roles", roleDtos);
+        model.addAttribute("editMode", EditeMode.UPDATE);
 
-        return modelAndView;
-        
+        return EDIT_USER_FORM;
+
     }
 
     @PostMapping("/editeUser/{id}")
-    public ModelAndView editingUser(@ModelAttribute("oldUser") @Valid UserDto userDto,
-            @PathVariable Long id,
+    public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto,
+            @PathVariable Long id, Model model,
 
             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        ModelAndView modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
         Optional<UserDto> uOptional = Optional.ofNullable(userService.findUserById(id));
         Set<RoleDto> roleDtos = roleService.getAllRoles();
         boolean emailAlreadyExists =
@@ -252,16 +255,17 @@ public class AdminController {
             bindingResult.rejectValue("email", "UniqueUsername.user.username");
         }
         if (validationFailed) {
-            modelAndView.addObject("userDto", userDto);
-            modelAndView.addObject("roleList", roleDtos);
-            modelAndView.addObject("org.springframework.validation.BindingResult.userDto",
+            model.addAttribute("editeUser", userDto);
+            model.addAttribute("roleList", roleDtos);
+            model.addAttribute("org.springframework.validation.BindingResult.userDto",
                     bindingResult);
+            model.addAttribute("editeMode", EditeMode.UPDATE);
 
-            return modelAndView;
+            return EDIT_USER_FORM;
         }
         userService.updateUserProfile(uOptional.get());
         redirectAttributes.addFlashAttribute("userHasBeenUpdated", true);
-        return new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
+        return REDIRECT_ADMIN_PAGE_USERS;
 
     }
 
@@ -269,41 +273,18 @@ public class AdminController {
      * @param id
      * @return
      */
-    // @DeleteMapping(value = "/deleteUser")
-    @RequestMapping(
-            value = "/deleteUser",
-            method = RequestMethod.GET)
-    public ModelAndView deleteUser(@RequestParam(
-            value = "id",
-            required = true) int id,
-            @RequestParam(
-                    value = "phase",
-                    required = false,
-                    defaultValue = "unknown") String phase) {
+    @PostMapping("/deleteUser/{id}")
+    public ModelAndView deleteUser(@PathVariable("id")
+              Long id) {
 
-        ModelAndView modelAndView = new ModelAndView("admin/userDelete");
+        ModelAndView modelAndView = new ModelAndView("admin/user/userDelete");
         UserDto userDto = new UserDto();
         userDto = userService.findUserById(Long.valueOf(id));
-        log.info("user/delet_Get | id=" + id + "|phase= " + phase + "|" + userDto);
-
-        if (phase.equals("stage")) {
-            String message = "user" + userDto + "queued for display.";
-            modelAndView.addObject("userId", userDto);
-            modelAndView.addObject("message", message);
-        }
-        if (phase.equals("confirm")) {
-
+       
             modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
             userDto = userService.deleteUser(userDto);
             String message = "User" + userDto + " was successfully deleted.";
             modelAndView.addObject("message", message);
-        }
-
-        if (phase.equals("cancel")) {
-            modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
-            String message = "User delete was cancelled.";
-            modelAndView.addObject("message", message);
-        }
 
         return modelAndView;
 

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<body>
+	<table  class="table table-bordered">
+		<thead  class="thead-dark">
+			<tr>
+				<!-- tag::th[] -->
+				<th th:fragment="header(title)"
+					th:with="hideOnMobile=${hideOnMobile?:false}"
+					th:classappend="${hideOnMobile?'hidden sm:table-cell':''}"
+					th:text="${title}">Header title</th>
+				<!-- end::th[] -->
+			</tr>
+		</thead>
+		<tbody  align="center">
+			<tr  class="table-active">
+				<!-- tag::td[] -->
+				<td th:fragment="data(contents)"
+					th:with="primary=${primary?: false},hideOnMobile=${hideOnMobile?:false}"
+					class="table-primary"
+					th:classappend="|${primary?'font-medium text-gray-900':''} ${hideOnMobile?'hidden sm:table-cell':''}|"
+					th:text="${contents}">Table data contents</td>
+				<!-- end::td[] -->
+				<!-- tag::tdWithLink[] -->
+				<td th:fragment="dataWithLink(linkText, linkUrl)"
+					class="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+					<a th:href="${linkUrl}" th:text="${linkText}"
+					class="text-indigo-600 hover:text-indigo-900">Edit</a>
+				</td>
+				<td>delete</td>
+				<!-- end::tdWithLink[] -->
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

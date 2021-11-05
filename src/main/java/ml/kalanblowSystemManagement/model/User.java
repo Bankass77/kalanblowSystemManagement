@@ -61,6 +61,7 @@ import ml.kalanblowSystemManagement.annotation.EmailContraint;
 import ml.kalanblowSystemManagement.annotation.FrenchPhoneConstraint;
 import ml.kalanblowSystemManagement.annotation.PastLocalDate;
 import ml.kalanblowSystemManagement.annotation.ValidPassword;
+import ml.kalanblowSystemManagement.exception.NotExistingUser;
 import ml.kalanblowSystemManagement.utils.GenderConverter;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -86,6 +87,7 @@ import ml.kalanblowSystemManagement.utils.GenderConverter;
 @DiscriminatorColumn(
         discriminatorType = DiscriminatorType.STRING,
         name = "USER_TYPE")
+@NotExistingUser(groups = ValidationGroupTwo.class)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -106,18 +108,20 @@ public class User implements Serializable {
     @NotNull
     @Size(
             min = 4,
-            max = 30)
+            max = 30, groups = ValidationGroupOne.class)
     @EmailContraint
     private String email;
 
     @Column(
             name = "firstName")
     @NotNull
+    @Size(min = 1, max = 200, groups = ValidationGroupOne.class)
     private String firstName;
 
     @Column(
             name = "lastName")
     @NotNull
+    @Size(min = 1, max = 200, groups = ValidationGroupOne.class)
     private String lastName;
 
     @Column(

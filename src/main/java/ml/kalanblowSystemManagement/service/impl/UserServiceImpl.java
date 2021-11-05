@@ -16,6 +16,7 @@ import org.apache.commons.collections4.map.HashedMap;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -46,9 +47,9 @@ import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserLocation;
 import ml.kalanblowSystemManagement.model.UserRole;
 import ml.kalanblowSystemManagement.model.UserSpecification;
-import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.repository.UserLocationRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
+import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
 import static java.util.Collections.emptyList;
 
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     private final ModelMapper modelMapper;
 
@@ -74,19 +75,18 @@ public class UserServiceImpl implements UserService {
     private PropertiesConfig propertiesConfig;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService,
             ModelMapper modelMapper, BCryptPasswordEncoder passwordEncoder,
             DatabaseReader databaseReader, UserLocationRepository userLocationRepository,
-            PropertiesConfig propertiesConfig) {
+            PropertiesConfig propertiesConfig, CacheManager cacheManager) {
         super();
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.databaseReader = databaseReader;
         this.userLocationRepository = userLocationRepository;
         this.propertiesConfig = propertiesConfig;
-
     }
 
     @Override
@@ -94,7 +94,8 @@ public class UserServiceImpl implements UserService {
     @Cacheable(
             value = "cache.userById",
             key = "#id",
-            unless = "#result == null")
+            unless = "#result == null",
+            condition="#id !=null")
     public UserDto findUserById(Long id) {
 
         User user = userRepository.findUserById(id).orElseThrow(() -> exception(EntityType.USER,
@@ -162,7 +163,8 @@ public class UserServiceImpl implements UserService {
                 "cache.userByEmail",
                 "cache.userById",
                 "cache.byNameContaining",
-                "cache.byEmailContaining"
+                "cache.byEmailContaining",
+                "cache.changeUserEmail"
             },
             allEntries = true)
     public UserDto signup(UserDto userDto) {
@@ -172,21 +174,23 @@ public class UserServiceImpl implements UserService {
             throw exception(EntityType.USER, ExceptionType.DUPLICATE_ENTITY,
                     "An user with that email adress already exists:" + userDto.getEmail());
         }
-        Role userRole = new Role();
+        RoleDto userRole = new RoleDto();
 
         if (userDto.isAdmin()) {
-            userRole = roleRepository.findRoleByUserRoleName(UserRole.ADMIN);
+            userRole = roleService.findByName(UserRole.ADMIN.getUserRole());
         }
         else {
-            userRole = roleRepository.findRoleByUserRoleName(UserRole.STUDENT);
+            userRole = roleService.findByName(UserRole.STUDENT.getUserRole());
         }
+        Role userRole2 = modelMapper.map(userRole, Role.class);
+
         User user = new User().setBirthDate(userDto.getBirthDate()).setEmail(userDto.getEmail())
                 .setFirstName(userDto.getFirstName()).setLastName(userDto.getLastName())
                 .setMatchingPassword(userDto.getMatchingPassword())
                 .setPassword(userDto.getPassword()).setMobileNumber(userDto.getMobileNumber())
                 .setAdresse(userDto.getAdresse()).setCreatedBy(userDto.getCreatedBy())
-                .setCreatedDate(LocalDateTime.now()).setLastModifiedDate(LocalDateTime.now()).setPhoto(null)
-                .setRoles(new HashSet<>(Arrays.asList(userRole)));
+                .setCreatedDate(LocalDateTime.now()).setLastModifiedDate(LocalDateTime.now())
+                .setPhoto(null).setRoles(new HashSet<>(Arrays.asList(userRole2)));
 
         return UserMapper.userToUserDto(userRepository.save(user));
     }
@@ -232,7 +236,8 @@ public class UserServiceImpl implements UserService {
                 "cache.userById",
                 "cache.allUsersEagerly",
                 "cache.byNameContaining",
-                "cache.byEmailContaining"
+                "cache.byEmailContaining",
+                "cache.changeUserEmail"
             },
             allEntries = true)
     public UserDto deleteUserById(Long id) {
@@ -245,9 +250,7 @@ public class UserServiceImpl implements UserService {
         throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, String.valueOf(id));
     }
 
-    /**
-     *
-     */
+  
     @Override
     @SneakyThrows
     public UserDto deleteUserByEmail(String email) {
@@ -277,9 +280,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    /**
-     *
-     */
+  
     @Override
     @Cacheable(
             value = "cache.allUsersPageable")
@@ -482,10 +483,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "cache.byEmailContaining")
     public Page<UserDto> findByEmailContaining(String email, Pageable pageable) {
 
-        Page<User> uPage =
-                userRepository.findByEmailContainingOrderByIdAsc(email, pageable);
+        Page<User> uPage = userRepository.findByEmailContainingOrderByIdAsc(email, pageable);
         List<UserDto> userDtos = uPage.stream().map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
 
@@ -510,26 +511,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<RoleDto> getAssignedRoleSet(UserDto userDto) {
 
-        Map<Long, RoleDto> assignedRoleMap = new HashedMap<>();
-        Set<RoleDto> roleDtos = userDto.getRoles();
+        Optional<RoleDto> role = roleService.findById(userDto.getId());
 
-        for (RoleDto roleDto : roleDtos) {
-            assignedRoleMap.put(roleDto.getId(), roleDto);
+        RoleDto roleDto = modelMapper.map(role.get(), RoleDto.class);
+
+        Map<Long, RoleDto> assignedRoleMap = new HashedMap<>();
+
+        Set<RoleDto> roleDtos = new HashSet<>();
+        roleDtos.add(roleDto);
+
+        log.debug("roleDtos in getAssigneRoleSetcacheManager:{}", roleDtos);
+
+        for (RoleDto roleDto1 : roleDtos) {
+
+            assignedRoleMap.put(roleDto1.getId(), roleDto1);
+
+            log.debug("getAssignedRoleSet:{}", assignedRoleMap);
         }
 
         Set<RoleDto> userRole = new HashSet<RoleDto>();
-        List<Role> userAllRole = roleRepository.findAll();
-        List<RoleDto> uDtos = userAllRole.stream().map(role -> modelMapper.map(role, RoleDto.class))
-                .collect(Collectors.toList());
 
-        Set<RoleDto> allRoles = new HashSet<RoleDto>(uDtos);
+        Set<RoleDto> userAllRole = roleService.getAllRoles();
 
-        for (RoleDto roleDto : allRoles) {
-            
-            if (assignedRoleMap.containsKey(roleDto.getId())) {
-                
-                userRole.add(roleDto);
-            }else {
+        for (RoleDto roleDto2 : userAllRole) {
+
+            if (assignedRoleMap.containsKey(roleDto2.getId())) {
+
+                userRole.add(roleDto2);
+            }
+            else {
                 userRole.add(null);
             }
         }
@@ -550,5 +560,4 @@ public class UserServiceImpl implements UserService {
         return UserMapper.userToUserDto(userRepository.deleteUserById(persistedUser.getId()));
     }
 
-  
 }

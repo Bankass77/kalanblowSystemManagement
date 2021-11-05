@@ -3,7 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
+	layout:decorator="~{layout/layout}" th:with="activeMenuItem='Users'">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -24,7 +24,6 @@
 <link rel="stylesheet" href="/auth/css/style.css">
 <link rel="stylesheet" href="/dashboard/html/css/style.css">
 <!-- Bootstrap Core CSS -->
-/editeUser/(id=${user.id}
 <link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
 	rel="stylesheet">
 <!-- chartist CSS -->
@@ -73,6 +72,8 @@
 <script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
 <!-- Chart JS -->
 <script src="/dashboard/html/js/dashboard1.js"></script>
+<title th:text="#{menu.users}">Users</title>
+
 </head>
 <body style="background: #4f5050">
 
@@ -88,15 +89,7 @@
 		<!-- ============================================================== -->
 		<!-- Bread crumb and right sidebar toggle -->
 		<!-- ============================================================== -->
-		<!--    <div class="row page-titles">
-        <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor">Dashboard</h3>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="home">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </div>
-    </div> -->
+
 		<!-- ============================================================== -->
 		<!-- End Bread crumb and right sidebar toggle -->
 		<!-- ============================================================== -->
@@ -129,45 +122,57 @@
 			<div th:if="${users.isEmpty()}">[[#{no.users}]]</div>
 			<div class="table-responsive" th:unless="${users.isEmpty()}"
 				id="mainContainerRepleace">
+
 				<table class="table table-bordered">
 					<thead class="thead-dark">
 						<tr class="table-active">
-							<th onclick="sortTable(0)" scope="col" th:text="#{label.user.id}"></th>
+							<th onclick="sortTable(0)" scope="col"
+								th:replace="fragments/table :: header(#{label.user.id})"></th>
 							<th onclick="sortTable(1)" scope="col"
-								th:text="#{user.headers.firstName}"></th>
+								th:replace="fragments/table :: header(#{user.headers.firstName})"></th>
 							<th onclick="sortTable(2)" scope="col"
-								th:text="#{user.headers.lastName}"></th>
+								th:replace="fragments/table :: header(#{user.headers.lastName})"></th>
 							<th onclick="sortTable(3)" scope="col"
-								th:text="#{user.headers.email}"></th>
+								th:replace="fragments/table :: header(#{user.headers.email})"></th>
 							<th onclick="sortTable(4)" scope="col"
-								th:text="#{user.headers.mobileNumber}"></th>
+								th:replace="fragments/table :: header(#{user.headers.mobileNumber})"></th>
 							<th onclick="sortTable(5)" scope="col"
-								th:text="#{label.user.birthDate}"></th>
+								th:replace="fragments/table :: header(#{label.user.birthDate})"></th>
 							<th onclick="sortTable(6)" scope="col"
-								th:text="#{label.user.password}"></th>
+								th:replace="fragments/table :: header(#{label.user.password})"></th>
 							<th onclick="sortTable(7)" scope="col"
-								th:text="#{label.user.confirmPass}"></th>
-							<th onclick="sortTable(8)" scope="col" th:text="#{user.roles}"></th>
+								th:replace="fragments/table :: header(#{label.user.confirmPass})"></th>
+							<th onclick="sortTable(8)" scope="col"
+								th:replace="fragments/table :: header(#{user.roles})"></th>
 							<th onclick="sortTable(9)" scope="col"
-								th:text="#{header.address.list}"></th>
-							<th scope="col" th:text="#{user.del}"></th>
-							<th scope="col" th:text="#{user.edit}"></th>
+								th:replace="fragments/table :: header(#{header.address.list})"></th>
+							<th scope="col"
+								th:replace="fragments/table :: header(#{user.del})"></th>
+							<th scope="col"
+								th:replace="fragments/table :: header(#{user.edit})"></th>
 						</tr>
 					</thead>
 					<tbody align="center">
 						<tr th:each="user : ${users}" class="table-primary">
-							<td class="table-primary" scope="col" th:text="${user.id}"></td>
-							<td class="table-secondary" scope="col"
-								th:text="${user.firstName}"></td>
-							<td class="table-success" scope="col" th:text="${user.lastName}"></td>
-							<td class="table-danger" scope="col" th:text="${user.email}"></td>
+							<td class="table-primary" scope="col"
+								th:replace="fragments/table ::data(contents=${user.id},primary=true)"></td>
+							<td class="
+								table-secondary" scope="col"
+								th:replace="fragments/table :: data(${user.firstName})"></td>
+							<td class="table-success" scope="col"
+								th:replace="fragments/table :: data(${user.lastName})"></td>
+							<td class="table-danger" scope="col"
+								th:replace="fragments/table :: data(${user.email})"></td>
 							<td class="table-warning" scope="col"
-								th:text="${user.mobileNumber}"></td>
-							<td class="table-info" scope="col" th:text="${user.birthDate}"></td>
-							<td class="table-light" scope="col" th:text="${user.password}"></td>
+								th:replace="fragments/table :: data(${user.mobileNumber})"></td>
+							<td class="table-info" scope="col"
+								th:replace="fragments/table :: data(${user.birthDate})"></td>
+							<td class="table-light" scope="col"
+								th:replace="fragments/table :: data(${user.password})"></td>
 							<td class="table-dark" scope="col"
-								th:text="${user.matchingPassword}"></td>
-							<td class="table-secondary" th:text="${user.roles}"></td>
+								th:replace="fragments/table :: data(${user.matchingPassword})"></td>
+							<td class="table-secondary"
+								th:replace="fragments/table :: data(${user.roles})"></td>
 							<td>
 								<p th:each="address : ${user.adresse}">
 									<span th:text="${address.street}">Street</span> <span
@@ -178,21 +183,24 @@
 										th:text="${address.country}">country</span>
 								</p>
 							</td>
-							<!-- <td th:switch="${user.enabled}"><span th:case="true"
+							<!-- <td th:switch="${u/editeUser/(id=${user.id}ser.enabled}"><span th:case="true"
 								style="color: green">Enabled</span> <span th:case="false"
 								style="color: red">Disabled</span></td> -->
 
 							<!--Remove user button-->
-							<td><a id="remove-link"
-								style="text-decoration: none; color: red" data-toggle='modal'
-								data-target='#deleteModal' data-placement="right"
-								title="Remove user"
+							<td
+								th:replace="fragments/table :: dataWithLink('Remove user', @{'/adminPage/deleteUser'+${user.id}})"><a
+								id="remove-link" style="text-decoration: none; color: red"
+								data-toggle='modal' data-target='#deleteModal'
+								data-placement="right"
 								th:onclick="'setRowIndexAndUserId(this, ' + ${user.id} + ')'">
 									<i class="fa fa-times" aria-hidden="true"></i>
+
 							</a></td>
 							<!--Edit user button-->
-							<td><a style="text-decoration: none; color: blue"
-								th:href="@{/editeUser/{id}(id=${user.id})}" class="editBtn"
+							<td
+								th:replace="fragments/table :: dataWithLink('Edit', @{'/adminPage/editeUser/' + {id}(id=${user.id})})"><a
+								style="text-decoration: none; color: blue" class="editBtn"
 								data-toggle="tooltip" data-placement="right" title="Edit user">
 									<i class="fa fa-edit"></i>
 							</a></td>
@@ -249,8 +257,7 @@
 					</div>
 				</div>
 			</div>
-
-			<a href="#" th:href="@{/signup}">
+			<a href="#" th:href="@{/adminPage/signup}">
 				<button type="button" class="btn btn-primary">New User</button>
 			</a>
 
@@ -278,20 +285,20 @@
 						<li th:class="${users.number == 0} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/admin/allUsers(usersProperty=${usersProperty},
+							th:href="@{/adminPage/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=1)}">
 								&laquo; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/admin/allUsers(pageSize=${selectedPageSize}, page=1)}">
+							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=1)}">
 								&laquo; </a></li>
 						<li th:class="${users.number == 0} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue) }" class="page-link"
-							th:href="@{/admin/allUsers(usersProperty=${usersProperty},
+							th:href="@{/adminPage/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${users.number})}">
 								&larr; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/admin/allUsers(pageSize=${selectedPageSize}, page=${users.number})}">
+							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.number})}">
 								&larr; </a></li>
 						<li
 							th:class="${users.number == (page - 1)} ? 'active pointer-disabled'"
@@ -299,32 +306,32 @@
 							th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
 							<a th:if="${not #strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/admin/allUsers(usersProperty=${usersProperty},
+							th:href="@{/adminPage/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${page})}"
 							th:text="${page}"> </a> <a
 							th:if="${#strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/admin/allUsers(pageSize=${selectedPageSize}, page=${page})}"
+							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${page})}"
 							th:text="${page}"> </a>
 						</li>
 						<li
 							th:class="${users.number + 1 == users.totalPages} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/admin/allUsers(usersProperty=${usersProperty},
+							th:href="@{/adminPage/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${users.number + 2})}">
 								&rarr; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/admin/allUsers(pageSize=${selectedPageSize}, page=${users.number + 2})}">
+							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.number + 2})}">
 								&rarr; </a></li>
 						<li
 							th:class="${users.number + 1 == users.totalPages} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue) }" class="page-link"
-							th:href="@{/admin/allUsers(usersProperty=${usersProperty}, propertyValue=${propertyValue},
+							th:href="@{/adminPage/users(usersProperty=${usersProperty}, propertyValue=${propertyValue},
                                        pageSize=${selectedPageSize}, page=${users.totalPages})}">
 								&raquo; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/admin/allUsers(pageSize=${selectedPageSize}, page=${users.totalPages})}">
+							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.totalPages})}">
 								&raquo; </a></li>
 					</ul>
 				</nav>
@@ -334,8 +341,8 @@
 	</div>
 	<!-- <div th:replace="~{fragments/footer :: footer}"></div> -->
 	!-- JavaScript -->
-	<script src="../../dashboard/html/js/wow/main.js"
-		th:src="@{/dashboard/html/js/wow/main.js}"></script>
+	<script src="../../dashboard/html/js//user-popup-menu.js"
+		th:src="@{/dashboard/html/js//user-popup-menu.js}"></script>
 
 </body>
 </html>
