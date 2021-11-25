@@ -1,30 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
-<head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title th:text="#{label.pages.home.title}">home</title>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+<!-- <title th:text="#{label.pages.home.title}">home</title> -->
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Kalanblow
+	System Management</title>
 </head>
 <body>
+	<div th:replace="fragments/navigation :: navigation"></div>
+	<div th:replace="fragments/sidebar :: sidebar"></div>
+	<div class="container">
+	<div class="container-fluid" layout:fragment="page-content">
 
-	<div th:insert="fragments/sidebar :: sidebar"></div>
+		<h1>Title</h1>
+		<h2>Section</h2>
 
-	<div class="container-fluid" th:insert="fragments/navigation"></div><br/>
-	<div class="container-fluid" layout:fragment="content">
-		<div sec:authorize="hasAuthority('ADMIN')"
-			th:text="#{label.pages.user.message}">user</div>
+		<p>Lorem ipsum dolor sit amet, eu in mollis morbi nunc nulla
+			metus, ipsum etiam dictum natoque nec eleifend. Congue nec porttitor,
+			ullamcorper neque eu posuere tristique arcu, feugiat magna quam
+			tristique nonummy diam torquent, venenatis ut, fugit suspendisse quis
+			nec.</p>
 
-		<div sec:authorize="hasAuthority('ADMIN')"
-			th:text="#{label.pages.admin.message}"></div>
+		<h3>Sub-Section</h3>
 
-		<p th:if="${param.user} != null" th:text="${param.user[0]}">user</p>
+		<p>Lorem ipsum dolor sit amet, eu in mollis morbi nunc nulla
+			metus, ipsum etiam dictum natoque nec eleifend. Congue nec porttitor,
+			ullamcorper neque eu posuere tristique arcu, feugiat magna quam
+			tristique nonummy diam torquent, venenatis ut, fugit suspendisse quis
+			nec.</p>
 
-		<a class="btn btn-default" th:href="@{/staffHomePage}"
-			th:text="#{label.pages.admin}">admin</a>
+
 	</div>
+	</div>
+	<div lang="fr" th:replace="fragments/footer :: footer"> </div>
+	<!-- <div
+		th:include="footer :: (${user.isAdmin}? #{footer.admin} : #{footer.normaluser})"></div> -->
+
 </body>
 </html>

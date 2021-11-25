@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import ml.kalanblowSystemManagement.controller.web.command.PasswordFormCommand;
-import ml.kalanblowSystemManagement.controller.web.command.ProfileFormCommand;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.service.UserService;
+import ml.kalanblowsystemmanagement.controller.web.command.PasswordFormCommand;
+import ml.kalanblowsystemmanagement.controller.web.command.ProfileFormCommand;
+import ml.kalanblowsystemmanagement.dto.model.UserDto;
+import ml.kalanblowsystemmanagement.service.UserService;
 
 @Controller
 public class DashboardController {
@@ -148,13 +149,17 @@ public class DashboardController {
         return modelAndView;
     }
 
-    @GetMapping(
-            value = "/adminHome")
+    
+    /**
+     * login successfull jump
+     * @return
+     */
+    @GetMapping("/adminHome")
     public ModelAndView adminHomePage() {
         ModelAndView modelAndView = new ModelAndView("admin/homepage");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("currentUser", auth.getName());
+        modelAndView.addObject("currentUser", auth.getPrincipal());
         modelAndView.addObject("Authority", userDOptional.get().getRoles());
         modelAndView.addObject("adminMessage",
                 "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
@@ -162,10 +167,10 @@ public class DashboardController {
         return modelAndView;
     }
 
-    @GetMapping(
-            value = "/staffHomePage")
+    @GetMapping("/staffHomePage")
+    @PreAuthorize("hasRole('STAFF')")
     public ModelAndView adminPage() {
-        ModelAndView modelAndView = new ModelAndView("admin/admin");
+        ModelAndView modelAndView = new ModelAndView("admin/homepage");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("currentUser", auth.getName());
@@ -176,6 +181,16 @@ public class DashboardController {
         return modelAndView;
     }
 
+    
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping(value="/studentPage")
+    public ModelAndView userPage()
+    {
+         ModelAndView retVal = new ModelAndView();
+         retVal.setViewName("studentPage");
+         return retVal;
+    }
+    
     @GetMapping(
             value = {
                 "/access_denied"

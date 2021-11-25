@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
+	layout:decorate="~{layout/layout}">
 
 <head th:replace="fragments/header :: header">
 <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Kalanblow System Management</title>
@@ -18,23 +17,11 @@
 	<!-- ============================================================== -->
 	<div class="preloader">
 	</div>
-	<div class=""
-     x-data="sidebarMenu()"
-     @keydown.window.escape="closeSidebar">
-    <!-- Off-canvas menu for mobile -->
-    <div th:replace="fragments/sidebar :: mobile"></div>
-
+	<div >
+   
     <!-- Static sidebar for desktop -->
     <div th:replace="fragments/sidebar :: desktop"></div>
 
-    <div class="">
-        <div th:replace="fragments/top-menu :: menu"></div>
-
-        <main class=" tabindex="0">
-            <div layout:fragment="page-content"> <!--2-->
-            </div>
-        </main>
-    </div>
 </div>
 	<!-- ============================================================== -->
 	<!-- Main wrapper - style you can find in pages.scss -->
@@ -62,6 +49,8 @@
 			<div layout:fragment="page-content"></div>
 			<div th:replace="fragments/footer :: footer"></div>
 		</div>
+		<div layout:fragment="modals-content">
+</div>
 	</div>
 	<script th:src="@{/js/user-popup-menu.js}"></script>
 	<script type="text/javascript" layout:fragment="script">

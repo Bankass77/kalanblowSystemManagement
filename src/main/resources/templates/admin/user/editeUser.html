@@ -1,138 +1,128 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="~{layout/layout}>
-<head>
-<meta charset="UTF-8">
-<title th:text="#{user.edit}">Editer</title>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	layout:decorate="~{layout/layout}" th:with="activeMenuItem='adminPage'">
+<head th:replace="fragments/header :: header">
 
-<!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
-
-<!-- Font Icon -->
-<link rel="stylesheet"
-	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
-
-<!-- Main css -->
-<link rel="stylesheet" href="/auth/css/style.css">
-<link rel="stylesheet" href="/dashboard/html/css/style.css">
-<!-- Bootstrap Core CSS -->
-<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
-<!-- chartist CSS -->
-<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
-	rel="stylesheet">
-<!--This page css - Morris CSS -->
-<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
-	rel="stylesheet">
-<!-- Custom CSS -->
-<link href="/dashboard/html/css/style.css" rel="stylesheet">
-<!-- You can change the theme colors from here -->
-<link href="/dashboard/html/css/colors/blue.css" id="theme"
-	rel="stylesheet">
-<!-- Material icons and fonts -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
-<script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
-<script src="/dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<!-- slimscrollbar scrollbar JavaScript -->
-<script src="/dashboard/html/js/jquery.slimscroll.js"></script>
-<!--Wave Effects -->
-<script src="/dashboard/html/js/waves.js"></script>
-<!--Menu sidebar -->
-<script src="/dashboard/html/js/sidebarmenu.js"></script>
-<!--stickey kit -->
-<script
-	src="/dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
-<!--Custom JavaScript -->
-<script src="/dashboard/html/js/custom.min.js"></script>
-<!-- chartist chart -->
-<script src="/dashboard/assets/plugins/chartist-js/dist/chartist.min.js"></script>
-<script
-	src="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
-<!--c3 JavaScript -->
-<script src="/dashboard/assets/plugins/d3/d3.min.js"></script>
-<script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
-<!-- Chart JS -->
-<script src="/dashboard/html/js/dashboard1.js"></script>
-<script type="text/javascript" th:src="@{/js/checkfirstName.js}"></script>
-<title th:text="#{user.edit}">Dashboard</title>
+<title th:text="#{edite.button.label}">Edit User</title>
 </head>
 <body>
-
-	<h1
-		th:text="${editMode?.name() == 'UPDATE'}?#{user.edit}:#{user.create}">Edite
+	<h1 class="text-info"
+		th:text="${editMode?.name() == 'UPDATE'}?#{edite.button.label}:#{update.button.label}">Edite
 		User</h1>
 	<div class="container-fluid" th:insert="fragments/navigation"></div>
 	<div th:insert="fragments/sidebar :: sidebar"></div>
 	<div class="form-group">
 		<input type="hidden" th:field="*{version}"
 			th:if="${editeMode?.name() == 'UPDATE'}">
-		<form class="container" th:method="post"
-			th:action="${editeMode?.name() =='UPDATE'}?@{/adminPage/editeUser/{id}(id=${editeUser.id})}:@{/adminPage/signup}"
-			method="POST" th:object="${editeUser}">
-			<h1 data-th-text="#{user.headers.edit.title}">Edit</h1>
-			<div th:replace="/signup:: gender"></div>
-			<div th:replace="/signup:: firstName"></div>
-			<div th:replace="/signup:: lastName"></div>
-			<div th:replace="/signup:: email"></div>
-			<div th:replace="/signup:: password"></div>
-			<div th:replace="/signup:: matchingPassword">
-				<br>
-			</div>
-			<div th:replace="/signup:: city">
-				<br>
-			</div>
+	</div>
+	<div class="container" layout:fragment="page-content">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+			<div class="py-4">
+				<div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
 
-			<div th:replace="/signup:: state">
-				<br>
+					<form id="user-form" th:object="${editeUser}"
+						th:action="${editMode?.name() == 'UPDATE'}?@{/adminPage/editeUser/{id}(id=${editeUser.id})}:@{/adminPage/signup}"
+						method="post">
+						<div>
+							<div th:replace="fragments/forms :: fielderrors"></div>
+							<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+								<!-- <input type="hidden" th:field="*{version}"
+									th:if="${editMode?.name() == 'UPDATE'}"> -->
+								<!--.-->
+								<!-- tag::userRole[] -->
+								<div class="sm:col-span-2">
+									<label for="userRole"
+										class="block text-sm font-medium text-gray-700">User
+										Role</label> <select id="userRole"
+										class="max-w-lg block focus:ring-green-500 focus:border-green-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+										th:field="*{roles}">
+										<!--.-->
+										<option th:each="role : ${roleList}"
+											th:text="#{'ROLE_' + ${role.userRoleName}}"
+											th:value="${role.id}">User
+											<!--.-->
+										</option>
+									</select>
+								</div>
+								<!-- end::userRole[] -->
+								<div class="sm:col-span-6">
+									<label 
+										th:text="#{user.register.sexe}"> <i class="zmdi zmdi-account-o"></i>Gender </label><br>
+									<div>
+										<th:block th:each="possibleGender,iter : ${genders}">
+											<input type="radio" th:id="${'gender-'+possibleGender}"
+												th:field="*{gender}" th:value="${possibleGender}"
+												class="mr-1 focus:ring-green-500 h-4 w-4 text-green-500 border-gray-300"
+												th:classappend="${iter.index > 0 ?'ml-4':''}">
+											<label th:for="${'gender.'+possibleGender}"
+												th:text="#{'Gender.'+${possibleGender}}"
+												class="text-sm font-medium text-gray-700"> </label>
+
+										</th:block>
+										<p th:if="${#fields.hasErrors('gender')}"
+											th:text="${#strings.listJoin(#fields.errors('gender'), ', ')}"
+											class="mt-2 text-sm text-red-600" id="gender-error">Gender
+											validation error message(s).</p>
+									</div>
+								</div>
+                                  <div class="form-group"
+									th:replace="fragments/forms :: textinput(#{user.register.sexe}, 'gender', 'sm:col-span-3')"></div>
+								<!-- tag::textinputs[] -->
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(#{user.firstName}, 'firstName', 'sm:col-span-3')"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(#{user.lastName}, 'lastName', 'sm:col-span-3')"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.headers.email}, fieldName='email', cssClass='sm:col-span-4', inputType='email')"></div>
+								<th:block th:if="${editMode?.name() == 'update.button.label'}">
+									<!--.-->
+									<div
+										th:replace="fragments/forms :: textinput(labelText=#{user.password}, fieldName='password', cssClass='sm:col-span-4', inputType='password')"></div>
+									<div
+										th:replace="fragments/forms :: textinput(labelText=#{user.password.repeated}, fieldName='matchingPassword', cssClass='sm:col-span-4', inputType='password')"></div>
+								</th:block>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(#{user.phoneNumber}, 'mobileNumber', 'sm:col-span-4')"></div>
+								<div class="sm:col-span-2"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{label.user.birthDate},fieldName='birthDate', cssClass='sm:col-span-2',placeholder=#{label.user.birthDate.palceholder})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.register.dateEntry}, fieldName='createdDate', cssClass='sm:col-span-2', placeholder=#{user.dateEntry.placeholder})"></div>
+									<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.list.lastModifiedDate.label}, fieldName='lastModifiedDate', cssClass='sm:col-span-2', placeholder=#{user.list.lastModifiedDate.label})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.adresse.street}, fieldName='adresse.street', cssClass='sm:col-span-2', placeholder=#{user.adresse.street.placeholder})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.adresse.streetNumber}, fieldName='adresse.streetNumber', cssClass='sm:col-span-2', placeholder=#{user.adresse.streetNumber.placeholder})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.adresse.state}, fieldName='adresse.state', cssClass='sm:col-span-2', placeholder=#{user.adresse.state.placeholder})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.adresse.country}, fieldName='adresse.country', cssClass='sm:col-span-2', placeholder=#{user.adresse.country.placeholder})"></div>
+								<div class="form-group"
+									th:replace="fragments/forms :: textinput(labelText=#{user.adresse.codePostale}, fieldName='adresse.codePostale', cssClass='sm:col-span-2', placeholder=#{user.adresse.codePostale.placeholder})"></div>
+								<!-- end::textinputs[] -->
+							</div>
+						</div>
+						<div class="mt-8 border-t border-gray-200 pt-5">
+							<div class="flex justify-end">
+								<span class="inline-flex rounded-md shadow-sm">
+									<button type="button"
+										class="btn btn-danger btn-lg active"
+										th:text="#{cancel.button.label}">Cancel</button>
+								</span> <span class="ml-3 inline-flex rounded-md shadow-sm">
+									<button type="submit"
+										 class="btn btn-primary btn-lg active"
+										th:text="${editMode?.name() == 'UPDATE'}?#{save.button.label}:#{update.button.label}">
+										Save</button>
+								</span>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div th:replace="/signup:: codePostale">
-				<br>
-			</div>
-			<div th:replace="/signup:: country">
-				<br>
-			</div>
-			<div th:replace="/signup:: mobileNumber"></div>
-			<div th:replace="/signup:: birthDate"></div>
-			<div th:replace="/signup:: createdDate"></div>
-			<div th:replace="/signup:: lastModificationDate"></div>
-			<div th:replace="/signup:: roles"></div>
-			<!-- <div class="form-group">
-			<label class="form-group" th:text="#{user.roles}">Roles</label>
-			<div>
-				<p th:each="role, rowStat: ${roles}">
-					<input id="editedUserRoles" type="checkbox"
-						th:field="*{roles[_${rowStat.index}_].id" th:value="${role.id}">
-					<label th:tex="${role.userRoleName}">Role</label>
-			</div>
-		</div> -->
-			<div class="text-center">
-				<button class="btn btn-outline-success" type="submit"
-					 name="action"  th:text="${editMode?.name() == 'UPDATE'}?#{save}:#{create}">save</button>
-				<span></span><span></span>
-				<button class="btn btn-outline-secondary" type="submit"
-					th:text="#{cancel.button.label}" name="action">Cancel</button>
-			</div>
-			<br>
-		</form>
+		</div>
 	</div>
 </body>
 </html>

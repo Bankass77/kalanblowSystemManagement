@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head  th:replace="fragments/header :: header">
 <title>Sign Up</title>
-<!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
-
-<!-- Font Icon -->
-<link rel="stylesheet"
-	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
-
-<!-- Main css -->
-<link rel="stylesheet" href="/auth/css/style.css">
+ 
 </head>
 <body>
 
+<div class="container">
 	<div class="main" layout:fragment="content">
 		<!-- Sign up form -->
 		<section class="signup">
@@ -214,7 +205,7 @@
 			<span th:text="${version}"></span>
 		</div>
 	</div>
-
+</div>
 	<!-- JS -->
 	<script src="/auth/vendor/jquery/jquery.min.js"></script>
 

@@ -1,58 +1,48 @@
 <!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<html xmlns
-	="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
+<head th:fragment="header">
 
-<head th:fragment="header(title='Kalablow System Mangement', links)">
-<th:block th:replace="internal.exit" />
-<title th:replace="${title}">Dashboard</title>
-  <!-- placeholder for additional links -->
-<th:block th:replace="${links}" />
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<!-- Tell the browser to be responsive to screen width -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="">
+<title >header</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" th:href="favicon.png">
 
+<!-- Font Icon -->
+<link rel="stylesheet"
+	th:href="@{/auth/fonts/material-icon/css/material-design-iconic-font.min.css}">
+
+<!-- Main css -->
+<link rel="stylesheet" th:href="@{/auth/css/style.css}">
+<link rel="stylesheet" th:href="@{/dashboard/html/css/style.css}">
 <!-- Bootstrap Core CSS -->
-<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
+<link th:href="@{/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css}"
 	rel="stylesheet">
 <!-- chartist CSS -->
-<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
+<link th:href="@{/dashboard/assets/plugins/chartist-js/dist/chartist.min.css}"
 	rel="stylesheet">
 <link
-	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
+	th:href="@{/dashboard/assets/plugins/chartist-js/dist/chartist-init.css}"
 	rel="stylesheet">
 <link
-	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
+	th:href="@{/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css}"
 	rel="stylesheet">
 <!--This page css - Morris CSS -->
-<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
+<link th:href="@{/dashboard/assets/plugins/c3-master/c3.min.css}"
 	rel="stylesheet">
 <!-- Custom CSS -->
-<link href="/dashboard/html/css/style.css" rel="stylesheet">
+<link th:href="@{/dashboard/html/css/style.css}" rel="stylesheet">
 <!-- You can change the theme colors from here -->
-<link href="/dashboard/html/css/colors/blue.css" id="theme"
+<link th:href="@{/dashboard/html/css/colors/blue.css}" id="theme"
 	rel="stylesheet">
 <!-- Material icons and fonts -->
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css}" />
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css}" />
 <script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
 <script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
@@ -77,9 +67,13 @@
 <script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
 <!-- Chart JS -->
 <script src="/dashboard/html/js/dashboard1.js"></script>
+
+<script type="text/javascript"  src="/dashboard/html/js/user-popup-menu.js"></script>
+
 </head>
 
 <body>
+
 </body>
 
 </html>

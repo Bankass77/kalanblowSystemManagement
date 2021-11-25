@@ -20,8 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.NoArgsConstructor;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.service.UserService;
+import ml.kalanblowsystemmanagement.dto.model.UserDto;
+import ml.kalanblowsystemmanagement.service.UserService;
 
 @Controller
 @NoArgsConstructor

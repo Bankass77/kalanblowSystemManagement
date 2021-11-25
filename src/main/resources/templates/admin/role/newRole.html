@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
-<!-- <head th:replace="fragments/headear :: header"> -->
-
+	layout:decorate="~{layout/layout}">
+ <head th:replace="fragments/headear :: header"> 
+    <title>New Role</title>
 </head>
 <body>
 

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,27 +29,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
-import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.model.EditeMode;
-import ml.kalanblowSystemManagement.model.Gender;
-import ml.kalanblowSystemManagement.model.UserRole;
-import ml.kalanblowSystemManagement.service.RoleService;
-import ml.kalanblowSystemManagement.service.UserService;
-import ml.kalanblowSystemManagement.service.searching.UserFinder;
-import ml.kalanblowSystemManagement.service.searching.UserSearchErrorResponse;
-import ml.kalanblowSystemManagement.service.searching.UserSearchParameters;
-import ml.kalanblowSystemManagement.service.searching.UserSearchResult;
-import ml.kalanblowSystemManagement.utils.CaseInsensitiveEnumEditor;
-import ml.kalanblowSystemManagement.utils.date.FrenchLocalDateFormater;
-import ml.kalanblowSystemManagement.utils.paging.InitialPagingSizes;
-import ml.kalanblowSystemManagement.utils.paging.Pager;
+import ml.kalanblowsystemmanagement.controller.web.command.AdminSignupCommand;
+import ml.kalanblowsystemmanagement.dto.model.RoleDto;
+import ml.kalanblowsystemmanagement.dto.model.UserDto;
+import ml.kalanblowsystemmanagement.model.EditeMode;
+import ml.kalanblowsystemmanagement.model.Gender;
+import ml.kalanblowsystemmanagement.model.UserRole;
+import ml.kalanblowsystemmanagement.service.RoleService;
+import ml.kalanblowsystemmanagement.service.UserService;
+import ml.kalanblowsystemmanagement.service.searching.UserFinder;
+import ml.kalanblowsystemmanagement.service.searching.UserSearchErrorResponse;
+import ml.kalanblowsystemmanagement.service.searching.UserSearchParameters;
+import ml.kalanblowsystemmanagement.service.searching.UserSearchResult;
+import ml.kalanblowsystemmanagement.utils.CaseInsensitiveEnumEditor;
+import ml.kalanblowsystemmanagement.utils.date.FrenchLocalDateFormater;
+import ml.kalanblowsystemmanagement.utils.paging.InitialPagingSizes;
+import ml.kalanblowsystemmanagement.utils.paging.Pager;
 
 @Controller
 @Slf4j
@@ -122,6 +120,7 @@ public class AdminController {
                     "SuccesFully added the new user with admin role");
             modelAndView.addObject("successMessage", redirectAttributes);
           modelAndView.addObject("editeMode", EditeMode.CREATE);
+          modelAndView.addObject("roles", initializeAuthorities());
 
             log.debug(" A user registered with the email provided");
         }
@@ -134,13 +133,11 @@ public class AdminController {
      * @param pageable
      * @return
      */
-    @RequestMapping(
-            value = "/users",
-            method = RequestMethod.GET)
+    @GetMapping("/users")
     public ModelAndView getUsersList(ModelAndView modelAndView,
-            UserSearchParameters userSearchParameters) {
-
-        modelAndView = new ModelAndView("admin/user/allUsers");
+			UserSearchParameters userSearchParameters) {
+    	
+        modelAndView = new ModelAndView("user/allUsers");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

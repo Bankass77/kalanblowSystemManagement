@@ -1,13 +1,13 @@
-<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html>
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
+	layout:decorate="~{layout/layout}" >
 
 <!-- tag::mobile-button[] -->
 <a th:fragment="mobile-button(link, title)"
 	th:href="${link}">
-		<!-- <svg th:replace="${icon}"></svg> -->
+	
 	[[${title}]]
 </a>
 <!-- end::mobile-button[] -->

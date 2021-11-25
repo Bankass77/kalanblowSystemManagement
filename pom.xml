@@ -6,17 +6,18 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.3</version>
+		<version>2.5.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ml.kalanblowSystemManagement</groupId>
+	<groupId>ml.kalanblowsystemmanagement</groupId>
 	<artifactId>kalanblowSystemManagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>kalanblow</name>
-	<description>Kalanblos System Management  project</description>
+	<description>Kalanblow System Management  project</description>
 	<properties>
-		<java.version>11</java.version>
-
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<!-- Dependencies -->
 		<thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
 		<passay.version>1.6.0</passay.version>
@@ -49,6 +50,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -203,30 +208,30 @@
 			</resources> -->
 	</build>
 	<profiles>
-	<profile>
-        <id>dev</id>
-        <activation>
-            <!-- Default to dev so we avoid any accidents with prod! :) -->
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <properties>
-            <!-- This can be a single value, or a comma-separated list -->
-            <spring.profiles.to.activate>dev</spring.profiles.to.activate>
-        </properties>
-    </profile>
-    <profile>
-        <id>uat</id>
-        <properties>
-            <!-- This can be a single value, or a comma-separated list -->
-            <spring.profiles.to.activate>uat</spring.profiles.to.activate>
-        </properties>
-    </profile>
-    <profile>
-        <id>prod</id>
-        <properties>
-            <!-- This can be a single value, or a comma-separated list -->
-            <spring.profiles.to.activate>prod</spring.profiles.to.activate>
-        </properties>
-    </profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<!-- Default to dev so we avoid any accidents with prod! :) -->
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- This can be a single value, or a comma-separated list -->
+				<spring.profiles.to.activate>dev</spring.profiles.to.activate>
+			</properties>
+		</profile>
+		<profile>
+			<id>uat</id>
+			<properties>
+				<!-- This can be a single value, or a comma-separated list -->
+				<spring.profiles.to.activate>uat</spring.profiles.to.activate>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<!-- This can be a single value, or a comma-separated list -->
+				<spring.profiles.to.activate>prod</spring.profiles.to.activate>
+			</properties>
+		</profile>
 	</profiles>
 </project>

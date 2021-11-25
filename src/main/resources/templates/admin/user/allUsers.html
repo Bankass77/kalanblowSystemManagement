@@ -1,81 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="~{layout/layout}" th:with="activeMenuItem='Users'">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title th:text="#{user.all}">Les Utilisateurs</title>
-<!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
-
-<!-- Font Icon -->
-<link rel="stylesheet"
-	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
-
-<!-- Main css -->
-<link rel="stylesheet" href="/auth/css/style.css">
-<link rel="stylesheet" href="/dashboard/html/css/style.css">
-<!-- Bootstrap Core CSS -->
-<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
-<!-- chartist CSS -->
-<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
-	rel="stylesheet">
-<!--This page css - Morris CSS -->
-<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
-	rel="stylesheet">
-<!-- Custom CSS -->
-<link href="/dashboard/html/css/style.css" rel="stylesheet">
-<!-- You can change the theme colors from here -->
-<link href="/dashboard/html/css/colors/blue.css" id="theme"
-	rel="stylesheet">
-<!-- Material icons and fonts -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
-<script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
-<script src="/dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<!-- slimscrollbar scrollbar JavaScript -->
-<script src="/dashboard/html/js/jquery.slimscroll.js"></script>
-<!--Wave Effects -->
-<script src="/dashboard/html/js/waves.js"></script>
-<!--Menu sidebar -->
-<script src="/dashboard/html/js/sidebarmenu.js"></script>
-<!--stickey kit -->
-<script
-	src="/dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
-<!--Custom JavaScript -->
-<script src="/dashboard/html/js/custom.min.js"></script>
-<!-- chartist chart -->
-<script src="/dashboard/assets/plugins/chartist-js/dist/chartist.min.js"></script>
-<script
-	src="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
-<!--c3 JavaScript -->
-<script src="/dashboard/assets/plugins/d3/d3.min.js"></script>
-<script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
-<!-- Chart JS -->
-<script src="/dashboard/html/js/dashboard1.js"></script>
-<title th:text="#{menu.users}">Users</title>
-
+	layout:decorate="~{layout/layout}" th:with="activeMenuItem='adminPage'">
+<head th:replace="fragments/header :: header">
+  <title>Users</title>
 </head>
 <body style="background: #4f5050">
+
+
 
 	<div th:insert="fragments/sidebar :: sidebar"></div>
 
@@ -98,8 +31,16 @@
 		<!-- ============================================================== -->
 		<!-- Row -->
 
-		<div class="card-header bg-dark font-white">
-
+  <!-- tag::create-button[] -->
+    <div th:replace="fragments/titles :: title-with-button(#{users.title}, 'user-add', #{users.add}, @{/adminPage/signup})"
+         sec:authorize="hasRole('ADMIN')"></div>
+    <!-- end::create-button[] -->
+    <!-- tag::alert[] -->
+    <div th:if="${deletedUserName}"> <!--.-->
+        <div th:replace="fragments/alerts :: success(#{user.delete.success(${deletedUserName})})"></div> <!--.-->
+    </div>
+    <!-- end::alert[] -->
+		<div >
 
 			<!--Search user-->
 			<div class="row col-lg-12 d-flex flex-nowrap pb-2">
@@ -120,12 +61,12 @@
 
 			<!--Table with users-->
 			<div th:if="${users.isEmpty()}">[[#{no.users}]]</div>
-			<div class="table-responsive" th:unless="${users.isEmpty()}"
+			<div class="table-responsive .table-responsive" th:unless="${users.isEmpty()}"
 				id="mainContainerRepleace">
 
-				<table class="table table-bordered">
-					<thead class="thead-dark">
-						<tr class="table-active">
+				<table class="table">
+					<thead >
+						<tr >
 							<th onclick="sortTable(0)" scope="col"
 								th:replace="fragments/table :: header(#{label.user.id})"></th>
 							<th onclick="sortTable(1)" scope="col"
@@ -189,7 +130,7 @@
 
 							<!--Remove user button-->
 							<td
-								th:replace="fragments/table :: dataWithLink('Remove user', @{'/adminPage/deleteUser'+${user.id}})"><a
+								th:replace="fragments/table :: dataWithLink('Remove user', @{'/adminPage/' +'deleteUser/'+${user.id}})"><a
 								id="remove-link" style="text-decoration: none; color: red"
 								data-toggle='modal' data-target='#deleteModal'
 								data-placement="right"
@@ -199,7 +140,7 @@
 							</a></td>
 							<!--Edit user button-->
 							<td
-								th:replace="fragments/table :: dataWithLink('Edit', @{'/adminPage/editeUser/' + {id}(id=${user.id})})"><a
+								th:replace="fragments/table :: dataWithLink('Edit', @{'/adminPage/' + 'editeUser/' + ${user.id}})"><a
 								style="text-decoration: none; color: blue" class="editBtn"
 								data-toggle="tooltip" data-placement="right" title="Edit user">
 									<i class="fa fa-edit"></i>

@@ -1,79 +1,11 @@
 <!DOCTYPE html>
 
-<html xmlns
-	="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/layout">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<head th:replace="layout/header :: header">
 <title>Header</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<!-- Favicon icon -->
-<link rel="icon" type="image/png" href="favicon.png">
 
-<!-- Font Icon -->
-<link rel="stylesheet"
-	href="/auth/fonts/material-icon/css/material-design-iconic-font.min.css">
-
-<!-- Main css -->
-<link rel="stylesheet" href="/auth/css/style.css">
-<link rel="stylesheet" href="/dashboard/html/css/style.css">
-<!-- Bootstrap Core CSS -->
-<link href="/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
-<!-- chartist CSS -->
-<link href="/dashboard/assets/plugins/chartist-js/dist/chartist.min.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-js/dist/chartist-init.css"
-	rel="stylesheet">
-<link
-	href="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css"
-	rel="stylesheet">
-<!--This page css - Morris CSS -->
-<link href="/dashboard/assets/plugins/c3-master/c3.min.css"
-	rel="stylesheet">
-<!-- Custom CSS -->
-<link href="/dashboard/html/css/style.css" rel="stylesheet">
-<!-- You can change the theme colors from here -->
-<link href="/dashboard/html/css/colors/blue.css" id="theme"
-	rel="stylesheet">
-<!-- Material icons and fonts -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.5.55/css/materialdesignicons.min.css" />
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
-<script src="/dashboard/assets/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="/dashboard/assets/plugins/bootstrap/js/tether.min.js"></script>
-<script src="/dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<!-- slimscrollbar scrollbar JavaScript -->
-<script src="/dashboard/html/js/jquery.slimscroll.js"></script>
-<!--Wave Effects -->
-<script src="/dashboard/html/js/waves.js"></script>
-<!--Menu sidebar -->
-<script src="/dashboard/html/js/sidebarmenu.js"></script>
-<!--stickey kit -->
-<script
-	src="/dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
-<!--Custom JavaScript -->
-<script src="/dashboard/html/js/custom.min.js"></script>
-<!-- chartist chart -->
-<script src="/dashboard/assets/plugins/chartist-js/dist/chartist.min.js"></script>
-<script
-	src="/dashboard/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js"></script>
-<!--c3 JavaScript -->
-<script src="/dashboard/assets/plugins/d3/d3.min.js"></script>
-<script src="/dashboard/assets/plugins/c3-master/c3.min.js"></script>
-<!-- Chart JS -->
-<script src="/dashboard/html/js/dashboard1.js"></script>
-<script src="static/dashboard/html/js/wow/wow.min.js"></script>
-<script>
-	new WOW().init();
-</script>
 </head>
 
 <body>
@@ -81,26 +13,21 @@
 	<!-- ============================================================== -->
 	<!-- Topbar header - style you can find in pages.scss -->
 	<!-- ============================================================== -->
-	<header class="topbar" th:fragment="navigation">
-		<!-- 	<ul id="lang-dropdown" class="dropdown-content" class="right">
-			<li><a href="?lang=en_US">English</a></li>
-			<li><a href="?lang=fr">French</a></li>
-		</ul> -->
-			
-		<nav class="navbar top-navbar navbar-toggleable-sm navbar-light">
-	<div th:insert="fragments/lang.html :: languague" align="right"></div>
+
+	<nav th:fragment="navigation"
+		class="navbar top-navbar navbar-toggleable-sm navbar-light">
+		<div class="container">
+			<div th:insert="fragments/lang.html :: languague" align="right"></div>
 			<!-- ============================================================== -->
 			<!-- Logo -->
 			<!-- ============================================================== -->
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/dashboard"> <!-- Logo icon --> <b>
-						<!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-						<!-- Light Logo icon --> <img
-						src="/dashboard/assets/images/logo.png" alt="homepage"
-						class="light-logo" />
-				</b> <!--End Logo icon --> <!-- Logo text --> <span> <!-- Light Logo text -->
-						<img src="/dashboard/assets/images/logo-text.png"
-						class="light-logo" alt="homepage" />
+				<a class="navbar-brand" href="/dashboard"> <!-- Light Logo icon -->
+					<img src="/dashboard/assets/images/logo.png" alt="homepage"
+					class="light-logo" /> </b> <!--End Logo icon --> <!-- Logo text --> <span>
+						<!-- Light Logo text --> <img
+						src="/dashboard/assets/images/logo-text.png" class="light-logo"
+						alt="homepage" />
 				</span>
 				</a>
 			</div>
@@ -108,20 +35,20 @@
 			<!-- ============================================================== -->
 			<!-- End Logo -->
 			<!-- ============================================================== -->
-			<div class="navbar-collapse">
+			<div class="collapse navbar-collapse">
 
 				<!-- ============================================================== -->
 				<!-- toggle and nav items -->
 				<!-- ============================================================== -->
 				<!-- ============================================================== -->
-					<!-- Search -->
-					<!-- ============================================================== -->
-				<ul class="navbar-nav mr-auto mt-md-0" >
+				<!-- Search -->
+				<!-- ============================================================== -->
+				<ul class="navbar-nav mr-auto">
 					<!-- This is  -->
-				 <li class="nav-item"><a
+					<li class="nav-item"><a
 						class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark"
 						href="javascript:void(0)"><i class="mdi mdi-menu"></i></a></li>
-					
+
 				</ul>
 				<!-- ============================================================== -->
 				<!-- User profile and search -->
@@ -130,31 +57,59 @@
 					<!-- ============================================================== -->
 					<!-- Profile -->
 					<!-- ============================================================== -->
-					
-					  <!--region Displaying Bienvenue  + user-->
-					<li class="nav-item dropdown"><a
+
+					<!--region Displaying Bienvenue  + user-->
+					<li class="nav-item"><a
 						class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
 						href="profile" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"><img
+						aria-expanded="false">
+							<!-- <img
 							src="/dashboard/assets/images/users/1.jpg" alt="user"
-							class="profile-pic m-r-10" th:inline="text" align="top" />Bienvenue
-							<span sec:authentication="name"!></span>!</a></li>
-							  <!--endregion-->
-							  
-							   <!--region For ROLE_ADMIN display admin page-->
-                <!--================================================================================================-->
-                <li class="nav-item d-flex">
-                    <i class="align-self-center fas fa-user-cog" style="color: white;"></i>
-                    <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/adminPage}" href="/adminPage">
-                        Admin Page
-                    </a>
-                </li>
-                <!--================================================================================================-->
-                <!--endregion-->
+							class="profile-pic m-r-10" th:inline="text" align="top" /> -->Bienvenue
+							<span sec:authentication="name"></span>!
+					</a></li>
+					<!--endregion-->
+
+					<!--region For ROLE_ADMIN display admin page-->
+					<!--================================================================================================-->
+					<li class="nav-item d-flex"><i
+						class="align-self-center fas fa-user-cog" style="color: white;"></i>
+						<a class="nav-link" sec:authorize="hasRole('ADMIN')"
+						th:href="@{/adminHome}"> Admin Page </a></li>
+					<!--================================================================================================-->
+					<!--endregion-->
 				</ul>
 			</div>
-		</nav>
-	</header>
+
+			<div class="py-1 rounded-md bg-white shadow-xs" role="menu"
+				aria-orientation="vertical" aria-labelledby="user-menu">
+				<!-- tag::username[] -->
+				<!-- <div class="block px-4 pt-1 text-sm text-gray-700"
+				sec:authentication="principal.authorities"></div>
+			.
+			<div 
+				class="block px-4 pb-2 text-xs font-mono text-gray-400 border-b truncate"
+				sec:authentication="name"></div>
+			<!--.-->
+				<!-- end::username[] -->
+				<a href="#"
+					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+					th:text="#{menu.profile}" role="menuitem">Your Profile </a> <a
+					href="#"
+					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+					th:text="#{menu.settings}" role="menuitem">Settings </a>
+				<!-- tag::logout[] -->
+				<div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+					<form th:action="@{/logout}" method="post">
+						<!--.-->
+						<button type="submit" th:text="#{menu.signout}">Sign out</button>
+					</form>
+				</div>
+				<!-- end::logout[] -->
+			</div>
+		</div>
+	</nav>
+
 	<script type="text/javascript">
 		$(".dropdown-button").dropdown();
 	</script>
