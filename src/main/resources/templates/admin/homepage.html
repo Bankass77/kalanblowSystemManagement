@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-<!-- <title th:text="#{label.pages.home.title}">home</title> -->
+
 <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Kalanblow
 	System Management</title>
 </head>
@@ -32,8 +32,6 @@
 	</div>
 	</div>
 	<div lang="fr" th:replace="fragments/footer :: footer"> </div>
-	<!-- <div
-		th:include="footer :: (${user.isAdmin}? #{footer.admin} : #{footer.normaluser})"></div> -->
 
 </body>
 </html>

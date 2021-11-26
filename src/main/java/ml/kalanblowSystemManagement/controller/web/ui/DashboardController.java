@@ -58,6 +58,7 @@ public class DashboardController {
 
     @PostMapping(
             value = "/profile")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView updateProfile(
             @Valid @ModelAttribute("profileForm") ProfileFormCommand profileFormCommand,
             BindingResult bindingResult) {
@@ -79,6 +80,7 @@ public class DashboardController {
     }
 
     @PostMapping("/profile/email")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView saveUserEmail(String email, BindingResult bindingResult) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -155,6 +157,7 @@ public class DashboardController {
      * @return
      */
     @GetMapping("/adminHome")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView adminHomePage() {
         ModelAndView modelAndView = new ModelAndView("admin/homepage");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

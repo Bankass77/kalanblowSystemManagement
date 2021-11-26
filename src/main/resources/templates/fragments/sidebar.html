@@ -1,106 +1,149 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head th:replace="fragments/header :: header">
 <title>Sidebar Menu</title>
 </head>
 
 <body>
-<div class="page-wrapper">
-	<div th:fragment="sidebar" class="sidebar-wrapper">
-		<!-- ============================================================== -->
-		<!-- Left Sidebar - style you can find in sidebar.scss  -->
-		<!-- ============================================================== -->
-		<aside class="left-sidebar">
-			<!-- Sidebar scroll-->
-			<div class="scroll-sidebar">
-				<!-- Sidebar navigation-->
-				<nav  id="sidebar" class="sidebar-wrapper">
-                    <div  class=" sidebar-item sidebar-menu">
-					<ul id="sidebarnav" class=".sidebar-nav > ul > li">
-						<li  class=".sidebar-nav ul li a"><a
-							th:replace="fragments/sidebar-buttons :: mobile-button(title='Dashboard', link=@{dashboard})"
-							class="nav-link" aria-expanded="false"><i
-								class="mdi mdi-gauge"></i>Dashboard<span class="sr-only">(current)</span></a></li>
-						<li class=".sidebar-nav ul li a"><a><i class="fa fa-edit"></i> Admin <span
-								class="fa fa-chevron-down"></span></a>
-							<ul class=".sidebar-nav > ul > li">
-								
-								<li class="nav-item">
-								<a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Users', link=@{/adminPage/users})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
-										</li>
-										<li class="nav-item">
-									<a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Roles', link=@{/adminPage/roles})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-factory"></i><span class="hide-menu">Role</span></a>
-										</li>
-										
-										<li class="nav-item">
-									<a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='CReate New Role', link=@{/adminPage/roles/newRole})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-factory"></i><span class="hide-menu">Create
-											new Role</span></a></li>
-
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='User Profile', link=@{/profile})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-account-check"></i><span class="hide-menu">users
-											Profile</span></a></li>
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Change User Password', link=@{/password})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-account-check"></i><span class="hide-menu">Change
-											user Password </span></a></li>
-
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Change User Email', link=@{/profile/email})"
-									class="waves-effect waves-dark" aria-expanded="false"><i
-										class="mdi mdi-account-check"></i><span class="hide-menu">Change
-											user Email </span></a></li>
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Calendar', link='#')">Calendar</a></li>
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Documents', link='#')"
-									href="#">Documents</a></li>
-								<li class="nav-item"><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Reports', link='#')">Reports</a></li>
-							</ul></li>
-
-						<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i> Parent <span
-								class="fa fa-chevron-down"></span></a>
+	<div class="page-wrapper">
+		<div th:fragment="sidebar" class="sidebar-wrapper">
+			<!-- ============================================================== -->
+			<!-- Left Sidebar - style you can find in sidebar.scss  -->
+			<!-- ============================================================== -->
+			<aside class="left-sidebar">
+				<!-- Sidebar scroll-->
+				<div class="scroll-sidebar">
+					<!-- Sidebar navigation-->
+					<nav id="sidebar" class="sidebar-wrapper">
+						<div class=" sidebar-item sidebar-menu">
 							<ul id="sidebarnav" class=".sidebar-nav > ul > li">
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Parent1</a></li>
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Advanced
-										Components</a></li>
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Form
-										Validation</a></li>
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Form
-										Wizard</a></li>
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Form
-										Upload</a></li>
-								<li><a
-									th:replace="fragments/sidebar-buttons :: mobile-button(title='Parents', link='#')">Form
-										Buttons</a></li>
-								
-							</ul></li>
-					</ul>
-					</div>
-				</nav>
-				
-			</div>
-			
-		</aside>
-	</div>
+								<li class=".sidebar-nav ul li a"><a
+									th:replace="fragments/sidebar-buttons :: desktop-button(title='Dashboard', link=@{/dashboard})"
+									class="nav-link" aria-expanded="false"><i
+										class="mdi mdi-gauge"></i>Dashboard<span class="sr-only">(current)</span></a></li>
+								<li class=".sidebar-nav ul li a"><a><i
+										class="fa fa-edit"></i> Admin <span class="fa fa-chevron-down"></span></a>
+									<ul class=".sidebar-nav > ul > li">
+
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Users', link=@{/adminPage/users})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
+										</li>
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Roles', link=@{/adminPage/roles})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-factory"></i><span class="hide-menu">Role</span></a>
+										</li>
+
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='CReate New Role', link=@{/adminPage/roles/newRole})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-factory"></i><span class="hide-menu">Create
+													new Role</span></a></li>
+
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='User Profile', link=@{/profile})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-account-check"></i><span class="hide-menu">users
+													Profile</span></a></li>
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Change User Password', link=@{/password})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-account-check"></i><span class="hide-menu">Change
+													user Password </span></a></li>
+
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Change User Email', link=@{/profile/email})"
+											class="waves-effect waves-dark" aria-expanded="false"><i
+												class="mdi mdi-account-check"></i><span class="hide-menu">Change
+													user Email </span></a></li>
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Calendar', link='#')">Calendar</a></li>
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Documents', link='#')"
+											href="#">Documents</a></li>
+										<li class="nav-item"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Reports', link='#')">Reports</a></li>
+									</ul></li>
+
+								<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i>Teacher<span
+										class="fa fa-chevron-down"></span></a>
+									<ul id="sidebarnav" class=".sidebar-nav > ul > li">
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Teacher</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Advanced
+												Components</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Form
+												Validation</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Form
+												Wizard</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Form
+												Upload</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Teacher', link='#')">Form
+												Buttons</a></li>
+
+									</ul></li>
+								<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i>
+										Elève<span class="fa fa-chevron-down"></span></a>
+									<ul id="sidebarnav" class=".sidebar-nav > ul > li">
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Elève</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Advanced
+												Components</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Form
+												Validation</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Form
+												Wizard</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Form
+												Upload</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Elève', link='#')">Form
+												Buttons</a></li>
+
+									</ul></li>
+
+								<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i>
+										Parent <span class="fa fa-chevron-down"></span></a>
+									<ul id="sidebarnav" class=".sidebar-nav > ul > li">
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Parent1</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Advanced
+												Components</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Form
+												Validation</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Form
+												Wizard</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Form
+												Upload</a></li>
+										<li><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title='Parents', link='#')">Form
+												Buttons</a></li>
+
+									</ul></li>
+							</ul>
+						</div>
+					</nav>
+
+				</div>
+
+			</aside>
+		</div>
 	</div>
 </body>
 

@@ -29,6 +29,8 @@ import org.springframework.web.util.UrlPathHelper;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import ml.kalanblowsystemmanagement.utils.date.FrenchLocalDateFormater;
 import ml.kalanblowsystemmanagement.utils.date.LocalDateTimeFormatter;
@@ -65,12 +67,24 @@ public class PageConfiguration implements WebMvcConfigurer {
 		SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
 		resolver.setPrefix("classpath:/templates/admin/");
 		resolver.setSuffix(".html");
+		resolver.setOrder(0);
 		resolver.setCacheable(false);
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setCheckExistence(true);
 		return resolver;
 	}
+	 @Bean
+	    public ClassLoaderTemplateResolver secondTemplateResolver() {
+	        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+	        templateResolver.setPrefix("classpath:templates/svg");
+	        templateResolver.setSuffix(".html");
+	        templateResolver.setTemplateMode(TemplateMode.HTML);
+	        templateResolver.setCharacterEncoding("UTF-8");
+	        templateResolver.setOrder(1);
+	        templateResolver.setCheckExistence(true);
 
+	        return templateResolver;
+	    }
 	/*
 	 * @Bean public ViewResolver htmlViewResolver() { ThymeleafViewResolver resolver
 	 * = new ThymeleafViewResolver(); resolver.setTemplateEngine(templateEngine());

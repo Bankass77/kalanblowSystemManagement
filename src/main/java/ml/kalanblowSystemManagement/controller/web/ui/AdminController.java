@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -134,6 +135,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/users")
+    @Secured("ADMIN,USER")
     public ModelAndView getUsersList(ModelAndView modelAndView,
 			UserSearchParameters userSearchParameters) {
     	
@@ -221,6 +223,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/editeUser/{id}")
+    @Secured("ADMIN")
     public String getEditingUser(@PathVariable Long id, Model model) {
         log.info("User/edit-Get: Id to query=" + id);
         Optional<UserDto> userDto = Optional.ofNullable(userService.findUserById(id));
@@ -237,6 +240,7 @@ public class AdminController {
     }
 
     @PostMapping("/editeUser/{id}")
+    @Secured("ADMIN")
     public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto,
             @PathVariable Long id, Model model,
 
@@ -271,6 +275,7 @@ public class AdminController {
      * @return
      */
     @PostMapping("/deleteUser/{id}")
+    @Secured("ADMIN")
     public ModelAndView deleteUser(@PathVariable("id")
               Long id) {
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr" 
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/layout}">
+	xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head th:replace="fragments/header :: header">
 <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Kalanblow System Management</title>
@@ -18,24 +18,19 @@
 	<div class="preloader">
 	</div>
 	<div >
-   
-    <!-- Static sidebar for desktop -->
-    <div th:replace="fragments/sidebar :: desktop"></div>
+  
 
 </div>
 	<!-- ============================================================== -->
 	<!-- Main wrapper - style you can find in pages.scss -->
 	<!-- ============================================================== -->
 	<div id="main-wrapper">
-		<!-- Off-canvas menu for mobile -->
-		<div th:replace="fragments/sidebar :: mobile"></div>
-		<!-- Static sidebar for desktop -->
-		<div th:replace="fragments/sidebar :: desktop"></div>
+	
 		<!-- Topbar header - style you can find in pages.scss -->
 		<div th:replace="fragments/navigation :: navigation"></div>
 		<!-- Left Sidebar - style you can find in sidebar.scss  -->
 		<div th:replace="fragments/sidebar :: sidebar"></div>
-		<div sec:authorize="isAuthenticated()">
+		<!-- <div sec:authorize="isAuthenticated()">
 			You are logged as <b sec:authentication="name" /> with roles <span
 				sec:authentication="authorities" /> -
 			<form th:action="@{/logout}" method="post"
@@ -43,7 +38,7 @@
 				<input type="submit" value="Sign Out" />
 			</form>
 			<hr />
-		</div>
+		</div> -->
 		<!-- Page wrapper  -->
 		<div class="page-wrapper" id="mainContent">
 			<div layout:fragment="page-content"></div>

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -121,7 +122,8 @@ public class MultiHttpSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http.cors().and().csrf().disable().authorizeRequests()
                     .expressionHandler(webSecurityExpressionHandler()).antMatchers("/").permitAll()
-                    .antMatchers("/login").permitAll().antMatchers("/signup").permitAll()
+                    .antMatchers("/login").permitAll().antMatchers("/adminPage/signup").hasRole("ADMIN").antMatchers(HttpMethod.GET, "/adminPage/*").hasRole("TEACHER")
+                    .antMatchers(HttpMethod.POST, "/adminPage/*").hasRole("ADMIN")
                     .antMatchers("/dashboard/**").hasAuthority("ADMIN").anyRequest().authenticated()
                     .and().formLogin().loginPage("/login").permitAll()
                     .failureUrl("/login?error=true").usernameParameter("email")

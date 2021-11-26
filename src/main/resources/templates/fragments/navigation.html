@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
 <html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head th:replace="layout/header :: header">
-<title>Header</title>
+<title>Kalanblow Sysmtem Management</title>
 
 </head>
 
@@ -13,28 +14,32 @@
 	<!-- ============================================================== -->
 	<!-- Topbar header - style you can find in pages.scss -->
 	<!-- ============================================================== -->
-
+           
 	<nav th:fragment="navigation"
 		class="navbar top-navbar navbar-toggleable-sm navbar-light">
 		<div class="container">
-			<div th:insert="fragments/lang.html :: languague" align="right"></div>
+			<div     th:insert="fragments/lang.html :: languague" align="right">   
+			  
+			</div>
+			 <div class="" th:text="#{title}"></div>
 			<!-- ============================================================== -->
 			<!-- Logo -->
 			<!-- ============================================================== -->
-			<div class="navbar-header">
-				<a class="navbar-brand" href="/dashboard"> <!-- Light Logo icon -->
+			<!-- <div class="navbar-header">
+				<a class="navbar-brand" href="/dashboard"> Light Logo icon
 					<img src="/dashboard/assets/images/logo.png" alt="homepage"
-					class="light-logo" /> </b> <!--End Logo icon --> <!-- Logo text --> <span>
-						<!-- Light Logo text --> <img
+					class="light-logo" /> </b> End Logo icon Logo text <span>
+						Light Logo text <img
 						src="/dashboard/assets/images/logo-text.png" class="light-logo"
 						alt="homepage" />
 				</span>
 				</a>
-			</div>
+			</div> -->
 			<br>
 			<!-- ============================================================== -->
 			<!-- End Logo -->
 			<!-- ============================================================== -->
+			<br>
 			<div class="collapse navbar-collapse">
 
 				<!-- ============================================================== -->
@@ -59,15 +64,14 @@
 					<!-- ============================================================== -->
 
 					<!--region Displaying Bienvenue  + user-->
-					<li class="nav-item"><a
-						class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
-						href="profile" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false">
-							<!-- <img
-							src="/dashboard/assets/images/users/1.jpg" alt="user"
-							class="profile-pic m-r-10" th:inline="text" align="top" /> -->Bienvenue
-							<span sec:authentication="name"></span>!
-					</a></li>
+					<li class="nav-item">
+					<div sec:authorize="isAuthenticated()">
+			<span  th:text="#{user.welcome.message}" ></span> <b sec:authentication="name" />
+			 <span sec:authentication="authorities" /> 
+
+		</div>
+					
+					</li>
 					<!--endregion-->
 
 					<!--region For ROLE_ADMIN display admin page-->
@@ -83,27 +87,18 @@
 
 			<div class="py-1 rounded-md bg-white shadow-xs" role="menu"
 				aria-orientation="vertical" aria-labelledby="user-menu">
-				<!-- tag::username[] -->
-				<!-- <div class="block px-4 pt-1 text-sm text-gray-700"
-				sec:authentication="principal.authorities"></div>
-			.
-			<div 
-				class="block px-4 pb-2 text-xs font-mono text-gray-400 border-b truncate"
-				sec:authentication="name"></div>
-			<!--.-->
-				<!-- end::username[] -->
-				<a href="#"
-					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-					th:text="#{menu.profile}" role="menuitem">Your Profile </a> <a
-					href="#"
-					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+				<a href="#" class="btn-info,btn-info.disabled"
+					th:text="#{menu.profile}" role="menuitem">Your Profile </a> 
+					<br>
+					<a href="#" class="btn-info,btn-info.disabled"
 					th:text="#{menu.settings}" role="menuitem">Settings </a>
+					<br>
 				<!-- tag::logout[] -->
-				<div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-					<form th:action="@{/logout}" method="post">
-						<!--.-->
-						<button type="submit" th:text="#{menu.signout}">Sign out</button>
-					</form>
+				<div class="btn-info,btn-info.disabled,text-danger">
+				<br>
+					<form th:action="@{/logout}" method="post" style="display: inline-block" class="form-horizontal label ">
+				<button class="button-group .btn,text-danger" type="submit" th:text="#{menu.signout}">Sign out</button>
+			</form>
 				</div>
 				<!-- end::logout[] -->
 			</div>
