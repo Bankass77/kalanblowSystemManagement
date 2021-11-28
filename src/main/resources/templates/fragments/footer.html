@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="layout/header :: header">
 </head>
 
 <body>
 
-	<footer class="footer" th:fragment="footer" th:text="#{internal.exit}"
-		th:href="@{/logout}"> © 2021 KalanblowSystemManagement
-		Application </footer>
+	<footer class="footer" th:fragment="footer" > © 2021 Kalanblow  <span  th:text="#{title}"></span> </footer>
 
 </body>
 
