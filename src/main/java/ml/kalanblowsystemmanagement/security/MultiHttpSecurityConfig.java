@@ -40,142 +40,134 @@ import ml.kalanblowsystemmanagement.security.form.CustomAuthenticationSuccessHan
 import ml.kalanblowsystemmanagement.security.form.CustomLogoutSuccessHandler;
 import ml.kalanblowsystemmanagement.security.remember.JpaPesristentTokenRepository;
 
-
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
+//@EnableGlobalMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MultiHttpSecurityConfig {
 
-    @Configuration
-    @Order(1)
-    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+	@Configuration
+	@Order(1)
+	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-        private final BCryptPasswordEncoder passwordEncoder;
+		private final BCryptPasswordEncoder passwordEncoder;
 
-        private final KalanblowSystemManagementCustomService customService;
+		private final KalanblowSystemManagementCustomService customService;
 
-        @Autowired
-        public ApiWebSecurityConfigurationAdapter(BCryptPasswordEncoder passwordEncoder,
-                @Lazy KalanblowSystemManagementCustomService customService) {
-            super();
-            this.passwordEncoder = passwordEncoder;
-            this.customService = customService;
-        }
+		@Autowired
+		public ApiWebSecurityConfigurationAdapter(BCryptPasswordEncoder passwordEncoder,
+				@Lazy KalanblowSystemManagementCustomService customService) {
+			super();
+			this.passwordEncoder = passwordEncoder;
+			this.customService = customService;
+		}
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder authenticationManager)
-                throws Exception {
+		@Override
+		protected void configure(AuthenticationManagerBuilder authenticationManager) throws Exception {
 
-            authenticationManager.userDetailsService(customService)
-                    .passwordEncoder(passwordEncoder);
-        }
+			authenticationManager.userDetailsService(customService).passwordEncoder(passwordEncoder);
+		}
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().antMatcher("/api/**").authorizeRequests()
-                    .antMatchers("/api/v1/user/**").permitAll().anyRequest().authenticated().and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(
-                            (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                    .and().addFilter(new ApiJWTAuthenticationFilter(authenticationManager()))
-                    .addFilter(new ApiJWTAuthorizationFilter(authenticationManager()))
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            http.httpBasic();
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.csrf().disable().antMatcher("/api/**").authorizeRequests().antMatchers("/api/v1/user/**").permitAll()
+					.anyRequest().authenticated().and().exceptionHandling()
+					.authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
+					.addFilter(new ApiJWTAuthenticationFilter(authenticationManager()))
+					.addFilter(new ApiJWTAuthorizationFilter(authenticationManager())).sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			http.httpBasic();
 
-        }
+		}
 
-    }
+	}
 
-    @Configuration
-    @Order(2)
-    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+	@Configuration
+	@Order(2)
+	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-        private final BCryptPasswordEncoder passwordEncoder;
+		private final BCryptPasswordEncoder passwordEncoder;
 
-        private final KalanblowSystemManagementCustomService customService;
+		private final KalanblowSystemManagementCustomService customService;
 
-        private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+		private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-        private final JpaPesristentTokenRepository jpersistentTokenRepository;
+		private final JpaPesristentTokenRepository jpersistentTokenRepository;
 
-        @Autowired
-        public FormLoginWebSecurityConfigurerAdapter(BCryptPasswordEncoder passwordEncoder,
-                @Lazy KalanblowSystemManagementCustomService customService,
-                CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
-                JpaPesristentTokenRepository jpersistentTokenRepository
+		@Autowired
+		public FormLoginWebSecurityConfigurerAdapter(BCryptPasswordEncoder passwordEncoder,
+				@Lazy KalanblowSystemManagementCustomService customService,
+				CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+				JpaPesristentTokenRepository jpersistentTokenRepository
 
-        ) {
-            super();
-            this.passwordEncoder = passwordEncoder;
-            this.customService = customService;
-            this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
-            this.jpersistentTokenRepository = jpersistentTokenRepository;
-        }
+		) {
+			super();
+			this.passwordEncoder = passwordEncoder;
+			this.customService = customService;
+			this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+			this.jpersistentTokenRepository = jpersistentTokenRepository;
+		}
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-            auth.userDetailsService(customService).passwordEncoder(passwordEncoder);
-        }
+			auth.userDetailsService(customService).passwordEncoder(passwordEncoder);
+		}
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.cors().and().csrf().disable().authorizeRequests()
-                    .expressionHandler(webSecurityExpressionHandler()).antMatchers("/").permitAll()
-                    .antMatchers("/login").permitAll().antMatchers("/adminPage/signup").hasRole("ADMIN").antMatchers(HttpMethod.GET, "/adminPage/*").hasRole("TEACHER")
-                    .antMatchers(HttpMethod.POST, "/adminPage/*").hasRole("ADMIN")
-                    .antMatchers("/dashboard/**").hasAuthority("ADMIN").anyRequest().authenticated()
-                    .and().formLogin().loginPage("/login").permitAll()
-                    .failureUrl("/login?error=true").usernameParameter("email")
-                    .passwordParameter("password")
-                    .successHandler(customAuthenticationSuccessHandler).and().logout().permitAll()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessHandler(new CustomLogoutSuccessHandler())
-                    .deleteCookies("JSESSIONID").logoutSuccessUrl("/").and().exceptionHandling();
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/images/*")
+					.permitAll().antMatchers("/login").permitAll().and().cors().and().csrf().disable().formLogin().loginPage("/login").permitAll()
+					.failureUrl("/login?error=true").usernameParameter("email").passwordParameter("password")
+					.successHandler(customAuthenticationSuccessHandler).and().logout().permitAll()
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessHandler(new CustomLogoutSuccessHandler()).deleteCookies("JSESSIONID")
+					.logoutSuccessUrl("/").and().exceptionHandling();
+					
+					http.authorizeRequests().antMatchers("/adminPage/signup").hasRole("ADMIN")
+					.antMatchers(HttpMethod.GET, "/adminPage/users").hasRole("ADMIN")
+					.antMatchers(HttpMethod.POST, "/adminPage/*").hasRole("ADMIN").antMatchers("/dashboard")
+					.hasRole("ADMIN").anyRequest().authenticated();
 
-            http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
-                    .userDetailsService(customService).tokenValiditySeconds((int) SecurityConstants.EXPIRATION_TIME);
+			http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
+					.userDetailsService(customService).tokenValiditySeconds((int) SecurityConstants.EXPIRATION_TIME);
 
-        }
+		}
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**",
-                    "/images/**", "/resources/static/**", "/css/**", "/js/**", "/img/**",
-                    "/fonts/**", "/images/**", "/scss/**", "/vendor/**", "/favicon.ico", "/auth/**",
-                    "/favicon.png", "/v2/api-docs", "/configuration/ui", "/configuration/security",
-                    "/webjars/**", "/swagger-resources/**", "/actuator", "/swagger-ui/**",
-                    "/actuator/**", "/swagger-ui/index.html", "/swagger-ui/");
-        }
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
+					"/resources/static/**", "/css/**", "/js/**", "/img/**", "/fonts/**", "/images/**", "/scss/**",
+					"/vendor/**", "/favicon.ico", "/auth/**", "/favicon.png", "/v2/api-docs", "/configuration/ui",
+					"/configuration/security", "/webjars/**", "/swagger-resources/**", "/actuator", "/swagger-ui/**",
+					"/actuator/**", "/swagger-ui/index.html", "/swagger-ui/");
+		}
 
-        @Bean(
-                name = "GeoIPCountry")
-        public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
-            final File resource = new File("src/main/resources/maxmind/GeoLite2-Country.mmdb");
-            return new DatabaseReader.Builder(resource).build();
-        }
+		@Bean(name = "GeoIPCountry")
+		public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
+			final File resource = new File("src/main/resources/maxmind/GeoLite2-Country.mmdb");
+			return new DatabaseReader.Builder(resource).build();
+		}
 
-        @Bean
-        public RoleHierarchy roleHierarchy() {
-            RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-            String hierarchy = UserRole.getRoleHiearchy();
-            roleHierarchy.setHierarchy(hierarchy);
-            return roleHierarchy;
-        }
+		@Bean
+		public RoleHierarchy roleHierarchy() {
+			RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+			String hierarchy = UserRole.getRoleHiearchy();
+			roleHierarchy.setHierarchy(hierarchy);
+			return roleHierarchy;
+		}
 
-        public SecurityExpressionHandler<FilterInvocation> webSecurityExpressionHandler() {
-            DefaultWebSecurityExpressionHandler expressionHandler =
-                    new DefaultWebSecurityExpressionHandler();
-            expressionHandler.setRoleHierarchy(roleHierarchy());
-            return expressionHandler;
-        }
+		public SecurityExpressionHandler<FilterInvocation> webSecurityExpressionHandler() {
+			DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+			expressionHandler.setRoleHierarchy(roleHierarchy());
+			return expressionHandler;
+		}
 
-        @Bean
-        public Java8TimeDialect thymelaea() {
+		@Bean
+		public Java8TimeDialect thymelaea() {
 
-            return new Java8TimeDialect();
-        }
+			return new Java8TimeDialect();
+		}
 
-    }
+	}
 
 }

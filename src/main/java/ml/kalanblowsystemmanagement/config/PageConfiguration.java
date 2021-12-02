@@ -6,7 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.springframework.beans.BeansException;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,87 +23,97 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.UrlPathHelper;
+import org.thymeleaf.spring5.ISpringTemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import ml.kalanblowsystemmanagement.utils.date.FrenchLocalDateFormater;
 import ml.kalanblowsystemmanagement.utils.date.LocalDateTimeFormatter;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
-public class PageConfiguration implements WebMvcConfigurer {
+public class PageConfiguration implements  WebMvcConfigurer ,ApplicationContextAware {
 
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+	private ApplicationContext applicationContext;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry controllerRegistry) {
 
 		controllerRegistry.addViewController("/").setViewName("login");
+		controllerRegistry.addViewController("/login").setViewName("login");
 		controllerRegistry.addViewController("/home").setViewName("home");
 		controllerRegistry.addViewController("/dashboard").setViewName("dashboard");
 		controllerRegistry.addViewController("/login").setViewName("login");
-		controllerRegistry.addViewController("/adminPage/signup").setViewName("signup");
+		controllerRegistry.addViewController("/users/signup").setViewName("signup");
 		controllerRegistry.addViewController("/logout").setViewName("logout");
-		controllerRegistry.addViewController("/profile").setViewName("profile");
-		controllerRegistry.addViewController("/adminPage/roles").setViewName("roles");
-		controllerRegistry.addViewController("/adminPage/roles/newRole").setViewName("newRole");
-		controllerRegistry.addViewController("/error").setViewName("error");
-		controllerRegistry.addViewController("/adminPage/users").setViewName("users");
+		controllerRegistry.addViewController("/admin/profile").setViewName("profile");
+		controllerRegistry.addViewController("/role/roles").setViewName("roles");
+		controllerRegistry.addViewController("/role/newRole").setViewName("newRole");
+		controllerRegistry.addViewController("/error/403").setViewName("403");
+		controllerRegistry.addViewController("/error/409").setViewName("409");
+		controllerRegistry.addViewController("/error/404").setViewName("404");
+		controllerRegistry.addViewController("/error/500").setViewName("500");
+		controllerRegistry.addViewController("/users").setViewName("users");
 		controllerRegistry.addViewController("/lastName").setViewName("lastname");
-		controllerRegistry.addViewController("/adminHome").setViewName("homepage");
-		controllerRegistry.addViewController("/profile/email").setViewName("changeEmail");
-		controllerRegistry.addViewController("/password").setViewName("changePassword");
+		controllerRegistry.addViewController("/admin").setViewName("homepage");
+		controllerRegistry.addViewController("/admin/profile/email").setViewName("changeEmail");
+		controllerRegistry.addViewController("/admin/password").setViewName("changePassword");
 		controllerRegistry.addViewController("/access_denied").setViewName("accessDenied");
 
 	}
 
+	  @Bean
+	    public ViewResolver viewResolver() {
+	        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+	        resolver.setTemplateEngine(templateEngine());
+	        resolver.setCharacterEncoding("UTF-8");
+	        return resolver;
+	    }
+
+	    @Bean
+	    public ISpringTemplateEngine templateEngine() {
+	        SpringTemplateEngine engine = new SpringTemplateEngine();
+	        engine.setEnableSpringELCompiler(true);
+	        engine.setTemplateResolver(templateResolver());
+	        engine.addDialect(new LayoutDialect());
+	        return engine;
+	    }
+
+	    private ITemplateResolver templateResolver() {
+	        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
+	        resolver.setApplicationContext(applicationContext);
+	        resolver.setPrefix("classpath:templates/");
+	        resolver.setSuffix(".html");
+	        resolver.setTemplateMode(TemplateMode.HTML);
+	        return resolver;
+	    }
+
 	@Bean
-	public SpringResourceTemplateResolver templateResolver() {
+	public ITemplateResolver svgTemplateResolver() {
 		SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-		resolver.setPrefix("classpath:/templates/admin/");
-		resolver.setSuffix(".html");
-		resolver.setOrder(0);
-		resolver.setCacheable(false);
-		resolver.setCharacterEncoding("UTF-8");
+		resolver.setPrefix("classpath:/templates/svg/");
+		resolver.setSuffix(".svg");
+		resolver.setTemplateMode("XML");
+		resolver.setOrder(1);
 		resolver.setCheckExistence(true);
+		resolver.setCharacterEncoding("UTF-8");
+
 		return resolver;
 	}
-	 @Bean
-	    public ClassLoaderTemplateResolver secondTemplateResolver() {
-	        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-	        templateResolver.setPrefix("classpath:templates/svg");
-	        templateResolver.setSuffix(".html");
-	        templateResolver.setTemplateMode(TemplateMode.HTML);
-	        templateResolver.setCharacterEncoding("UTF-8");
-	        templateResolver.setOrder(1);
-	        templateResolver.setCheckExistence(true);
-
-	        return templateResolver;
-	    }
-	/*
-	 * @Bean public ViewResolver htmlViewResolver() { ThymeleafViewResolver resolver
-	 * = new ThymeleafViewResolver(); resolver.setTemplateEngine(templateEngine());
-	 * resolver.setContentType("text/html; charset=UTF-8");
-	 * resolver.setCharacterEncoding("UTF-8"); resolver.setViewNames(new String[] {
-	 * "*.html" });
-	 * 
-	 * return resolver; }
-	 */
-
-	/*
-	 * @Bean public SpringTemplateEngine templateEngine() { SpringTemplateEngine
-	 * templateEngine = new SpringTemplateEngine();
-	 * templateEngine.setTemplateResolver(templateResolver());
-	 * templateEngine.setEnableSpringELCompiler(true); return templateEngine; }
-	 */
 
 	@Bean
 	public FilterRegistrationBean<HiddenHttpMethodFilter> hiddenHttpMethodFilter() {
@@ -142,7 +155,7 @@ public class PageConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
-		// registry.addInterceptor(cookieslocaleResolver());
+
 	}
 
 	@Override

@@ -20,7 +20,7 @@
 
 					<div id="admin-content">
 						<form class="admin-form"
-							th:action="@{/adminPage/roles/{id}(id=${role.id})}"
+							th:action="@{/role/roles/{id}(id=${role.id})}"
 							th:object="${role}" th:method="post" method="post">
 							<div class="form-group">
 								<label for="editRoleName">Name</label> <input id="editRoleName"
@@ -30,7 +30,7 @@
 									th:errors="*{userRoleName}"></p>
 
 							</div>
-							<a class="btn btn-dark" th:href="@{/adminPage/roles}">Cancel</a>
+							<a class="btn btn-dark" th:href="@{/role/roles}">Cancel</a>
 							<span></span>
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</form>

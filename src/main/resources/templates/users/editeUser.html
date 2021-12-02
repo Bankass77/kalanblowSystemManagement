@@ -2,7 +2,7 @@
 <html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	 th:with="activeMenuItem='adminPage'">
+	 th:with="activeMenuItem='users'">
 <head th:replace="fragments/header :: header">
 
 <title th:text="#{edite.button.label}">Edit User</title>
@@ -23,7 +23,7 @@
 				<div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
 
 					<form id="user-form" th:object="${editeUser}"
-						th:action="${editMode?.name() == 'UPDATE'}?@{/adminPage/editeUser/{id}(id=${editeUser.id})}:@{/adminPage/signup}"
+						th:action="${editMode?.name() == 'UPDATE'}?@{/users/editeUser/{id}(id=${editeUser.id})}:@{/users/signup}"
 						method="post">
 						<div>
 							<div th:replace="fragments/forms :: fielderrors"></div>

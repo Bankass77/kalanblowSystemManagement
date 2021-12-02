@@ -20,7 +20,7 @@
 						<div class=" sidebar-item sidebar-menu">
 							<ul id="sidebarnav" class=".sidebar-nav > ul > li">
 								<li class=".sidebar-nav ul li a"><a
-									th:replace="fragments/sidebar-buttons :: desktop-button(title='Dashboard', link=@{/dashboard})"
+									th:replace="fragments/sidebar-buttons :: desktop-button(title=#{dashboard.title}, link=@{/dashboard})"
 									class="nav-link" aria-expanded="false"><i
 										class="mdi mdi-gauge"></i>Dashboard<span class="sr-only">(current)</span></a></li>
 								<li class=".sidebar-nav ul li a"><a><i
@@ -28,45 +28,45 @@
 									<ul class=".sidebar-nav > ul > li">
 
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Users', link=@{/adminPage/users})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.users}, link=@{/users})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
 										</li>
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Roles', link=@{/adminPage/roles})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{user.roles}, link=@{/role/roles})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-factory"></i><span class="hide-menu">Role</span></a>
 										</li>
 
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='CReate New Role', link=@{/adminPage/roles/newRole})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{user.roles.create}, link=@{/role/roles/newRole})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-factory"></i><span class="hide-menu">Create
 													new Role</span></a></li>
 
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='User Profile', link=@{/profile})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.profile}, link=@{/admin/profile})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">users
 													Profile</span></a></li>
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Change User Password', link=@{/password})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{message.changePassword}, link=@{/admin/password})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">Change
 													user Password </span></a></li>
 
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Change User Email', link=@{/profile/email})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{submit.user.changeEmail}, link=@{/admin/profile/email})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">Change
 													user Email </span></a></li>
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Calendar', link='#')">Calendar</a></li>
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.calendar}, link='#')">Calendar</a></li>
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Documents', link='#')"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.documents}, link='#')"
 											href="#">Documents</a></li>
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title='Reports', link='#')">Reports</a></li>
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.reports}, link='#')">Reports</a></li>
 									</ul></li>
 
 								<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i>Teacher<span

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" 
+xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/layout}">
@@ -18,7 +19,7 @@
 					<div class="signup-form">
 						<h2 class="form-title">Sign up</h2>
 						<form action="#" method="POST" class="register-form"
-							id="register-form" th:action="@{/adminPage/signup}"
+							id="register-form" th:action="@{/users/signup}"
 							th:object="${adminSignupCommand}">
 							<div class="form-group" th:fragment="gender" >
 								<!-- <label th:for="gender"><i class="zmdi zmdi-account-o"></i>Select

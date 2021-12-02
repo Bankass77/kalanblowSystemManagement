@@ -24,7 +24,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler im
 			throws IOException, ServletException {
 		if (authentication != null) {
 			new SecurityContextLogoutHandler().logout(request, response, authentication);
-			log.info("User" + authentication.getName() + "is logged out");
+			log.info(authentication.getName() + " " + "is logged out");
 		}
 	}
 }

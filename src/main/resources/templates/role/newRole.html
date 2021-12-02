@@ -17,7 +17,7 @@
 				<div class="d-flex flex-row">
 
 					<div id="admin-content">
-						<form class="admin-form" th:action="@{/adminPage/roles/newRole}"
+						<form class="admin-form" th:action="@{/role/roles/newRole}"
 							th:object="${newRole}" th:method="post" method="post">
 							<ul class="global-errors" th:if="${#fields.hasErrors('global')}">
 								<li class="text-danger"
@@ -32,7 +32,7 @@
 									th:if="${#fields.hasErrors('userRoleName')}"
 									th:errors="*{userRoleName}"></p>
 							</div>
-							<a class="btn btn-dark" th:href="@{/admin/roles}">Cancel</a>
+							<a class="btn btn-dark" th:href="@{/role/roles}">Cancel</a>
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</form>
 					</div>

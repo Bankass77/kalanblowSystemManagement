@@ -1,10 +1,12 @@
 
 package ml.kalanblowSystemManagement.controller.web.ui;
 
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
@@ -12,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +33,7 @@ public class KsmControllerAdvice  extends ResponseEntityExceptionHandler{
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView exception(final Exception ex, ModelAndView modelAndView) {
 
-        modelAndView = new ModelAndView("error/error");
+        modelAndView = new ModelAndView("error/404");
         log.error("Exception during execution of kalanblow application", ex);
         StringBuffer sb = new StringBuffer();
         sb.append("Exception during execution of Spring Security application!  ");
@@ -76,5 +79,10 @@ public class KsmControllerAdvice  extends ResponseEntityExceptionHandler{
     @ModelAttribute("version")
     public String getVersion() {
         return version;
+    }
+    @InitBinder //<.>
+    public void initBinder(WebDataBinder binder) {
+        StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(false); //<.>
+        binder.registerCustomEditor(String.class, stringtrimmer); //<.>
     }
 }

@@ -49,14 +49,14 @@
 									<td th:text="${role.id}">>1</td>
 									<td th:text="${role.userRoleName}">Role Name</td>
 									<td><a style="text-decoration: none; color: blue;"
-										th:href="@{/adminPage/roles/{id}(id=${role.id})}"
+										th:href="@{/role/roles/{id}(id=${role.id})}"
 										class="edit-btn" data-toggle="tooltip" data-placement="right"
 										title="Edit role"> <i class="fa fa-edit"></i>
 									</a></td>
 								</tr>
 							</tbody>
 						</table>
-						<a href="#" th:href="@{/adminPage/roles/newRole}"><span></span>
+						<a href="#" th:href="@{/role/roles/newRole}"><span></span>
 							<button type="button" class="btn btn-primary">New Role</button> </a>
 					</div>
 				</div>

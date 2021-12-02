@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr" 
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	 th:with="activeMenuItem='adminPage'">
+xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}"
+	 th:with="activeMenuItem='users'">
 <head th:replace="fragments/header :: header">
   <title>Users</title>
 </head>
@@ -32,7 +34,7 @@
 		<!-- Row -->
 
   <!-- tag::create-button[] -->
-    <div th:replace="fragments/titles :: title-with-button(#{users.title}, 'user-add', #{users.add}, @{/adminPage/signup})"
+    <div th:replace="fragments/titles :: title-with-button(#{users.title}, 'user-add', #{users.add}, @{/users/signup})"
          sec:authorize="hasRole('ADMIN')"></div>
     <!-- end::create-button[] -->
     <!-- tag::alert[] -->
@@ -130,7 +132,7 @@
 
 							<!--Remove user button-->
 							<td
-								th:replace="fragments/table :: dataWithLink('Remove user', @{'/adminPage/' +'deleteUser/'+${user.id}})"><a
+								th:replace="fragments/table :: dataWithLink('Remove user', @{'/users/' +'deleteUser/'+${user.id}})"><a
 								id="remove-link" style="text-decoration: none; color: red"
 								data-toggle='modal' data-target='#deleteModal'
 								data-placement="right"
@@ -140,7 +142,7 @@
 							</a></td>
 							<!--Edit user button-->
 							<td
-								th:replace="fragments/table :: dataWithLink('Edit', @{'/adminPage/' + 'editeUser/' + ${user.id}})"><a
+								th:replace="fragments/table :: dataWithLink('Edit', @{'/users/' + 'editeUser/' + ${user.id}})"><a
 								style="text-decoration: none; color: blue" class="editBtn"
 								data-toggle="tooltip" data-placement="right" title="Edit user">
 									<i class="fa fa-edit"></i>
@@ -198,7 +200,7 @@
 					</div>
 				</div>
 			</div>
-			<a href="#" th:href="@{/adminPage/signup}">
+			<a href="#" th:href="@{/users/signup}">
 				<button type="button" class="btn btn-primary">New User</button>
 			</a>
 
@@ -226,20 +228,20 @@
 						<li th:class="${users.number == 0} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/adminPage/users(usersProperty=${usersProperty},
+							th:href="@{/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=1)}">
 								&laquo; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=1)}">
+							th:href="@{/users/users(pageSize=${selectedPageSize}, page=1)}">
 								&laquo; </a></li>
 						<li th:class="${users.number == 0} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue) }" class="page-link"
-							th:href="@{/adminPage/users(usersProperty=${usersProperty},
+							th:href="@{/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${users.number})}">
 								&larr; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.number})}">
+							th:href="@{/users/users(pageSize=${selectedPageSize}, page=${users.number})}">
 								&larr; </a></li>
 						<li
 							th:class="${users.number == (page - 1)} ? 'active pointer-disabled'"
@@ -247,32 +249,32 @@
 							th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
 							<a th:if="${not #strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/adminPage/users(usersProperty=${usersProperty},
+							th:href="@{/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${page})}"
 							th:text="${page}"> </a> <a
 							th:if="${#strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${page})}"
+							th:href="@{/users(pageSize=${selectedPageSize}, page=${page})}"
 							th:text="${page}"> </a>
 						</li>
 						<li
 							th:class="${users.number + 1 == users.totalPages} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue)}" class="page-link"
-							th:href="@{/adminPage/users(usersProperty=${usersProperty},
+							th:href="@{/users(usersProperty=${usersProperty},
                                        propertyValue=${propertyValue}, pageSize=${selectedPageSize}, page=${users.number + 2})}">
 								&rarr; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.number + 2})}">
+							th:href="@{/users(pageSize=${selectedPageSize}, page=${users.number + 2})}">
 								&rarr; </a></li>
 						<li
 							th:class="${users.number + 1 == users.totalPages} ? 'page-item disabled'"
 							class="page-item"><a
 							th:if="${not #strings.isEmpty(propertyValue) }" class="page-link"
-							th:href="@{/adminPage/users(usersProperty=${usersProperty}, propertyValue=${propertyValue},
+							th:href="@{/users(usersProperty=${usersProperty}, propertyValue=${propertyValue},
                                        pageSize=${selectedPageSize}, page=${users.totalPages})}">
 								&raquo; </a> <a th:if="${#strings.isEmpty(propertyValue)}"
 							class="page-link"
-							th:href="@{/adminPage/users(pageSize=${selectedPageSize}, page=${users.totalPages})}">
+							th:href="@{/users(pageSize=${selectedPageSize}, page=${users.totalPages})}">
 								&raquo; </a></li>
 					</ul>
 				</nav>
@@ -280,10 +282,7 @@
 
 		</div>
 	</div>
-	<!-- <div th:replace="~{fragments/footer :: footer}"></div> -->
-	!-- JavaScript -->
-	<script src="../../dashboard/html/js//user-popup-menu.js"
-		th:src="@{/dashboard/html/js//user-popup-menu.js}"></script>
+	<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>
