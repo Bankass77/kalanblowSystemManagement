@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+     xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
 <head th:replace="fragments/header :: header">
 
 <title>Login</title>
@@ -17,7 +19,7 @@
 						<figure>
 							<img src="/auth/images/signin-image.jpg" alt="sing up image">
 						</figure>
-						<a href="adminPage/signup" class="signup-image-link">Create an
+						<a href="/users/signup" class="signup-image-link">Create an
 							account</a>
 					</div>
 

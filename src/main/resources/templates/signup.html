@@ -175,8 +175,8 @@ xmlns="http://www.w3.org/1999/xhtml"
 								<div class="">
 									<select name="role" id="role">
 										<option th:each="listRoles: ${roles}"
-											th:value="${listRoles.id}"
-											th:text="${listRoles.userRoleName}">
+											th:value="${listRoles.name()}"
+											th:text="${listRoles.name}">
 									</select>
 								</div>
 							</div>
@@ -205,6 +205,7 @@ xmlns="http://www.w3.org/1999/xhtml"
 		<div class="text-xs mt-2 text-gray-500 text-center">
 			<span th:text="${version}"></span>
 		</div>
+		<h2><span class="text-success" th:text="${successMessage}"></span></h2>
 	</div>
 </div>
 	<!-- JS -->

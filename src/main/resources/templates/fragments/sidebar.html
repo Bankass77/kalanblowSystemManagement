@@ -26,9 +26,8 @@
 								<li class=".sidebar-nav ul li a"><a><i
 										class="fa fa-edit"></i> Admin <span class="fa fa-chevron-down"></span></a>
 									<ul class=".sidebar-nav > ul > li">
-
 										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.users}, link=@{/users})"
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.users}, link=@{/users/allUsers})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
 										</li>
@@ -49,7 +48,7 @@
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">users
 													Profile</span></a></li>
-										<li class="nav-item"><a
+										<!-- <li class="nav-item"><a
 											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{message.changePassword}, link=@{/admin/password})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">Change
@@ -59,7 +58,7 @@
 											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{submit.user.changeEmail}, link=@{/admin/profile/email})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-account-check"></i><span class="hide-menu">Change
-													user Email </span></a></li>
+													user Email </span></a></li> -->
 										<li class="nav-item"><a
 											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.calendar}, link='#')">Calendar</a></li>
 										<li class="nav-item"><a
@@ -113,7 +112,6 @@
 												Buttons</a></li>
 
 									</ul></li>
-
 								<li class="sidebar-dropdown"><a><i class="fa fa-edit"></i>
 										Parent <span class="fa fa-chevron-down"></span></a>
 									<ul id="sidebarnav" class=".sidebar-nav > ul > li">

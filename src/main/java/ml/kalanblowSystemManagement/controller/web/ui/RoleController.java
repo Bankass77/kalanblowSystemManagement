@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ml.kalanblowsystemmanagement.dto.model.RoleDto;
-import ml.kalanblowsystemmanagement.service.RoleService;
+import ml.kalanblowSystemManagement.dto.model.RoleDto;
+import ml.kalanblowSystemManagement.service.RoleService;
 
 @Controller
 @RequestMapping("/role")

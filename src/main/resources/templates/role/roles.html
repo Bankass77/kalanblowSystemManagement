@@ -2,8 +2,8 @@
 <html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/layout}">
-<head  th:replace="fragments/headear :: header">
+	>
+<head  th:replace="fragments/header :: header">
   <title>Role</title>
 </head>
 
@@ -65,7 +65,7 @@
 	</div>
 	<footer th:replace="fragments/footer :: footer"></footer>
 
-	<div th:replace="fragments/jsScripts :: scripts"></div>
+	<!-- <div th:replace="fragments/jsScripts :: scripts"></div> -->
 
 </body>
 </html>

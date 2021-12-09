@@ -5,14 +5,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import ml.kalanblowsystemmanagement.dto.model.UserDto;
-import ml.kalanblowsystemmanagement.service.UserService;
+import ml.kalanblowSystemManagement.dto.model.UserDto;
+import ml.kalanblowSystemManagement.service.UserService;
 
 @Controller
 public class DashboardController {
@@ -33,12 +34,10 @@ public class DashboardController {
         return modelAndView;
     }
 
-
-   
     @GetMapping(
             value = "/home")
     public ModelAndView home() {
-        ModelAndView modelAndView = new ModelAndView("redirect:dashboard");
+        ModelAndView modelAndView = new ModelAndView("redirect:/dashboard");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("userName", "Welcome " + userDto.get().getFullName());
@@ -62,7 +61,7 @@ public class DashboardController {
     }
 
     
-    //@PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping(value="/studentPage")
     public ModelAndView userPage()
     {

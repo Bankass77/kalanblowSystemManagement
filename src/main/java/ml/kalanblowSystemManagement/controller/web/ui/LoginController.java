@@ -29,33 +29,29 @@ public class LoginController {
 			return modelAndView;
 
 		} else {
-			return new ModelAndView("redirect:/");
+			return new ModelAndView("redirect:/dashboard");
 		}
 
 	}
-	   
-	   @PostMapping("/logout")
-	    public String logout(HttpServletRequest request, HttpServletResponse response) {
-		   
-		   Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-		   
-		   if (authentication !=null) {
-			   
-			   new SecurityContextLogoutHandler().logout(request, response, authentication);
-			
+
+	@PostMapping("/logout")
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication != null) {
+
+			new SecurityContextLogoutHandler().logout(request, response, authentication);
+
 		}
-	        return "redirect:/login";
-	    }
+		return "redirect:login";
+	}
 
-	   @GetMapping(
-	           value = {
-	               "/access_denied"
-	           })
-	   public ModelAndView acccessDenied() {
-	       ModelAndView modelAndView = new ModelAndView();
-	       modelAndView.setViewName("error/403");
-	       return modelAndView;
-	   }
-
+	@GetMapping(value = { "/access_denied" })
+	public ModelAndView acccessDenied() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("error/403");
+		return modelAndView;
+	}
 
 }

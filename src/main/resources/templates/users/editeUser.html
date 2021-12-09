@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
 	 th:with="activeMenuItem='users'">
 <head th:replace="fragments/header :: header">
 

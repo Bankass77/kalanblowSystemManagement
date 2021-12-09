@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:replace="fragments/header :: header">
+
+<meta charset="UTF-8">
+<title>footer</title>
 </head>
 
 <body>
-
-	<footer class="footer" th:fragment="footer" > © 2021 Kalanblow  <span  th:text="#{title}"></span> </footer>
-
+	<footer class="footer" th:fragment="footer">
+		© 2021 <span th:text="#{title}"></span>
+	</footer>
 </body>
 
 </html>
