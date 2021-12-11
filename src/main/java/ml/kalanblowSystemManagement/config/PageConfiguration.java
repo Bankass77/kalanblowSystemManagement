@@ -50,7 +50,7 @@ public class PageConfiguration implements WebMvcConfigurer {
 		controllerRegistry.addViewController("/error/409").setViewName("409");
 		controllerRegistry.addViewController("/error/404").setViewName("404");
 		controllerRegistry.addViewController("/error/5xx").setViewName("5xx");
-		controllerRegistry.addViewController("/users/allUsers").setViewName("users/allUsers");
+		controllerRegistry.addViewController("/users/list").setViewName("users/list");
 		controllerRegistry.addViewController("/user/search").setViewName("user/search");
 		controllerRegistry.addViewController("/lastName").setViewName("lastname");
 		controllerRegistry.addViewController("/admin/homepage").setViewName("admin/homepage");

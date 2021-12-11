@@ -17,35 +17,35 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Table(
-        name = "userLocation")
+		name = "userLocation")
 @Entity
 @Getter
 @Setter
 @Accessors(
-        chain = true)
+		chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLocation {
 
-    public UserLocation(String country2, User user2) {
+	public UserLocation(String country2, User user2) {
 
-    }
+	}
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(
+			strategy = GenerationType.AUTO)
+	private Long id;
 
-    private String country;
+	private String country;
 
-    private boolean enabled;
+	private boolean enabled;
 
-    @ManyToOne(
-            targetEntity = User.class,
-            fetch = FetchType.EAGER)
-    @JoinColumn(
-            nullable = false,
-            name = "user_id")
-    private User user;
+	@ManyToOne(
+			targetEntity = User.class,
+			fetch = FetchType.EAGER)
+	@JoinColumn(
+			nullable = false,
+			name = "user_id")
+	private User user;
 
 }

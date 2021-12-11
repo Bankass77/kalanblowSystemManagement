@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
@@ -20,11 +21,8 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RoleDto {
-	
-	
+public class PrivilegeDto {
 	private Long id;
-	private String userRoleName;
-	private Set<PrivilegeDto> privilegeDtos;
-
+    private String name;
+     
 }

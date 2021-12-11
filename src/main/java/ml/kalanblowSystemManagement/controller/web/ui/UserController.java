@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -96,8 +97,6 @@ public class UserController {
 	 */
 
 	@PostMapping(value = "/signup")
-	//@RolesAllowed({"ADMIN"})
-	//@PreAuthorize("hasRole('ADMIN')and hasRole('STAFF')")
 	@Secured("ADMIN")
 	public ModelAndView creatnewUserAdmin(
 			@Valid @ModelAttribute("adminSignupCommand") AdminSignupCommand adminSignupCommand,
@@ -132,7 +131,7 @@ public class UserController {
 	 * @param pageable
 	 * @return
 	 */
-	@GetMapping("/allUsers")
+	@GetMapping("/list")
 	@PreAuthorize("hasRole('ADMIN')and hasRole('TEACHER') and hasRole('STAFF')")
 	@PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'ADMIN')")
 	public ModelAndView getUsersList(ModelAndView modelAndView, UserSearchParameters userSearchParameters) {
@@ -218,9 +217,9 @@ public class UserController {
 	 */
 	@GetMapping("/editeUser/{id}")
 	public String getEditingUser(@PathVariable Long id, Model model) {
-		log.info("User/edit-Get: Id to query=" + id);
+		log.info("Admin/edit-Get: Id to query=" + id);
 		Optional<UserDto> userDto = Optional.ofNullable(userService.findUserById(id));
-		log.info("User/edit-Get: Id to query=" + id);
+		log.info("Admin/edit-Get: Id to query=" + id);
 		Set<RoleDto> roleDtos = roleService.getAllRoles();
 		userDto.get().setRoles(userService.getAssignedRoleSet(userDto.get()));
 
@@ -234,7 +233,8 @@ public class UserController {
 
 	@PostMapping("/editeUser/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto, @PathVariable Long id, Model model,
+	//@preAuthorize("@userAuthorization.can('update', 'ADMIN') or @userAuthorization.can('update', 'ADMIN', #userId)")
+	public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto, @PathVariable (value = "userId") Long id, Model model,
 
 			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
@@ -274,7 +274,7 @@ public class UserController {
 
 		modelAndView = new ModelAndView(REDIRECT_ADMIN_PAGE_USERS);
 		userDto = userService.deleteUser(userDto);
-		String message = "User" + userDto + " was successfully deleted.";
+		String message = "Admin" + userDto + " was successfully deleted.";
 		modelAndView.addObject("message", message);
 
 		return modelAndView;

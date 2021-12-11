@@ -64,5 +64,6 @@ public interface UserService {
     void addUserLocation(User user, String ip);
 
     Set<RoleDto> getAssignedRoleSet(UserDto userDto);
+    
 
 }

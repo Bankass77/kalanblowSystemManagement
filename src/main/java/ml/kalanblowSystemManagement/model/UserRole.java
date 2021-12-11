@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public enum UserRole {
 
-    ADMIN, STAFF, TEACHER, PARENT, STUDENT, VIEWER;
+    ADMIN, STAFF, TEACHER, PARENT, STUDENT, USER;
     private static final Map<String, UserRole> BY_LABEL= new HashedMap<>();
 
     static {
@@ -28,7 +28,7 @@ public enum UserRole {
     // other roles and hence
     // ADMIN can access APIs for all other roles. Similary TEACHER cans access for
     // PARENT and so on.
-    // User is least open, it can not any other API other than that of its own.
+    // Admin is least open, it can not any other API other than that of its own.
 
     public static String getRoleHiearchy() {
 

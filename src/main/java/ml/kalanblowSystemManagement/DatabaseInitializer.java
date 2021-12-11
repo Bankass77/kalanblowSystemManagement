@@ -1,11 +1,13 @@
-package ml.kalanblowSystemManagement;
 /*
  * package ml.kalanblowSystemManagement;
  * 
- * import java.time.LocalDate; import java.time.LocalDateTime; import
- * java.time.ZoneId; import java.util.HashSet; import java.util.Set;
  * 
- * import org.springframework.boot.CommandLineRunner; import
+ * import java.time.LocalDate; import java.time.LocalDateTime; import
+ * java.time.ZoneId; import java.util.Arrays; import java.util.HashSet; import
+ * java.util.Set;
+ * 
+ * import org.springframework.beans.factory.annotation.Autowired; import
+ * org.springframework.boot.CommandLineRunner; import
  * org.springframework.context.annotation.Profile; import
  * org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; import
  * org.springframework.stereotype.Component;
@@ -13,11 +15,14 @@ package ml.kalanblowSystemManagement;
  * import com.github.javafaker.Faker;
  * 
  * import lombok.extern.slf4j.Slf4j; import
+ * ml.kalanblowSystemManagement.dto.model.PrivilegeDto; import
  * ml.kalanblowSystemManagement.dto.model.RoleDto; import
  * ml.kalanblowSystemManagement.dto.model.UserDto; import
  * ml.kalanblowSystemManagement.model.Addresse; import
  * ml.kalanblowSystemManagement.model.Gender; import
+ * ml.kalanblowSystemManagement.model.UserPrivilege; import
  * ml.kalanblowSystemManagement.model.UserRole; import
+ * ml.kalanblowSystemManagement.repository.PrivilegeRepository; import
  * ml.kalanblowSystemManagement.service.RoleService; import
  * ml.kalanblowSystemManagement.service.UserService;
  * 
@@ -35,9 +40,9 @@ package ml.kalanblowSystemManagement;
  * userService; this.bCryptPasswordEncoder = bCryptPasswordEncoder;
  * this.roleService = roleService; }
  * 
- * @Override public void run(String... args) { for (int i = 0; i < 20; i++) { //
- * <.> UserDto userDto= newRandomUserParameters(); userService.signup(userDto);
- * } }
+ * @Override public void run(String... args) { for (int i = 0; i < 20; i++) {
+ * //<.> UserDto userDto= newRandomUserParameters();
+ * userService.signup(userDto); } }
  * 
  * private UserDto newRandomUserParameters() { UserDto userDto = new UserDto();
  * 
@@ -77,6 +82,9 @@ package ml.kalanblowSystemManagement;
  * userDto.setMatchingPassword(bCryptPasswordEncoder.encode(password));
  * 
  * RoleDto roplDtos = roleService.findByName(UserRole.ADMIN.getUserRole());
+ * PrivilegeDto privilegeDtos= new PrivilegeDto();
+ * privilegeDtos.setName(UserPrivilege.WRITRE.name());
+ * roplDtos.setPrivilegeDtos( new HashSet<>(Arrays.asList(privilegeDtos)));
  * 
  * Set<RoleDto> roleDtos = new HashSet<RoleDto>();
  * 

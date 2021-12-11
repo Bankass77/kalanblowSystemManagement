@@ -39,7 +39,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<Password
 		try {
 			props.load(inputStream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		MessageResolver resolver = new PropertiesMessageResolver(props);

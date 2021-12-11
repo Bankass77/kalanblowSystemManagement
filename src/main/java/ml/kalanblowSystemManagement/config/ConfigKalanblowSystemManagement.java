@@ -46,7 +46,7 @@ public class ConfigKalanblowSystemManagement {
 	@Bean
 	public Docket customerApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("User APIs")
+				.groupName("Admin APIs")
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("ml.kalanblowSystemManagement.controller.web.api"))
 				.paths(PathSelectors.regex("/api/v1/user.*"))

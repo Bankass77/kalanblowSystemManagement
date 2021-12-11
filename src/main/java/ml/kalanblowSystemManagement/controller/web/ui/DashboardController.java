@@ -66,7 +66,7 @@ public class DashboardController {
     public ModelAndView userPage()
     {
          ModelAndView retVal = new ModelAndView();
-         retVal.setViewName("studentPage");
+      
          return retVal;
     }
     

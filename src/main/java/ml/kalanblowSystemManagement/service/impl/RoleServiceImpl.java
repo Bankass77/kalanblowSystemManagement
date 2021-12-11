@@ -16,9 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.dto.mapper.RoleMapper;
+import ml.kalanblowSystemManagement.dto.model.PrivilegeDto;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
+import ml.kalanblowSystemManagement.model.Privilege;
 import ml.kalanblowSystemManagement.model.Role;
 import ml.kalanblowSystemManagement.model.UserRole;
+import ml.kalanblowSystemManagement.repository.PrivilegeRepository;
 import ml.kalanblowSystemManagement.repository.RoleRepository;
 import ml.kalanblowSystemManagement.service.RoleService;
 
@@ -29,14 +32,17 @@ import ml.kalanblowSystemManagement.service.RoleService;
 public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;
+    
+    private PrivilegeRepository privilegeRepository;
 
     private ModelMapper modelMapper;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository, ModelMapper modelMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository, ModelMapper modelMapper,PrivilegeRepository privilegeRepository) {
         super();
         this.roleRepository = roleRepository;
         this.modelMapper = modelMapper;
+        this.privilegeRepository= privilegeRepository;
     }
 
     @Override
@@ -44,11 +50,14 @@ public class RoleServiceImpl implements RoleService {
     public Set<RoleDto> getAllRoles() {
 
         List<Role> roles = roleRepository.findAll();
+      //  List<Privilege> privileges=privilegeRepository.findAll();
         log.debug("roles:{}", roles);
         List<RoleDto> roleDtos =
                 roles.stream().map(roleDtO -> new ModelMapper().map(roleDtO, RoleDto.class))
                         .collect(Collectors.toList());
-
+      //  List<PrivilegeDto> privilegeDtos=privileges.stream().map(p-> new ModelMapper().map(p, PrivilegeDto.class)).collect(Collectors.toList());
+        
+         
         return new HashSet<>(roleDtos);
     }
 

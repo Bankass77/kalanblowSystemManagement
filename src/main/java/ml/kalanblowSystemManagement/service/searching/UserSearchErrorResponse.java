@@ -6,7 +6,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.service.UserService;
 import ml.kalanblowSystemManagement.utils.paging.InitialPagingSizes;
@@ -29,7 +28,6 @@ public class UserSearchErrorResponse {
         modelAndView.addObject("numberFormatException", true);
         modelAndView.addObject("pager", pager);
         modelAndView.addObject("users", userSearchResult.getUserPage());
-        modelAndView.setViewName("adminPage/user/users");
         return modelAndView;
     }
 

@@ -1,6 +1,8 @@
 
 package ml.kalanblowSystemManagement.service.impl;
 
+import static java.util.Collections.emptyList;
+
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,7 +26,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,8 +53,6 @@ import ml.kalanblowSystemManagement.repository.UserLocationRepository;
 import ml.kalanblowSystemManagement.repository.UserRepository;
 import ml.kalanblowSystemManagement.service.RoleService;
 import ml.kalanblowSystemManagement.service.UserService;
-
-import static java.util.Collections.emptyList;
 
 @Component(value = "userService")
 @Transactional
@@ -147,7 +146,6 @@ public class UserServiceImpl implements UserService {
 	@SneakyThrows
 	@CacheEvict(value = { "cache.allUsersPageable", "cache.allUsers", "cache.userByEmail", "cache.userById",
 			"cache.byNameContaining", "cache.byEmailContaining", "cache.changeUserEmail" }, allEntries = true)
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto signup(UserDto userDto) {
 
 		if (!emailExist(userDto.getEmail())) {
@@ -176,7 +174,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto changeUserPassword(String oldPassword, String newPassword) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String actualEmail = authentication.getName();
@@ -212,7 +209,6 @@ public class UserServiceImpl implements UserService {
 	@CacheEvict(value = { "cache.allUsersPageable", "cache.allUsers", "cache.userByEmail", "cache.userById",
 			"cache.allUsersEagerly", "cache.byNameContaining", "cache.byEmailContaining",
 			"cache.changeUserEmail" }, allEntries = true)
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto deleteUserById(Long id) {
 
 		if (id != null) {
@@ -285,7 +281,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	@Cacheable(value = "cache.changeUserEmail", key = "#email", unless = "#result == null")
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto changeUserEmail(String newEmail) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String actualEmail = authentication.getName();
@@ -318,7 +313,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@SneakyThrows
-	@PreAuthorize("hasRole('ADMIN')")
 	public void editUser(UserDto userDto) {
 
 		Optional<User> oldUser = userRepository.findByEmail(userDto.getEmail());
@@ -347,7 +341,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto updateUserProfile(UserDto userDto) {
 		Optional<User> oldUser = userRepository.findByEmail(userDto.getEmail());
 		User persistedUser = new User().setAdresse(userDto.getAdresse()).setBirthDate(userDto.getBirthDate())
@@ -488,7 +481,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserDto deleteUser(UserDto userDto) {
 		User persistedUser = new User().setAdresse(userDto.getAdresse()).setBirthDate(userDto.getBirthDate())
 				.setEmail(userDto.getEmail()).setFirstName(userDto.getFirstName()).setGender(userDto.getGender())

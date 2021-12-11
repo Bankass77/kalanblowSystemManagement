@@ -4,6 +4,7 @@ package ml.kalanblowSystemManagement.security;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +28,20 @@ import static java.lang.String.format;
 public class KalanblowSystemManagementCustomService implements UserDetailsService {
 
 	private final UserService userService;
-	private final ModelMapper modelMapper;
+
 
 	@Autowired
-	public KalanblowSystemManagementCustomService(UserService userService, ModelMapper modelMapper) {
+	public KalanblowSystemManagementCustomService(UserService userService) {
 		super();
 		this.userService = userService;
-		this.modelMapper = modelMapper;
+		
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		Optional<UserDto> userDto = Optional.ofNullable(userService.findUserByEmail(username).orElseThrow(
-				() -> new UsernameNotFoundException(format("User with email %s could not be found", username))));
+				() -> new UsernameNotFoundException(format("Admin with email %s could not be found", username))));
 
 
 		if (userDto != null) {
@@ -48,7 +49,7 @@ public class KalanblowSystemManagementCustomService implements UserDetailsServic
 
 			return buildUserForAuthentication(userDto.get(), authorities);
 		} else {
-			throw new UsernameNotFoundException("User with email" + username + "does not exist");
+			throw new UsernameNotFoundException("Admin with email" + username + "does not exist");
 		}
 
 	}
@@ -69,7 +70,9 @@ public class KalanblowSystemManagementCustomService implements UserDetailsServic
 		Set<GrantedAuthority> roles = new HashSet<>();
 		roleDtos.forEach((role) -> {
 
-			roles.add(new SimpleGrantedAuthority(role.getUserRoleName()));
+			roles.add(new SimpleGrantedAuthority("ROLE_" +role.getUserRoleName()));
+			
+			 
 		});
 		return new HashSet<>(roles);
 	}

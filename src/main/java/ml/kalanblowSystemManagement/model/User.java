@@ -1,11 +1,12 @@
-
 package ml.kalanblowSystemManagement.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -57,6 +59,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.google.common.collect.Sets;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -70,252 +73,281 @@ import ml.kalanblowSystemManagement.annotation.ValidPassword;
 import ml.kalanblowSystemManagement.exception.NotExistingUser;
 import ml.kalanblowSystemManagement.utils.GenderConverter;
 
-@EntityListeners(AuditingEntityListener.class)
-@Table(
-        name = "user",
-        indexes = @Index(
-                name = "idx_user_email",
-                columnList = "email",
-                unique = true))
 @Entity
 @Getter
 @Setter
 @Accessors(
-        chain = true)
+		chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(
-        value = JsonInclude.Include.NON_NULL)
+		value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(
-        ignoreUnknown = true)
+		ignoreUnknown = true)
 @Inheritance(
-        strategy = InheritanceType.JOINED)
+		strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(
-        discriminatorType = DiscriminatorType.STRING,
-        name = "USER_TYPE")
+		discriminatorType = DiscriminatorType.STRING,
+		name = "USER_TYPE")
 @NotExistingUser(groups = ValidationGroupTwo.class)
-public class User implements UserDetails, Serializable {
+@Table(
+		name = "user",
+		indexes = @Index(
+				name = "idx_user_email",
+				columnList = "email",
+				unique = true))
+@EntityListeners(AuditingEntityListener.class)
+public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(
+			strategy = GenerationType.AUTO)
+	@Column(
+			name = "user_id",
+			nullable = false,
+			unique = true)
+	private Long id;
 
-    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO)
-    @Column(
-            name = "user_id",
-            nullable = false,
-            unique = true)
-    private Long id;
+	@Column(
+			name = "firstName")
+	@NotNull
+	@Size(min = 1, max = 200, groups = ValidationGroupOne.class)
+	private String firstName;
 
-    @Column(
-            name = "email",
-            unique = true,
-            updatable = true)
-    @NotNull
-    @Size(
-            min = 4,
-            max = 30, groups = ValidationGroupOne.class)
-    @EmailContraint
-    private String email;
+	@Column(
+			name = "lastName")
+	@NotNull
+	@Size(min = 1, max = 200, groups = ValidationGroupOne.class)
+	private String lastName;
 
-    @Column(
-            name = "firstName")
-    @NotNull
-    @Size(min = 1, max = 200, groups = ValidationGroupOne.class)
-    private String firstName;
+	@Column(
+			name = "password")
+	@NotNull
+	@ValidPassword
+	private String password;
 
-    @Column(
-            name = "lastName")
-    @NotNull
-    @Size(min = 1, max = 200, groups = ValidationGroupOne.class)
-    private String lastName;
+	@Lob
+	@Column(
+			name = "photo")
+	private byte[] photo;
 
-    @Column(
-            name = "password")
-    @NotNull
-    @ValidPassword
-    private String password;
+	@NotNull
+	@Column(
+			name = "matchingPassword")
+	@ValidPassword
+	private String matchingPassword;
 
-    @Lob
-    @Column(
-            name = "photo")
-    private byte[] photo;
+	@Column(
+			name = "mobile_number")
+	@FrenchPhoneConstraint
+	private String mobileNumber;
 
-    @NotNull
-    @Column(
-            name = "matchingPassword")
-    @ValidPassword
-    private String matchingPassword;
+	@Column(
+			name = "birthday",
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@NotNull
+	@PastLocalDate
+	@Past(
+			message = "Date input is invalid for a  birth date.")
 
-    @Column(
-            name = "mobile_number")
-    @FrenchPhoneConstraint
-    private String mobileNumber;
+	@DateTimeFormat(
+			pattern = "dd/MM/yyyy")
+	private LocalDate birthDate;
 
-    @Column(
-            name = "birthday",
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @NotNull
-    @PastLocalDate
-    @Past(
-            message = "Date input is invalid for a  birth date.")
+	@ManyToMany(
+			fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "user_role",
+			joinColumns = {
+					@JoinColumn(
+							name = "user_id")
+			},
+			inverseJoinColumns = {
+					@JoinColumn(
+							name = "role_id")
+			})
+	private Set<Role> roles = new HashSet<Role>();
 
-    @DateTimeFormat(
-            pattern = "dd/MM/yyyy")
-    private LocalDate birthDate;
+	@ElementCollection(targetClass = Role.class)
+	private Collection<? extends GrantedAuthority> authorities;
 
-    @ManyToMany(
-            fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = {
-                @JoinColumn(
-                        name = "user_id")
-            },
-            inverseJoinColumns = {
-                @JoinColumn(
-                        name = "role_id")
-            })
-    private Set<Role> roles = new HashSet<Role>();
-    
-    @ElementCollection(targetClass = Role.class)
-    private Collection<? extends GrantedAuthority> authorities;
+	@OneToMany(
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	@Cache(
+			usage = CacheConcurrencyStrategy.READ_WRITE)
+	@JoinColumn(
+			name = "id")
+	private Set<Device> devices = new HashSet<>();
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    @Cache(
-            usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JoinColumn(
-            name = "id")
-    private Set<Device> devices = new HashSet<>();
-
-    @Column(
-            name = "sexe")
-    @NotNull(
-            message = "Sex is required")
-    @Convert(
-            converter = GenderConverter.class)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(
-            name = "createdDate",
-            columnDefinition = "TIMESTAMP",
-            insertable = true,
-            updatable = false)
-    @JsonFormat(
-            pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonDeserialize(
-            using = LocalDateTimeDeserializer.class)
-    @CreatedDate
-    @DateTimeFormat(
-            pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime createdDate;
-
-    @Column(
-            name = "lastModifiedDate",
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
-            nullable = false,
-            updatable = false)
-    @JsonFormat(
-            pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonDeserialize(
-            using = LocalDateTimeDeserializer.class)
-    @LastModifiedDate
-    @DateTimeFormat(
-            pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime lastModifiedDate;
-
-    @CreatedBy
-    @Column(
-            columnDefinition = "bigint default 1",
-            updatable = false)
-    protected Long createdBy;
-
-    @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(
-                name = "street",
-                column = @Column(
-                        name = "street")),
-
-        @AttributeOverride(
-                name = "streetNumber",
-                column = @Column(
-                        name = "streetNumber")),
-
-        @AttributeOverride(
-                name = "codePostal",
-                column = @Column(
-                        name = "codePostal")),
-
-        @AttributeOverride(
-                name = "city",
-                column = @Column(
-                        name = "city")),
-
-        @AttributeOverride(
-                name = "state",
-                column = @Column(
-                        name = "state")),
-
-        @AttributeOverride(
-                name = "country",
-                column = @Column(
-                        name = "country"))
-    })
-    private Addresse adresse;
-
-    public String getFullName() {
-        return firstName != null ? firstName.concat(" ").concat(lastName) : "";
-    }
-
-    @PrePersist
-    void onCreate() {
-        this.setCreatedDate(LocalDateTime.now());
-        this.setLastModifiedDate(LocalDateTime.now());
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        this.setLastModifiedDate(LocalDateTime.now());
-    }
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return authorities= getRoles().stream().map(userRole
-				-> new SimpleGrantedAuthority("Role_" + userRole.getUserRoleName().getUserRole())).collect(Collectors.toSet());
+	public String getFullName() {
+		return firstName != null ? firstName.concat(" ").concat(lastName) : "";
 	}
 
-	@Override
-	public boolean isAccountNonLocked() {
-		
-		return true;
+	@PrePersist
+	void onCreate() {
+		this.setCreatedDate(LocalDateTime.now());
+		this.setLastModifiedDate(LocalDateTime.now());
 	}
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		
-		return true;
+	@PreUpdate
+	void onUpdate() {
+		this.setLastModifiedDate(LocalDateTime.now());
 	}
 
-	@Override
-	public boolean isEnabled() {
-		
-		return true;
+
+	@Column(
+			name = "email",
+			unique = true,
+			updatable = true)
+	@NotNull
+	@Size(
+			min = 4,
+			max = 30, groups = ValidationGroupOne.class)
+	@EmailContraint
+	private String email;
+
+
+	@Column(
+			name = "sexe")
+	@NotNull(
+			message = "Sex is required")
+	@Convert(
+			converter = GenderConverter.class)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+
+	@Column(
+			name = "createdDate",
+			columnDefinition = "TIMESTAMP",
+			insertable = true,
+			updatable = false)
+	@JsonFormat(
+			pattern = "dd/MM/yyyy HH:mm:ss")
+	@JsonDeserialize(
+			using = LocalDateTimeDeserializer.class)
+	@CreatedDate
+	@DateTimeFormat(
+			pattern = "dd/MM/yyyy HH:mm:ss")
+	private LocalDateTime createdDate;
+
+	@Column(
+			name = "lastModifiedDate",
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+			nullable = false,
+			updatable = false)
+	@JsonFormat(
+			pattern = "dd/MM/yyyy HH:mm:ss")
+	@JsonDeserialize(
+			using = LocalDateTimeDeserializer.class)
+	@LastModifiedDate
+	@DateTimeFormat(
+			pattern = "dd/MM/yyyy HH:mm:ss")
+	private LocalDateTime lastModifiedDate;
+
+	@CreatedBy
+	@Column(
+			columnDefinition = "bigint default 1",
+			updatable = false)
+	protected Long createdBy;
+
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(
+				name = "street",
+				column = @Column(
+						name = "street")),
+
+		@AttributeOverride(
+				name = "streetNumber",
+				column = @Column(
+						name = "streetNumber")),
+
+		@AttributeOverride(
+				name = "codePostal",
+				column = @Column(
+						name = "codePostal")),
+
+		@AttributeOverride(
+				name = "city",
+				column = @Column(
+						name = "city")),
+
+		@AttributeOverride(
+				name = "state",
+				column = @Column(
+						name = "state")),
+
+		@AttributeOverride(
+				name = "country",
+				column = @Column(
+						name = "country"))
+	})
+	private Addresse adresse;
+
+
+	@Transient
+	public boolean hasAnyRoles(String... roles) {
+		return hasAnyRoles(Arrays.asList(roles));
 	}
 
-	@Override
-	public String getUsername() {
-		
-		return this.email;
+	@Transient
+	public boolean hasAnyRoles(List<String> roles) {
+		Set<UserRole> _roles = this.getRoles()
+				.stream()
+				.map(Role::getUserRoleName)
+				.collect(Collectors.toSet());
+		Sets.SetView<String> intersection = Sets.intersection(Sets.newHashSet(roles), _roles);
+		return !intersection.isEmpty();
 	}
 
-	@Override
-	public boolean isAccountNonExpired() {
-		
-		return true;
+	@Transient
+	public boolean hasRoles(String... roles) {
+		return hasRoles(Arrays.asList(roles));
+	}
+
+	@Transient
+	public boolean hasRoles(List<String> roles) {
+		Set<UserRole> _roles = this.getRoles()
+				.stream()
+				.map(Role::getUserRoleName)
+				.collect(Collectors.toSet());
+		return _roles.containsAll(roles);
+	}
+
+	@Transient
+	public boolean hasAnyPrivileges(String... privileges) {
+		return hasAnyPrivileges(Arrays.asList(privileges));
+	}
+
+	@Transient
+	public boolean hasAnyPrivileges(List<String> privileges) {
+		Set<UserPrivilege> _privileges = this.getRoles()
+				.stream()
+				.flatMap(s -> s.getPrivileges().stream())
+				.map(Privilege::getName)
+				.collect(Collectors.toSet());
+		Set<String> setOfPrivSet=_privileges.stream().map(UserPrivilege:: name).collect(Collectors.toSet());
+		Sets.SetView<String> intersection = Sets.intersection(setOfPrivSet, Sets.newHashSet(privileges.iterator()));
+		return !intersection.isEmpty();
+	}
+
+	@Transient
+	public boolean hasPrivileges(String... privileges) {
+		return hasPrivileges(Arrays.asList(privileges));
+	}
+
+	@Transient
+	public boolean hasPrivileges(List<String> privileges) {
+		Set<UserPrivilege> _privileges = this.getRoles()
+				.stream()
+				.flatMap(s -> s.getPrivileges().stream())
+				.map(Privilege::getName)
+				.collect(Collectors.toSet());
+		return _privileges.containsAll(privileges);
 	}
 }

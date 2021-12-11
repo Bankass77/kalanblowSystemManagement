@@ -39,7 +39,7 @@ import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHan
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
 import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true, mode = AdviceMode.PROXY, proxyTargetClass = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true,  securedEnabled = true,jsr250Enabled = true, mode = AdviceMode.PROXY, proxyTargetClass = true)
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MultiHttpSecurityConfig {
@@ -114,20 +114,34 @@ public class MultiHttpSecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/images/*").permitAll()
-					.antMatchers("/login").permitAll().antMatchers("/users/editeUser/{id}")
-					.access("@webSecurity.checkUserId(authentication,#userId)").antMatchers("/users/**")
-					.hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole()).antMatchers("/user/**")
-					.permitAll().antMatchers("/admin/**")
-					.hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole()).antMatchers("/student/**")
-					.hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole(),
-							UserRole.STUDENT.getUserRole())
-					.anyRequest().authenticated().and().cors().and().csrf().disable().formLogin().loginPage("/login")
-					.permitAll().failureUrl("/login?error=true").usernameParameter("email")
-					.passwordParameter("password").successHandler(customAuthenticationSuccessHandler).and().logout()
-					.permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-					.logoutSuccessHandler(new CustomLogoutSuccessHandler()).deleteCookies("JSESSIONID")
-					.logoutSuccessUrl("/").and().exceptionHandling();
+			
+			http.httpBasic();
+			http.authorizeRequests()
+			.antMatchers("/").permitAll()
+			.antMatchers("/images/*").permitAll()
+			.antMatchers("/login").permitAll()
+			.antMatchers("/users/editeUser/{id}").hasRole(UserRole.ADMIN.getUserRole())
+			.antMatchers("/users/allUsers").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
+			.antMatchers("/users/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
+			.antMatchers("/user/**").permitAll()
+			.antMatchers("/admin/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
+			.antMatchers("/student/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole(),UserRole.STUDENT.getUserRole())
+					.anyRequest().authenticated()
+					.and().cors().and()
+					.csrf().disable()
+					.formLogin()
+					.loginPage("/login").permitAll()
+					.failureUrl("/login?error=true")
+					.usernameParameter("email")
+					.passwordParameter("password")
+					.successHandler(customAuthenticationSuccessHandler)
+					.and()
+					.logout().permitAll()
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessHandler(new CustomLogoutSuccessHandler())
+					.deleteCookies("JSESSIONID")
+					.logoutSuccessUrl("/login").and()
+					.exceptionHandling();
 
 			http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
 					.userDetailsService(customService).tokenValiditySeconds((int) SecurityConstants.EXPIRATION_TIME);
@@ -170,5 +184,4 @@ public class MultiHttpSecurityConfig {
 		}
 
 	}
-
 }

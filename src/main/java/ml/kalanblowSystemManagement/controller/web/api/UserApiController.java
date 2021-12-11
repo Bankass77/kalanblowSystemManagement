@@ -54,7 +54,7 @@ public class UserApiController {
 	@ApiOperation(value = "Get a User")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully User Created"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public Response creatnewUserAdmin() {
+	public Response creatnewUserUser() {
 		return Response.ok();
 
 	}
@@ -88,11 +88,11 @@ public class UserApiController {
 
 	}
 
-	private UserDto registerUser(@Valid UserSignupRequest userSignupRequest, boolean isAdmin) {
+	private UserDto registerUser(@Valid UserSignupRequest userSignupRequest, boolean isUser) {
 
 		UserDto userDto = new UserDto().setEmail(userSignupRequest.getEmail())
 				.setFirstName(userSignupRequest.getFirstName()).setLastName(userSignupRequest.getLastNme())
-				.setPassword(userSignupRequest.getPassword()).setAdmin(isAdmin);
+				.setPassword(userSignupRequest.getPassword()).setAdmin(isUser);
 
 		return userService.signup(userDto);
 	}

@@ -1,4 +1,3 @@
-
 package ml.kalanblowSystemManagement.repository;
 
 import java.util.List;
@@ -14,42 +13,43 @@ import org.springframework.stereotype.Repository;
 import ml.kalanblowSystemManagement.model.User;
 import ml.kalanblowSystemManagement.model.UserRole;
 
-@Repository(
-        value = "userRepository")
+
+@SuppressWarnings("unused")
+@Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    Optional<User> findUserById(Long id);
+	 Optional<User> findUserById(Long id);
 
-    User deleteUserById(Long id);
+	    User deleteUserById(Long id);
 
-    Optional<User> findByEmail(String email);
+	    Optional<User> findByEmail(String email);
 
-    User deleteUserByEmail(String email);
+	    User deleteUserByEmail(String email);
 
-    User findUserByfirstNameAndLastName(String firstName, String lastName);
+	    User findUserByfirstNameAndLastName(String firstName, String lastName);
 
-    User findUserByRoles(UserRole name);
+	    User findUserByRoles(UserRole name);
 
-    /**
-     * Returns a {@link Page} of entities meeting the paging restriction provided in the
-     * {@code Pageable} object.
-     *
-     * @param pageable
-     * @return a page of entities
-     */
-    Page<User> findAll(Pageable pageable);
+	    /**
+	     * Returns a {@link Page} of entities meeting the paging restriction provided in the
+	     * {@code Pageable} object.
+	     *
+	     * @param pageable
+	     * @return a page of entities
+	     */
+	    Page<User> findAll(Pageable pageable);
 
-    List<User> findAllByOrderByIdAsc();
+	    List<User> findAllByOrderByIdAsc();
 
-    List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
+	    List<User> findAllByLastNameContainingIgnoreCaseOrderByIdAsc(String lastName);
 
-    List<User> findUserByMobileNumber(String mobileNumber);
+	    List<User> findUserByMobileNumber(String mobileNumber);
 
-    Page<User> findByEmailContainingOrderByIdAsc(String email, Pageable pageable);
-    
-    Page<User> findByFirstNameContainingOrderByIdAsc(String name, Pageable pageable);
+	    Page<User> findByEmailContainingOrderByIdAsc(String email, Pageable pageable);
+	    
+	    Page<User> findByFirstNameContainingOrderByIdAsc(String name, Pageable pageable);
 
-    User findByEmailAndIdNot(String email, Long id);
+	    User findByEmailAndIdNot(String email, Long id);
 
-    Page<User> firstNameContaining(String name, PageRequest pageRequest);
+	    Page<User> firstNameContaining(String name, PageRequest pageRequest);
 }

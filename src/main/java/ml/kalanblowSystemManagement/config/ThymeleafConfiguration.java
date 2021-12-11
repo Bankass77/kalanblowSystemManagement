@@ -1,9 +1,10 @@
-package ml.kalanblowSystemManagement.annotation;
+package ml.kalanblowSystemManagement.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -23,7 +24,7 @@ public class ThymeleafConfiguration {
 		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 		templateResolver.setPrefix("templates/");
 		templateResolver.setSuffix(".html");
-		templateResolver.setTemplateMode("HTML5");
+		templateResolver.setTemplateMode(TemplateMode.HTML);
 		return templateResolver;
 	}
 

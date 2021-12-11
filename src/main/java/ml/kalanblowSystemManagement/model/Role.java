@@ -14,12 +14,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
+import javax.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,8 +60,7 @@ public class Role implements Serializable {
             nullable = false,
             unique = true)
     @Enumerated(EnumType.STRING)
-    //@ElementCollection(targetClass = UserRole.class)
-    //@CollectionTable(name = "user_roles") 
+  
     @NotNull
     private UserRole userRoleName;
 
@@ -67,5 +70,12 @@ public class Role implements Serializable {
     @OnDelete(
             action = OnDeleteAction.CASCADE)
     private Set<User> users;
+    
+    @ManyToMany(
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "roles_privileges", joinColumns = @JoinColumn(name = "role_id"),
+    inverseJoinColumns = @JoinColumn(name = "privilege_id"))
+    @Fetch(FetchMode.JOIN)
+    private Set<Privilege> privileges;
 
 }
