@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -136,5 +137,15 @@ public class PageConfiguration implements WebMvcConfigurer {
 	 * .defaultContentType(MediaType.APPLICATION_JSON) .mediaType("xml",
 	 * MediaType.APPLICATION_XML) .mediaType("json", MediaType.APPLICATION_JSON); }
 	 */
-
+	@Bean
+	public CommonsRequestLoggingFilter requestLoggingFilter() {
+	    CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
+	    loggingFilter.setIncludeClientInfo(true);
+	    loggingFilter.setIncludeQueryString(true);
+	    loggingFilter.setIncludePayload(true);
+	    loggingFilter.setMaxPayloadLength(64000);
+	    loggingFilter.setIncludeHeaders(false);
+        loggingFilter.setAfterMessagePrefix("REQUEST DATA : ");
+	    return loggingFilter;
+	}
 }

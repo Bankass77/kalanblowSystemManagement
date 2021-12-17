@@ -26,8 +26,8 @@
 								<li class=".sidebar-nav ul li a"><a><i
 										class="fa fa-edit"></i> Admin <span class="fa fa-chevron-down"></span></a>
 									<ul class=".sidebar-nav > ul > li">
-										<li class="nav-item"><a
-											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.users}, link=@{/users/list})"
+										<li class="nav-item" sec:authorize-url="GET /users/list"><a
+											th:replace="fragments/sidebar-buttons :: desktop-button(title=#{menu.users}, link=@{/users/allUsers})"
 											class="waves-effect waves-dark" aria-expanded="false"><i
 												class="mdi mdi-factory"></i><span class="hide-menu">Users</span></a>
 										</li>

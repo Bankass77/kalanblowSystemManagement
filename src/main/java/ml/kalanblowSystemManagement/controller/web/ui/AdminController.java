@@ -48,7 +48,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView("admin/homepage");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
-		modelAndView.addObject("currentUser", auth.getPrincipal());
+		modelAndView.addObject("currentUser", auth.getName());
 		modelAndView.addObject("Authority", userDOptional.get().getRoles());
 		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur l'admin!");
 		modelAndView.addObject("appName", appName);

@@ -106,8 +106,21 @@ public class UserDto {
 	@ApiModelProperty(example = "createdBy")
 	private Long createdBy;
 	
+
+	private int failedLoginAttempts;
+    private boolean loginDisabled;
+	
+	
 	public String getFullName() {
 		return firstName != null ? firstName.concat(" ").concat(lastName) : "";
 	}
 
+	
+	  public boolean isLoginDisabled() {
+	        return loginDisabled;
+	    }
+
+	    public void setLoginDisabled(boolean loginDisabled) {
+	        this.loginDisabled = loginDisabled;
+	    }
 }

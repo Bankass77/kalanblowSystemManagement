@@ -492,4 +492,18 @@ public class UserServiceImpl implements UserService {
 		return UserMapper.userToUserDto(userRepository.deleteUserById(persistedUser.getId()));
 	}
 
+	@Override
+	public void forgottenPassword(String userName) {
+		
+		
+		Optional<User> userDto= userRepository.findByEmail(userName);
+		
+		sendResetPasswordEmail(userDto.get());
+	}
+
+	private void sendResetPasswordEmail(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

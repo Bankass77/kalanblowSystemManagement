@@ -1,53 +1,22 @@
 
 package ml.kalanblowSystemManagement;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.extern.slf4j.Slf4j;
-import ml.kalanblowSystemManagement.dto.model.RoleDto;
-import ml.kalanblowSystemManagement.dto.model.UserDto;
-import ml.kalanblowSystemManagement.exception.KalanblowSystemManagementException;
-import ml.kalanblowSystemManagement.model.Addresse;
-import ml.kalanblowSystemManagement.model.Gender;
-import ml.kalanblowSystemManagement.model.Privilege;
-import ml.kalanblowSystemManagement.model.Role;
-import ml.kalanblowSystemManagement.model.User;
-import ml.kalanblowSystemManagement.model.UserPrivilege;
-import ml.kalanblowSystemManagement.model.UserRole;
-import ml.kalanblowSystemManagement.repository.PrivilegeRepository;
-import ml.kalanblowSystemManagement.repository.RoleRepository;
-import ml.kalanblowSystemManagement.repository.UserRepository;
-import ml.kalanblowSystemManagement.repository.UserRepository;
-import ml.kalanblowSystemManagement.service.UserService;
-import ml.kalanblowSystemManagement.service.UserService;
 
 /**
  * @author a.guindo
  *
  */
 @SpringBootApplication
-//@EnableJpaAuditing
+@EnableJpaAuditing
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Slf4j 
+@EnableCaching
 public class KalanblowApplication {
 
 	public static void main(String[] args) {

@@ -4,9 +4,7 @@ package ml.kalanblowSystemManagement.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

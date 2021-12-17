@@ -21,7 +21,8 @@
 		<!-- Dependencies -->
 		<thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
 		<passay.version>1.6.0</passay.version>
-		<jjwt.version>1.0.1</jjwt.version>
+		<!-- <jjwt.version>1.0.1</jjwt.version> -->
+		<jjwt.version>0.11.2</jjwt.version>
 		<modelmapper.version>2.4.4</modelmapper.version>
 		<javafaker.version>1.0.2</javafaker.version>
 		<geoip2.version>2.15.0</geoip2.version>
@@ -31,7 +32,8 @@
 		<swagger.version>3.0.0</swagger.version>
 		<iospringfox.version>3.0.0</iospringfox.version>
 		<testcontainers.version>1.15.0</testcontainers.version>
-
+		<downloadSources>true</downloadSources>
+		<downloadJavadocs>true</downloadJavadocs>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -59,6 +61,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
 		<dependency>
 			<groupId>org.modelmapper</groupId>
@@ -66,10 +69,27 @@
 			<version>${modelmapper.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.10duke.client.jwt/jjwt -->
+		<!-- <dependency> <groupId>com.10duke.client.jwt</groupId> <artifactId>jjwt</artifactId> 
+			<version>${jjwt.version}</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
-			<groupId>com.10duke.client.jwt</groupId>
-			<artifactId>jjwt</artifactId>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
 			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,7 +161,11 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-
+		<!-- Email -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -189,11 +213,8 @@
 			<version>${javafaker.version}</version>
 		</dependency>
 		<!-- end::javafaker[] -->
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId> 
+			<scope>provided</scope> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

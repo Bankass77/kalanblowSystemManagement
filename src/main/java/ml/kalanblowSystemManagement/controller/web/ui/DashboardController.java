@@ -18,57 +18,52 @@ import ml.kalanblowSystemManagement.service.UserService;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-   
-    @GetMapping(
-            value = "/dashboard")
-    public ModelAndView dashboard() {
-        ModelAndView modelAndView = new ModelAndView("dashboard");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("currentUser", userDto);
-        modelAndView.addObject("userName",
-                userDto.get().getLastName() + " " + userDto.get().getFirstName());
-        return modelAndView;
-    }
+	@GetMapping(value = "/dashboard")
+	public ModelAndView dashboard() {
+		ModelAndView modelAndView = new ModelAndView("dashboard");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("currentUser", userDto);
+		modelAndView.addObject("userName", userDto.get().getLastName() + " " + userDto.get().getFirstName());
+		return modelAndView;
+	}
 
-    @GetMapping(
-            value = "/home")
-    public ModelAndView home() {
-        ModelAndView modelAndView = new ModelAndView("redirect:/dashboard");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("userName", "Welcome " + userDto.get().getFullName());
-        return modelAndView;
-    }
+	@GetMapping(value = "/home")
+	public ModelAndView home() {
+		ModelAndView modelAndView = new ModelAndView("redirect:/dashboard");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserDto> userDto = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("currentUser", "Welcome " + userDto.get().getFullName());
+		return modelAndView;
+	}
 
-    
-  
-    @GetMapping("/staffHomePage")
-    @Secured("STAFF")
-    public ModelAndView adminPage() {
-        ModelAndView modelAndView = new ModelAndView("staff/homepage");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("currentUser", auth.getName());
-        modelAndView.addObject("Authority", userDOptional.get().getRoles());
-        modelAndView.addObject("adminMessage",
-                "Ce contenu est disponible uniquement pour l'utilisateur user!");
+	@GetMapping("/staffHomePage")
+	@Secured("STAFF")
+	public ModelAndView adminPage() {
+		ModelAndView modelAndView = new ModelAndView("staff/homepage");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserDto> userDOptional = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("currentUser", auth.getName());
+		modelAndView.addObject("Authority", userDOptional.get().getRoles());
+		modelAndView.addObject("adminMessage", "Ce contenu est disponible uniquement pour l'utilisateur user!");
 
-        return modelAndView;
-    }
+		return modelAndView;
+	}
 
-    
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping(value="/studentPage")
-    public ModelAndView userPage()
-    {
-         ModelAndView retVal = new ModelAndView();
-      
-         return retVal;
-    }
-    
-   
+	@PreAuthorize("hasRole('STUDENT')")
+	@GetMapping(value = "/studentPage")
+	public ModelAndView userPage() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserDto> uOptional = userService.findUserByEmail(authentication.getName());
+
+		ModelAndView retVal = new ModelAndView();
+		retVal.addObject("currentUser", authentication.getName());
+		retVal.addObject("Authority", uOptional.get().getRoles());
+
+		return retVal;
+	}
+
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
 import ml.kalanblowSystemManagement.model.Privilege;
@@ -21,6 +22,7 @@ import ml.kalanblowSystemManagement.repository.UserRepository;
  * Service de vérification des privileges utilisateurs.
  */
 @Service
+@Slf4j
 public class UserAuthorization {
 	private final UserRepository userRepository;
 
@@ -56,6 +58,7 @@ public class UserAuthorization {
 		}
 		Privilege privilege = privilegeRepository.findPrivilegeByActionAndEntityAndRole(action, entity, modelMapper.map(element, Role.class));
 		//si privileges existe et qu'il n'attend pas de vérification de contrainte
+		log.warn("Denying {} access to ", privilege);
 		return (null != privilege && !privilege.isConstrained());
 	}
 
@@ -81,7 +84,9 @@ public class UserAuthorization {
 		Privilege privilege = privilegeRepository.findPrivilegeByActionAndEntityAndRole(action, entity,modelMapper.map(element, Role.class));
 
 		if (null == privilege) {
+			log.warn("Denying {} {} access to ", privilege,authorized);
 			return authorized;
+		
 		}
 
 		//implémentation des logiques métier de vérification des contraintes

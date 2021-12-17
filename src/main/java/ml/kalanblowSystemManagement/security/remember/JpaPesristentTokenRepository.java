@@ -9,15 +9,17 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import lombok.extern.slf4j.Slf4j;
 import ml.kalanblowSystemManagement.model.PersistentLogin;
-import ml.kalanblowSystemManagement.repository.RememberMeTokenRepository;
 
 @Repository("persistentTokenRepository")
 @Transactional
+@Slf4j
 public class JpaPesristentTokenRepository implements PersistentTokenRepository {
 
 	private final RememberMeTokenRepository rememberMeTokenRepository;
-
+	
 	public JpaPesristentTokenRepository(RememberMeTokenRepository rememberMeTokenRepository) {
 		super();
 		this.rememberMeTokenRepository = rememberMeTokenRepository;
@@ -25,39 +27,45 @@ public class JpaPesristentTokenRepository implements PersistentTokenRepository {
 
 	@Override
 	public void createNewToken(PersistentRememberMeToken token) {
+		
+		log.info("Creating Token for user : {}", token.getUsername());
 		PersistentLogin newToken = new PersistentLogin(token);
+		newToken.setLastUsed(token.getDate());
+		newToken.setUsername(token.getUsername());
+		newToken.setSeries(token.getSeries());
+		newToken.setToken(token.getTokenValue());
 		this.rememberMeTokenRepository.save(newToken);
 
 	}
 
 	@Override
 	public void updateToken(String series, String tokenValue, Date lastUsed) {
-
+		log.info("Updating Token for seriesId : {}", series);
 		PersistentLogin token = this.rememberMeTokenRepository.findBySeries(series);
 		if (token != null) {
 
 			token.setToken(tokenValue);
 			token.setLastUsed(lastUsed);
-			token.setUser(token.getUser());
-			token.setFullName(token.getFullName());
-			token.setIpAdresse(token.getIpAdresse());
-			token.setUser(token.getUser());
+			token.setUsername(token.getUsername());
+	
+
 		}
 
 	}
 
 	@Override
 	public PersistentRememberMeToken getTokenForSeries(String seriesId) {
-
+		log.info("Fetch Token if any for seriesId : {}", seriesId);
 		PersistentLogin token = this.rememberMeTokenRepository.findBySeries(seriesId);
 
-		return new PersistentRememberMeToken(token.getUser().getFullName(), token.getSeries(), token.getToken(),
+		return new PersistentRememberMeToken(token.getUsername(), token.getSeries(), token.getToken(),
 				token.getLastUsed());
 	}
 
 	@Override
 	public void removeUserTokens(String username) {
-		Set<PersistentLogin> tokens = this.rememberMeTokenRepository.findByFullName(username);
+		log.info("Removing Token if any for user : {}", username);
+		Set<PersistentLogin> tokens = this.rememberMeTokenRepository.findByUsername(username);
 
 		if (!tokens.isEmpty()) {
 			for (PersistentLogin login : tokens) {

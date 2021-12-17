@@ -7,18 +7,14 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
+import ml.kalanblowSystemManagement.constraint.IsAdmin;
 import ml.kalanblowSystemManagement.controller.web.command.AdminSignupCommand;
 import ml.kalanblowSystemManagement.dto.model.RoleDto;
 import ml.kalanblowSystemManagement.dto.model.UserDto;
@@ -75,8 +72,6 @@ public class UserController {
 
 	@Autowired
 	private BCryptPasswordEncoder passworEncoder;
-
-	private ModelMapper modelMapper;
 
 	@GetMapping("/signup")
 	public ModelAndView signup() {
@@ -131,9 +126,12 @@ public class UserController {
 	 * @param pageable
 	 * @return
 	 */
-	@GetMapping("/list")
-	@PreAuthorize("hasRole('ADMIN')and hasRole('TEACHER') and hasRole('STAFF')")
-	@PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'ADMIN')")
+	@GetMapping("/allUsers")
+	@IsAdmin
+	// @PostFilter("hasPermission(filterObject, 'read') or
+	// hasPermission(filterObject, 'ADMIN')")
+	// @Secured("ADMIN")
+	// @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or hasRole('STAFF')")
 	public ModelAndView getUsersList(ModelAndView modelAndView, UserSearchParameters userSearchParameters) {
 
 		modelAndView = new ModelAndView("users/allUsers");
@@ -144,11 +142,14 @@ public class UserController {
 
 		// page size
 		if (userSearchParameters.getPage().isPresent()) {
-			Optional<Integer>  selectedPageSize = Optional.ofNullable(userSearchParameters.getPageSize().orElse(InitialPagingSizes.INITIAL_PAGE_SIZE));
+			Optional<Integer> selectedPageSize = Optional
+					.ofNullable(userSearchParameters.getPageSize().orElse(InitialPagingSizes.INITIAL_PAGE_SIZE));
 			// Evaluate page size. If requested parameter is null, return initial
-			Optional<Integer> selectedPage = Optional.ofNullable((userSearchParameters.getPage().orElse(0) < 1) ? InitialPagingSizes.INITIAL_PAGE
-					: (userSearchParameters.getPage().get() - 1));
-			PageRequest pageRequest = PageRequest.of(Integer.valueOf(selectedPage.get()),Integer.valueOf( selectedPageSize.get()), Sort.by(Direction.ASC, "id"));
+			Optional<Integer> selectedPage = Optional
+					.ofNullable((userSearchParameters.getPage().orElse(0) < 1) ? InitialPagingSizes.INITIAL_PAGE
+							: (userSearchParameters.getPage().get() - 1));
+			PageRequest pageRequest = PageRequest.of(Integer.valueOf(selectedPage.get()),
+					Integer.valueOf(selectedPageSize.get()), Sort.by(Direction.ASC, "id"));
 			UserSearchResult userSearchResult = new UserSearchResult();
 
 			if (userSearchParameters.getPropertyValue().isEmpty()
@@ -182,12 +183,10 @@ public class UserController {
 			modelAndView.addObject("pageSizes", InitialPagingSizes.PAGE_SIZES);
 		}
 
-
 		if (userDto.isPresent()) {
-			modelAndView.addObject("userName", userDto.get());
+			modelAndView.addObject("userName", userDto.get().getFullName());
 			modelAndView.addObject("authorithy", userDto.get().getRoles());
 		}
-
 
 		return modelAndView;
 	}
@@ -232,9 +231,9 @@ public class UserController {
 	}
 
 	@PostMapping("/editeUser/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
-	//@preAuthorize("@userAuthorization.can('update', 'ADMIN') or @userAuthorization.can('update', 'ADMIN', #userId)")
-	public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto, @PathVariable (value = "userId") Long id, Model model,
+	@IsAdmin
+	public String updateUser(@ModelAttribute("oldUser") @Valid UserDto userDto, @PathVariable(value = "userId") Long id,
+			Model model,
 
 			BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
@@ -265,7 +264,7 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/deleteUser/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@IsAdmin
 	public ModelAndView deleteUser(@PathVariable("id") Long id) {
 
 		ModelAndView modelAndView = new ModelAndView("users/userDelete");

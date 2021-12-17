@@ -2,6 +2,7 @@ package ml.kalanblowSystemManagement.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -16,6 +17,7 @@ public class ThymeleafConfiguration {
 	public SpringTemplateEngine templateEngine() {
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 		templateEngine.setTemplateResolver(thymeleafTemplateResolver());
+		 templateEngine.addDialect(new SpringSecurityDialect()); 
 		return templateEngine;
 	}
 
@@ -24,6 +26,7 @@ public class ThymeleafConfiguration {
 		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 		templateResolver.setPrefix("templates/");
 		templateResolver.setSuffix(".html");
+		templateResolver.setOrder(0);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		return templateResolver;
 	}

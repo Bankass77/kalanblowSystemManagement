@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" 
-xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="fr" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 
 <head th:fragment="header">
 
-<title >header</title>
+<title>header</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <!-- Favicon icon -->
 <link rel="icon" type="image/png" th:href="favicon.png">
 
@@ -21,10 +23,12 @@ xmlns:th="http://www.thymeleaf.org"
 <link rel="stylesheet" th:href="@{/auth/css/style.css}">
 <link rel="stylesheet" th:href="@{/dashboard/html/css/style.css}">
 <!-- Bootstrap Core CSS -->
-<link th:href="@{/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css}"
+<link
+	th:href="@{/dashboard/assets/plugins/bootstrap/css/bootstrap.min.css}"
 	rel="stylesheet">
 <!-- chartist CSS -->
-<link th:href="@{/dashboard/assets/plugins/chartist-js/dist/chartist.min.css}"
+<link
+	th:href="@{/dashboard/assets/plugins/chartist-js/dist/chartist.min.css}"
 	rel="stylesheet">
 <link
 	th:href="@{/dashboard/assets/plugins/chartist-js/dist/chartist-init.css}"
@@ -70,7 +74,8 @@ xmlns:th="http://www.thymeleaf.org"
 <!-- Chart JS -->
 <script src="/dashboard/html/js/dashboard1.js"></script>
 
-<script type="text/javascript"  src="/dashboard/html/js/user-popup-menu.js"></script> 
+<script type="text/javascript"
+	src="/dashboard/html/js/user-popup-menu.js"></script>
 
 </head>
 

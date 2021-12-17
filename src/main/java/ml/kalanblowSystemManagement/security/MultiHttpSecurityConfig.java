@@ -25,7 +25,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
@@ -37,9 +39,10 @@ import ml.kalanblowSystemManagement.security.api.ApiJWTAuthenticationFilter;
 import ml.kalanblowSystemManagement.security.api.ApiJWTAuthorizationFilter;
 import ml.kalanblowSystemManagement.security.form.CustomAuthenticationSuccessHandler;
 import ml.kalanblowSystemManagement.security.form.CustomLogoutSuccessHandler;
+import ml.kalanblowSystemManagement.security.form.LoggingAccessDeniedHandler;
 import ml.kalanblowSystemManagement.security.remember.JpaPesristentTokenRepository;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true,  securedEnabled = true,jsr250Enabled = true, mode = AdviceMode.PROXY, proxyTargetClass = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true, mode = AdviceMode.PROXY, proxyTargetClass = true)
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MultiHttpSecurityConfig {
@@ -75,6 +78,7 @@ public class MultiHttpSecurityConfig {
 					.addFilter(new ApiJWTAuthorizationFilter(authenticationManager())).sessionManagement()
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 			http.httpBasic();
+			http.csrf().disable();
 
 		}
 
@@ -114,43 +118,32 @@ public class MultiHttpSecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			
+
 			http.httpBasic();
-			http.authorizeRequests()
-			.antMatchers("/").permitAll()
-			.antMatchers("/images/*").permitAll()
-			.antMatchers("/login").permitAll()
-			.antMatchers("/users/editeUser/{id}").hasRole(UserRole.ADMIN.getUserRole())
-			.antMatchers("/users/allUsers").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
-			.antMatchers("/users/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
-			.antMatchers("/user/**").permitAll()
-			.antMatchers("/admin/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole())
-			.antMatchers("/student/**").hasAnyRole(UserRole.ADMIN.getUserRole(), UserRole.STAFF.getUserRole(),UserRole.STUDENT.getUserRole())
-					.anyRequest().authenticated()
-					.and().cors().and()
-					.csrf().disable()
-					.formLogin()
-					.loginPage("/login").permitAll()
-					.failureUrl("/login?error=true")
-					.usernameParameter("email")
-					.passwordParameter("password")
-					.successHandler(customAuthenticationSuccessHandler)
-					.and()
-					.logout().permitAll()
+			http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/images/*").permitAll()
+					.antMatchers("/login").permitAll().antMatchers("/users/editeUser/{id}")
+					.hasAuthority(UserRole.ADMIN.getUserRole()).antMatchers("/users/allUsers")
+					.hasAuthority(UserRole.ADMIN.getUserRole()).antMatchers("/users/**")
+					.hasAuthority(UserRole.ADMIN.getUserRole()).antMatchers("/user/**").permitAll()
+					.antMatchers("/admin/**").hasAuthority(UserRole.ADMIN.getUserRole()).antMatchers("/student/**")
+					.hasAuthority(UserRole.ADMIN.getUserRole()).anyRequest().authenticated().and().cors().and().csrf()
+					.disable()
+					.formLogin().loginPage("/login").permitAll().failureUrl("/login?error=true")
+					.usernameParameter("email").passwordParameter("password")
+					.successHandler(customAuthenticationSuccessHandler).and().logout().permitAll()
 					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-					.logoutSuccessHandler(new CustomLogoutSuccessHandler())
-					.deleteCookies("JSESSIONID")
-					.logoutSuccessUrl("/login").and()
-					.exceptionHandling();
+					.logoutSuccessHandler(new CustomLogoutSuccessHandler()).deleteCookies("JSESSIONID")
+					.logoutSuccessUrl("/login").and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 
 			http.rememberMe().key("remember-me").tokenRepository(jpersistentTokenRepository)
+					.rememberMeCookieName("remember-me").alwaysRemember(true).useSecureCookie(true)
 					.userDetailsService(customService).tokenValiditySeconds((int) SecurityConstants.EXPIRATION_TIME);
 
 		}
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-			web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
+			web.debug(true).ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
 					"/resources/static/**", "/css/**", "/js/**", "/img/**", "/fonts/**", "/images/**", "/scss/**",
 					"/vendor/**", "/favicon.ico", "/auth/**", "/favicon.png", "/v2/api-docs", "/configuration/ui",
 					"/configuration/security", "/webjars/**", "/swagger-resources/**", "/actuator", "/swagger-ui/**",
@@ -178,10 +171,22 @@ public class MultiHttpSecurityConfig {
 		}
 
 		@Bean
-		public Java8TimeDialect thymelaea() {
+		public Java8TimeDialect thymelaeaf() {
 
 			return new Java8TimeDialect();
 		}
 
+		@Bean
+		public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices() {
+			PersistentTokenBasedRememberMeServices persistenceTokenBasedservice = new PersistentTokenBasedRememberMeServices(
+					"rememberme", customService, jpersistentTokenRepository);
+			persistenceTokenBasedservice.setAlwaysRemember(true);
+			return persistenceTokenBasedservice;
+		}
+
+		@Bean
+		public AccessDeniedHandler accessDeniedHandler() {
+			return new LoggingAccessDeniedHandler();
+		}
 	}
 }

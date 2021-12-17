@@ -51,9 +51,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -141,6 +138,9 @@ public class User implements Serializable{
 	@ValidPassword
 	private String matchingPassword;
 
+	private int failedLoginAttempts;
+    private boolean loginDisabled;
+	
 	@Column(
 			name = "mobile_number")
 	@FrenchPhoneConstraint
@@ -350,4 +350,6 @@ public class User implements Serializable{
 				.collect(Collectors.toSet());
 		return _privileges.containsAll(privileges);
 	}
+	
+	
 }

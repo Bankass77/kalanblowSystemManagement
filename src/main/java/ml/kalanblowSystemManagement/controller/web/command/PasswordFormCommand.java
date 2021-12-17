@@ -14,4 +14,6 @@ public class PasswordFormCommand {
 	private String password;
 
 	private String email;
+	private String token;
+	private String repeatPassword;
 }

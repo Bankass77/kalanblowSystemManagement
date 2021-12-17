@@ -50,14 +50,14 @@ public class RoleServiceImpl implements RoleService {
     public Set<RoleDto> getAllRoles() {
 
         List<Role> roles = roleRepository.findAll();
-      //  List<Privilege> privileges=privilegeRepository.findAll();
+       List<Privilege> privileges=privilegeRepository.findAll();
         log.debug("roles:{}", roles);
         List<RoleDto> roleDtos =
                 roles.stream().map(roleDtO -> new ModelMapper().map(roleDtO, RoleDto.class))
                         .collect(Collectors.toList());
-      //  List<PrivilegeDto> privilegeDtos=privileges.stream().map(p-> new ModelMapper().map(p, PrivilegeDto.class)).collect(Collectors.toList());
+        List<PrivilegeDto> privilegeDtos=privileges.stream().map(p-> new ModelMapper().map(p, PrivilegeDto.class)).collect(Collectors.toList());
         
-         
+         log.debug(privilegeDtos.toString());
         return new HashSet<>(roleDtos);
     }
 
