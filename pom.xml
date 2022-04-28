@@ -34,6 +34,7 @@
 		<testcontainers.version>1.15.0</testcontainers.version>
 		<downloadSources>true</downloadSources>
 		<downloadJavadocs>true</downloadJavadocs>
+		<dependency-check.version>7.1.0</dependency-check.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -224,6 +225,15 @@
 	<build>
 		<defaultGoal>clean package</defaultGoal>
 		<finalName>${project.artifactId}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>${dependency-check.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -237,9 +247,34 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>${dependency-check.version}</version>
+				<configuration>
+					<formats>XML,HTML</formats>
+					<failOnError>false</failOnError>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>${dependency-check.version}</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	<profiles>
 		<profile>
 			<id>dev</id>
@@ -264,6 +299,21 @@
 			<properties>
 				<!-- This can be a single value, or a comma-separated list -->
 				<spring.profiles.to.activate>prod</spring.profiles.to.activate>
+			</properties>
+		</profile>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>http://10.1.1.1:9000</sonar.host.url>
+				<sonar.projectKey>kalanblowSystemManagement</sonar.projectKey>
+				<sonar.login>de2e56b42aa84d0b1c5b622644ac17e505c9a049</sonar.login>
+				<sonar.dependencyCheck.xmlReportPath>target/dependency-check-report.xml</sonar.dependencyCheck.xmlReportPath>
+
+				<sonar.java.libraries.empty>true</sonar.java.libraries.empty>
+				<sonar.exclusions>pom.xml</sonar.exclusions>
 			</properties>
 		</profile>
 	</profiles>
